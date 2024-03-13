@@ -1,33 +1,51 @@
+
+buildscript {
+	repositories {
+		mavenCentral()
+	}
+}
+
 plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.2.3'
 	id 'io.spring.dependency-management' version '1.1.4'
 }
 
-group = 'com.moneygang'
-version = '0.0.1-SNAPSHOT'
 
-java {
-	sourceCompatibility = '21'
-}
+// 하위 모든 프로젝트(모듈)의 공통 세팅
 
-configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
+subprojects {
+	apply plugin: 'org.springframework.boot'
+	apply plugin: 'io.spring.dependency-management'
+	apply plugin: 'java'
+
+	group = 'com.moneygang'
+	version = '0.0.1-SNAPSHOT'
+
+	java {
+		sourceCompatibility = '21'
 	}
-}
 
-repositories {
-	mavenCentral()
-}
+	repositories {
+		mavenCentral()
+	}
 
-dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-}
+	configurations {
+		compileOnly {
+			extendsFrom annotationProcessor
+		}
+	}
 
-tasks.named('test') {
-	useJUnitPlatform()
+
+	dependencies {
+		implementation 'org.springframework.boot:spring-boot-starter-web'
+		compileOnly 'org.projectlombok:lombok'
+		annotationProcessor 'org.projectlombok:lombok'
+		testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	}
+
+	tasks.named('test') {
+		useJUnitPlatform()
+	}
+
 }
