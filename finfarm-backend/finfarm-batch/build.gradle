@@ -1,0 +1,12 @@
+dependencies {
+
+    // batch의 build.gradle
+}
+
+bootJar {
+    enabled = true
+}
+
+jar {
+    enabled = true
+}
