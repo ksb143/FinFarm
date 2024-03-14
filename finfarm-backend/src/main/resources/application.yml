@@ -1,0 +1,26 @@
+---
+spring:
+  profiles:
+    group:
+      development:
+        - common
+---
+spring:
+  config:
+    activate:
+      on-profile: common
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+---
+spring:
+  config:
+    activate:
+      on-profile: port_8080
+server:
+  port: 8080
+---
+logging:
+  level:
+    com.d101.frientree : info
