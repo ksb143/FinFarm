@@ -4,6 +4,7 @@ spring:
     group:
       development:
         - common
+        - database
 ---
 spring:
   config:
@@ -17,10 +18,20 @@ spring:
 spring:
   config:
     activate:
+      on-profile: database
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ENC(YVSWokup/PAra7C+VbN4kHZCHjRT/KSHXWM2qL4W8H5k+BLJ14P9HEO2NnJcMYhhV0T+xC3WjbnN3I9eW28JUZZ3OzBq/CobPcad1tcQ7crPSRoQgRLfaSbQz7MAZuIa8s9JPdIbSzy7RF7zi09alqeDI4t1cMPK)
+    username: ENC(nhKNRKH6+PxjtjqMsUlN7A==)
+    password: ENC(Sj14K+Fx8YAQuyK+bD1g5BJJBlhMIKhT)
+---
+spring:
+  config:
+    activate:
       on-profile: port_8080
 server:
   port: 8080
 ---
 logging:
   level:
-    com.d101.frientree : info
+    com.moneygang.finfarm : info

@@ -7,7 +7,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class FinfarmApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(FinfarmApplication.class, args);
+		//SpringApplication.run(FinfarmApplication.class, args);
+		SpringApplication app = new SpringApplication(FinfarmApplication.class);
+		app.setAdditionalProfiles("development");
+		app.run(args);
 	}
 
 }
