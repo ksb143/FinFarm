@@ -35,3 +35,8 @@ server:
 logging:
   level:
     com.moneygang.finfarm : info
+---
+
+server:
+  servlet:
+    context-path: /api
