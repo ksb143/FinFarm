@@ -1,0 +1,30 @@
+package com.moneygang.finfarm.domain.banking.entity;
+
+import com.moneygang.finfarm.domain.member.entity.Member;
+import jakarta.persistence.*;
+
+import java.time.LocalDateTime;
+
+
+@Entity(name = "point_TB")
+public class Point {
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "point_pk")
+    private Long pointPk;
+
+    @Column(name = "point_amount")
+    private String pointAmount;
+
+    @Column(name = "point_date")
+    private LocalDateTime pointDate;
+
+    @Column(name = "point_type")
+    private String pointType;
+
+    @Column(name = "point_balance")
+    private Long pointBalance;
+
+    @ManyToOne
+    @JoinColumn(name = "member_pk")
+    private Member member;
+}
