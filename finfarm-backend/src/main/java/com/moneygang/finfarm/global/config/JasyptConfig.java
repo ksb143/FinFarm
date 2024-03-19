@@ -1,4 +1,4 @@
-package com.moneygang.finfarm.config;
+package com.moneygang.finfarm.global.config;
 
 import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
 import org.jasypt.encryption.StringEncryptor;
