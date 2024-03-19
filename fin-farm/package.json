@@ -15,6 +15,7 @@
     "@types/babel-template": "^6.25.5",
     "@types/tailwindcss": "^3.1.0",
     "babel-template": "^6.26.0",
+    "daisyui": "^4.7.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-redux": "^9.1.0",
