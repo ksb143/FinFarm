@@ -19,4 +19,10 @@ module.exports = {
     ecmaVersion: 12, // ES2021
     sourceType: 'module', // 모듈 시스템 사용
   },
+
+  settings: {
+    'import/resolver': {
+      typescript: {},
+    },
+  },
 };

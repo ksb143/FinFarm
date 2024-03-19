@@ -1,16 +1,15 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
+    "target": "es2015",
     "useDefineForClassFields": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "lib": ["es2015", "dom", "dom.iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
 
-    /* 절대경로 설정 */
-    "baseUrl": ".",
+    // 절대경로
+    "baseUrl": "./src",
     "paths": {
-      "@components/*": ["src/components/*"],
-      "@/*": ["src/*"]
+      "@/*": ["*"]
     },
 
     /* Bundler mode */
@@ -32,7 +31,8 @@
     "**/*.ts",
     "**/*.tsx",
     "tailwind.config.js",
-    "postcss.config.js"
+    "postcss.config.js",
+    "types"
   ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
