@@ -1,3 +1,51 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+  font-family: 'NanumSquareRound';
+  font-style: normal;
+  font-weight: bold;
+  src: url('./assets/font/NanumSquareRoundB.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'NanumSquareRound';
+  font-style: normal;
+  font-weight: extrabold;
+  src: url('./assets/font/NanumSquareRoundEB.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'NanumSquareRound';
+  font-style: normal;
+  font-weight: light;
+  src: url('./assets/font/NanumSquareRoundL.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'NanumSquareRound';
+  font-style: normal;
+  font-weight: normal;
+  src: url('./assets/font/NanumSquareRoundR.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'SDSamliphopang';
+  font-style: normal;
+  font-weight: normal;
+  src: url('./assets/font/SDSamliphopangcheBasic.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'SDSamliphopang';
+  font-style: normal;
+  font-weight: black;
+  src: url('./assets/font/SDSamliphopangcheOutline.woff') format('woff');
+}
+
+@layer base {
+  html {
+    font-family: 'SDSamliphopang', system-ui, sans-serif;
+  }
+}
