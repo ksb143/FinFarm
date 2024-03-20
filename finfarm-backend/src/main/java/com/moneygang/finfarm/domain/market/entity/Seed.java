@@ -1,4 +1,4 @@
-package com.moneygang.finfarm.domain.store.entity;
+package com.moneygang.finfarm.domain.market.entity;
 
 import jakarta.persistence.*;
 
