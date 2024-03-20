@@ -7,9 +7,9 @@
     "skipLibCheck": true,
 
     // 절대경로
-    "baseUrl": "./src",
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["*"]
+      "@/*": ["src/*"]
     },
 
     /* Bundler mode */
