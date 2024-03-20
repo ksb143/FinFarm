@@ -1,6 +1,6 @@
-package com.moneygang.finfarm.domain.store.controller;
+package com.moneygang.finfarm.domain.market.controller;
 
-import com.moneygang.finfarm.domain.store.service.StoreService;
+import com.moneygang.finfarm.domain.market.service.MarketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/store")
-public class StoreController {
-    private final StoreService storeService;
+public class MarketController {
+    private final MarketService storeService;
 
     @GetMapping
     public ResponseEntity<String> test(@RequestParam("string") String s){
