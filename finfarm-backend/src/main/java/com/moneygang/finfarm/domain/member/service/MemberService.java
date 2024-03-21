@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.moneygang.finfarm.domain.member.dto.request.MemberJoinRequest;
+import com.moneygang.finfarm.domain.member.dto.response.MemberAutoLoginResponse;
 import com.moneygang.finfarm.domain.member.dto.response.MemberJoinResponse;
 import com.moneygang.finfarm.domain.member.dto.response.MemberLoginResponse;
 import com.moneygang.finfarm.domain.member.entity.Member;
@@ -64,16 +65,18 @@ public class MemberService {
         return ResponseEntity.ok(MemberJoinResponse.create("회원가입 성공"));
     }
 
-    public ResponseEntity<MemberLoginResponse> autoLogin() {
+    public ResponseEntity<MemberAutoLoginResponse> autoLogin() {
+        log.info("member auto-login");
         //토큰에서 이메일 추출
         String email = "";
 
         //이메일로 회원 조회
         Optional<Member> optionalMember = memberRepository.findByMemberEmail(email);
-//        if(optionalMember.isEmpty())
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MemberLoginResponse.createMemberLoginResponse("자동 로그인 실패"));
+        if(optionalMember.isEmpty())
+            throw new GlobalException(HttpStatus.NOT_FOUND, "회원이 존재하지 않습니다.");
 
-        return ResponseEntity.ok(null);
+        Member member = optionalMember.get();
+        return ResponseEntity.ok(MemberAutoLoginResponse.create(member.getMemberNickname(), member.isMemberSolveQuiz(), member.getMemberCurPoint(), member.getMemberImageUrl()));
     }
 
     public ResponseEntity<MemberLoginResponse> login(String memberEmail) {
@@ -85,6 +88,7 @@ public class MemberService {
 
             String accessToken = jwtTokenProvider.createAccessToken(jwtTokenProvider, memberEmail);
             String refreshToken = jwtTokenProvider.createRefreshToken(jwtTokenProvider, memberEmail);
+
             return ResponseEntity.ok(MemberLoginResponse.create(accessToken, refreshToken, member.getMemberNickname(), member.isMemberSolveQuiz(), member.getMemberCurPoint(), member.getMemberImageUrl()));
         }
         else throw new GlobalException(HttpStatus.NOT_FOUND, "Member Not Found");

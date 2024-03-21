@@ -2,6 +2,7 @@ package com.moneygang.finfarm.domain.member.controller;
 
 import com.moneygang.finfarm.domain.member.dto.request.MemberJoinRequest;
 import com.moneygang.finfarm.domain.member.dto.request.MemberLoginRequest;
+import com.moneygang.finfarm.domain.member.dto.response.MemberAutoLoginResponse;
 import com.moneygang.finfarm.domain.member.dto.response.MemberJoinResponse;
 import com.moneygang.finfarm.domain.member.dto.response.MemberLoginResponse;
 import com.moneygang.finfarm.domain.member.entity.Member;
@@ -41,7 +42,7 @@ public class MemberController {
     }
 
     @PostMapping("/auto-login")
-    public ResponseEntity<MemberLoginResponse> autoLogin() {
+    public ResponseEntity<MemberAutoLoginResponse> autoLogin() {
         return memberService.autoLogin();
     }
 }
