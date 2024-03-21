@@ -1,7 +1,9 @@
 package com.moneygang.finfarm.domain.market.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
+@Getter
 @Entity(name = "seed_TB")
 public class Seed {
     @Id
