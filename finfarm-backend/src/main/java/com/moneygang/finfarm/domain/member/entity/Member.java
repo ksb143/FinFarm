@@ -7,13 +7,19 @@ import com.moneygang.finfarm.domain.banking.entity.Point;
 import com.moneygang.finfarm.domain.farm.entity.FarmField;
 import com.moneygang.finfarm.domain.farm.entity.Warehouse;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Getter
 @Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name="member_TB")
 public class Member {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
