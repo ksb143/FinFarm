@@ -1,6 +1,8 @@
 package com.moneygang.finfarm.domain.member.controller;
 
+import com.moneygang.finfarm.domain.member.dto.request.MemberJoinRequest;
 import com.moneygang.finfarm.domain.member.dto.request.MemberLoginRequest;
+import com.moneygang.finfarm.domain.member.dto.response.MemberJoinResponse;
 import com.moneygang.finfarm.domain.member.dto.response.MemberLoginResponse;
 import com.moneygang.finfarm.domain.member.entity.Member;
 import com.moneygang.finfarm.domain.member.service.MemberService;
@@ -33,5 +35,9 @@ public class MemberController {
         return memberService.login((String) userInfo.get("email"));
     }
 
+    @PostMapping("/sign-up")
+    public ResponseEntity<MemberJoinResponse> join(@RequestBody MemberJoinRequest request) {
+        return memberService.join(request);
+    }
 
 }

@@ -3,6 +3,8 @@ package com.moneygang.finfarm.domain.member.service;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.moneygang.finfarm.domain.member.dto.request.MemberJoinRequest;
+import com.moneygang.finfarm.domain.member.dto.response.MemberJoinResponse;
 import com.moneygang.finfarm.domain.member.dto.response.MemberLoginResponse;
 import com.moneygang.finfarm.domain.member.entity.Member;
 import com.moneygang.finfarm.domain.member.repository.MemberRepository;
@@ -20,6 +22,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +40,29 @@ public class MemberService {
         List<Member> findAll = memberRepository.findAll();
 
         return ResponseEntity.ok(findAll);
+    }
+
+    public ResponseEntity<MemberJoinResponse> join(MemberJoinRequest request) {
+        //유저 이메일 중복 확인
+        Optional<Member> optionalMember = memberRepository.findByMemberEmail(request.getMemberEmail());
+        if(optionalMember.isPresent())
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MemberJoinResponse.create("회원가입 실패"));
+
+        //유저 등록
+        Member member = Member.builder()
+                .memberEmail(request.getMemberEmail())
+                .memberNickname(request.getMemberNickname())
+                .memberAccountPassword(request.getMemberAccountPassword())
+                .memberImageUrl(request.getMemberImageUrl())
+                .memberSolveQuiz(false)
+                .memberCurPoint((long) 0.0)
+                .memberCreateDate(LocalDate.now())
+                .farmLevel(1)
+                .build();
+
+        memberRepository.save(member);
+
+        return ResponseEntity.ok(MemberJoinResponse.create("회원가입 성공"));
     }
 
     public ResponseEntity<MemberLoginResponse> login(String memberEmail) {

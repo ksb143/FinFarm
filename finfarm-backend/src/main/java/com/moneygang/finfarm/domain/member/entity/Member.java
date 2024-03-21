@@ -7,13 +7,19 @@ import com.moneygang.finfarm.domain.banking.entity.Point;
 import com.moneygang.finfarm.domain.farm.entity.FarmField;
 import com.moneygang.finfarm.domain.farm.entity.Warehouse;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Getter
+@Builder
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name="member_TB")
 public class Member {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,9 +46,6 @@ public class Member {
 
     @Column(name = "member_date")
     private LocalDate memberCreateDate;
-
-    @Column(name = "member_farm_name")
-    private String farmName;
 
     @Column(name = "member_farm_level")
     private Integer farmLevel;
