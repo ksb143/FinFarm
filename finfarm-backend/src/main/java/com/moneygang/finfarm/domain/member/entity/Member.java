@@ -16,10 +16,10 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Getter
-@Entity
 @Builder
-@AllArgsConstructor
+@Entity
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name="member_TB")
 public class Member {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
