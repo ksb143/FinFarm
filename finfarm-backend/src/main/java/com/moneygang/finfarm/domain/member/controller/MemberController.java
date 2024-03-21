@@ -40,4 +40,8 @@ public class MemberController {
         return memberService.join(request);
     }
 
+    @PostMapping("/auto-login")
+    public ResponseEntity<MemberLoginResponse> autoLogin() {
+        return memberService.autoLogin();
+    }
 }

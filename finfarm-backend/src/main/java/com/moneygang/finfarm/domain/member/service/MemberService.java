@@ -64,6 +64,18 @@ public class MemberService {
         return ResponseEntity.ok(MemberJoinResponse.create("회원가입 성공"));
     }
 
+    public ResponseEntity<MemberLoginResponse> autoLogin() {
+        //토큰에서 이메일 추출
+        String email = "";
+
+        //이메일로 회원 조회
+        Optional<Member> optionalMember = memberRepository.findByMemberEmail(email);
+//        if(optionalMember.isEmpty())
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MemberLoginResponse.createMemberLoginResponse("자동 로그인 실패"));
+
+        return ResponseEntity.ok(null);
+    }
+
     public ResponseEntity<MemberLoginResponse> login(String memberEmail) {
         log.info("member login: " + memberEmail);
         Optional<Member> optionalMember = memberRepository.findByMemberEmail(memberEmail);
