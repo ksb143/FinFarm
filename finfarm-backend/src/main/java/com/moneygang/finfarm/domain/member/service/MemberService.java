@@ -66,13 +66,14 @@ public class MemberService {
 
     public ResponseEntity<MemberLoginResponse> login(String memberEmail) {
         log.info("member login: " + memberEmail);
-        Optional<Member> member = memberRepository.findByMemberEmail(memberEmail);
+        Optional<Member> optionalMember = memberRepository.findByMemberEmail(memberEmail);
 
-        if(member.isPresent()) {
+        if(optionalMember.isPresent()) {
+            Member member = optionalMember.get();
+
             String accessToken = jwtTokenProvider.createAccessToken(jwtTokenProvider, memberEmail);
             String refreshToken = jwtTokenProvider.createRefreshToken(jwtTokenProvider, memberEmail);
-
-            return ResponseEntity.ok(MemberLoginResponse.createMemberLoginResponse(accessToken, refreshToken));
+            return ResponseEntity.ok(MemberLoginResponse.create(accessToken, refreshToken, member.getMemberNickname(), member.isMemberSolveQuiz(), member.getMemberCurPoint(), member.getMemberImageUrl()));
         }
         else throw new GlobalException(HttpStatus.NOT_FOUND, "Member Not Found");
     }
