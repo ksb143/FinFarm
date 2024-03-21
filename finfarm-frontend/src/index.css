@@ -31,21 +31,17 @@
 }
 
 @font-face {
-  font-family: 'SDSamliphopang';
-  font-style: normal;
+  font-family: 'SDSamliphopangche_Basic';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts-20-12@1.0/SDSamliphopangche_Basic.woff')
+    format('woff');
   font-weight: normal;
-  src: url('./assets/font/SDSamliphopangcheBasic.woff') format('woff');
+  font-style: normal;
 }
 
 @font-face {
-  font-family: 'SDSamliphopang';
+  font-family: 'SDSamliphopangche_Outline';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts-20-12@1.0/SDSamliphopangche_Outline.woff')
+    format('woff');
+  font-weight: normal;
   font-style: normal;
-  font-weight: black;
-  src: url('./assets/font/SDSamliphopangcheOutline.woff') format('woff');
-}
-
-@layer base {
-  html {
-    font-family: 'SDSamliphopang', system-ui, sans-serif;
-  }
 }

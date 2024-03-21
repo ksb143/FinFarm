@@ -9,7 +9,7 @@ function App() {
       <h1 className="text-4xl text-center">
         <p>hello, world!</p>
         <br />
-        <p className="font-SDSamliphopang">This is 핀팜</p>
+        <p className="">This is 핀팜</p>
       </h1>
     </>
   );
