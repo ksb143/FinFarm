@@ -16,8 +16,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
-                .cors((cors) -> cors.disable())
                 .csrf((csrf) -> csrf.disable())
+                .cors((cors) -> cors.disable())
+                .headers((headers) -> headers.disable())
                 .authorizeHttpRequests((authorizeRequests) ->
                         authorizeRequests
                                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll() // `/public/**` 경로는 인증 없이 접근 허용
