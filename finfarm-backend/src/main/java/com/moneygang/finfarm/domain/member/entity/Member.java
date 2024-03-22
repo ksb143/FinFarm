@@ -16,10 +16,10 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Getter
-@Entity
 @Builder
-@AllArgsConstructor
+@Entity
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name="member_TB")
 public class Member {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,9 +46,6 @@ public class Member {
 
     @Column(name = "member_date")
     private LocalDate memberCreateDate;
-
-    @Column(name = "member_farm_name")
-    private String farmName;
 
     @Column(name = "member_farm_level")
     private Integer farmLevel;
