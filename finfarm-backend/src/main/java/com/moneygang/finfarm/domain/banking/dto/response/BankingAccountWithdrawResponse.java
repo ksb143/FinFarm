@@ -8,14 +8,14 @@ import java.time.LocalDateTime;
 
 @Getter
 @Builder
-public class BankingAccountDepositResponse {
+public class BankingAccountWithdrawResponse {
 
     private Long curPoint;
     private Long accountBalance;
     private LocalDateTime requestTime;
 
-    public static BankingAccountDepositResponse create(Long curPoint, Long accountBalance, LocalDateTime requestTime) {
-        return BankingAccountDepositResponse.builder()
+    public static BankingAccountWithdrawResponse create(Long curPoint, Long accountBalance, LocalDateTime requestTime) {
+        return BankingAccountWithdrawResponse.builder()
                 .curPoint(curPoint)
                 .accountBalance(accountBalance)
                 .requestTime(requestTime)

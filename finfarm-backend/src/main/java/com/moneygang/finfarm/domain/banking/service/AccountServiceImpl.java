@@ -2,6 +2,7 @@ package com.moneygang.finfarm.domain.banking.service;
 
 
 import com.moneygang.finfarm.domain.banking.dto.response.BankingAccountDepositResponse;
+import com.moneygang.finfarm.domain.banking.dto.response.BankingAccountWithdrawResponse;
 import com.moneygang.finfarm.domain.banking.entity.Account;
 import com.moneygang.finfarm.domain.banking.repository.AccountRepository;
 import com.moneygang.finfarm.domain.member.entity.Member;
@@ -13,6 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -28,34 +32,102 @@ public class AccountServiceImpl implements AccountService {
     public ResponseEntity<BankingAccountDepositResponse> deposit(long userId, long amount) {
         Optional<Member> optionalMember = memberRepository.findById(userId);
 
-        if(optionalMember.isPresent()) {
-            Account deposit = Account.builder()
-                    .amount(amount)
-                    .type("입금")
-                    .nickname("임시 닉네임")
-                    .member(optionalMember.get())
-                    .build();
-
-            BankingAccountDepositResponse response = BankingAccountDepositResponse.builder()
-                    .point(deposit.getAccountAmount())
-                    .remainAmount(deposit.getAccountBalance())
-                    .requestTime(deposit.getAccountDate())
-                    .build();
-
-            return ResponseEntity.ok(response);
+        // 예외1: 해당 사용자가 없을 때
+        if(optionalMember.isEmpty()) {
+            throw new GlobalException(HttpStatus.NOT_FOUND, "Member Not Found");
         }
-        else throw new GlobalException(HttpStatus.NOT_FOUND, "Member Not Found");
+
+        Member member = optionalMember.get();
+
+        // 예외2: 입금 요청 금액보다 보유 포인트가 적은 경우
+        if(amount > member.getMemberCurPoint()) {
+            throw new GlobalException(HttpStatus.BAD_REQUEST, "Insufficient Current Point");
+        }
+
+        Account deposit = Account.builder()
+                .amount(amount)
+                .type("입금")
+                .nickname(member.getMemberNickname())
+                .member(member)
+                .build();
+
+        accountRepository.save(deposit);
+        member.updateCurPoint(amount);
+
+        Long curPoint = member.getMemberCurPoint();
+        Long accountBalance = getAccountBalance(member.getMemberPk());
+        LocalDateTime requestTime = deposit.getAccountDate();
+
+        BankingAccountDepositResponse response = BankingAccountDepositResponse.create(curPoint, accountBalance, requestTime);
+
+        return ResponseEntity.ok(response);
     }
 
     @Override
     @Transactional
-    public void withdraw(long userId, int accountPassword, long amount) {
+    public ResponseEntity<BankingAccountWithdrawResponse> withdraw(long userId, int accountPassword, long amount) {
+        Optional<Member> optionalMember = memberRepository.findById(userId);
 
+        // 예외1: 해당 사용자가 없을 때 (404)
+        if(optionalMember.isEmpty()) {
+            throw new GlobalException(HttpStatus.NOT_FOUND, "Member Not Found");
+        }
+
+        Member member = optionalMember.get();
+        long accountBalance = getAccountBalance(member.getMemberPk());
+
+        // 예외2: 출금 요청 금액보다 보유 계좌 잔고가 적은 경우 (400)
+        if(amount > accountBalance) {
+            throw new GlobalException(HttpStatus.BAD_REQUEST, "Insufficient Account Balance");
+        }
+
+        // 예외 3: 입력 비밀번호가 유저의 비밀번호와 다른 경우 (401)
+        if(String.valueOf(accountPassword).equals(member.getMemberAccountPassword())) {
+            throw new GlobalException(HttpStatus.UNAUTHORIZED, "Wrong Account Password");
+        }
+
+        Account withdraw = Account.builder()
+                .amount((-1)*amount)
+                .type("출금")
+                .nickname(member.getMemberNickname())
+                .member(member)
+                .build();
+
+        accountRepository.save(withdraw);
+        member.updateCurPoint(amount);
+        Long curPoint = member.getMemberCurPoint();
+        accountBalance = getAccountBalance(member.getMemberPk());
+        LocalDateTime requestTime = withdraw.getAccountDate();
+
+        BankingAccountWithdrawResponse response = BankingAccountWithdrawResponse.create(curPoint, accountBalance, requestTime);
+
+        return ResponseEntity.ok(response);
     }
 
     @Override
     @Transactional
-    public void remit(long userId, int accountPassword, String otherNickname, long amount) {
+    public void remit(long myUserId, long otherUserId, int accountPassword, long amount) {
 
+    }
+
+    /** 사용자의 계좌 잔액 조회 **/
+    public long getAccountBalance(long userId) {
+
+        Optional<Member> optionalMember = memberRepository.findById(userId);
+
+        // 예외1: 해당 사용자가 없을 때
+        if(optionalMember.isEmpty()) {
+            throw new GlobalException(HttpStatus.NOT_FOUND, "Member Not Found");
+        }
+
+        Member member = optionalMember.get();
+        List<Account> accountList = member.getAccountList();
+        long accountBalance = 0;
+
+        for(Account account: accountList) {
+            accountBalance += account.getAccountAmount();
+        }
+
+        return accountBalance;
     }
 }

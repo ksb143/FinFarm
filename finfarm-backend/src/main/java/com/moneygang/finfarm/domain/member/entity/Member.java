@@ -73,4 +73,8 @@ public class Member {
     @OneToMany(mappedBy = "member")
     private List<Account> accountList;
 
+
+    public void updateCurPoint(Long amount) {
+        this.memberCurPoint += amount;
+    }
 }
