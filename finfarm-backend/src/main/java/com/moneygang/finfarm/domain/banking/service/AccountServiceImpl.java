@@ -1,7 +1,9 @@
 package com.moneygang.finfarm.domain.banking.service;
 
 
+import com.moneygang.finfarm.domain.banking.dto.general.BankingAccountRemitUser;
 import com.moneygang.finfarm.domain.banking.dto.response.BankingAccountDepositResponse;
+import com.moneygang.finfarm.domain.banking.dto.response.BankingAccountRemitRecentResponse;
 import com.moneygang.finfarm.domain.banking.dto.response.BankingAccountWithdrawResponse;
 import com.moneygang.finfarm.domain.banking.entity.Account;
 import com.moneygang.finfarm.domain.banking.repository.AccountRepository;
@@ -16,8 +18,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -105,6 +109,45 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public ResponseEntity<BankingAccountRemitRecentResponse> recentRemitUsers(long userId) {
+        Optional<Member> optionalMember = memberRepository.findById(userId);
+
+        // 예외1: 해당 사용자가 없을 때 (404)
+        if(optionalMember.isEmpty()) {
+            throw new GlobalException(HttpStatus.NOT_FOUND, "Member Not Found");
+        }
+
+        Member member = optionalMember.get();
+        List<Account> remits = member.getAccountList()
+                .stream()
+                .filter(a -> a.getAccountType().equals("송금")) // 송금 내역 필터링
+                .sorted(Comparator.comparing(Account::getAccountDate).reversed()) // 최신순 정렬
+                .collect(Collectors.toList());
+
+        BankingAccountRemitRecentResponse response = BankingAccountRemitRecentResponse.create();
+
+        int count = 0;
+        for(Account remit: remits) {
+            if(count==6) break;
+
+            /**
+             * 상대방의 이미지를 가져오려면 상대방의 pk 값을 가지고 있어야 함 (논의 필요)
+             */
+            BankingAccountRemitUser user = BankingAccountRemitUser.create(remit.getAccountNickname(), "testImage.img");
+            response.addUser(user);
+
+            count++;
+        }
+
+        return ResponseEntity.ok(response);
+    }
+
+    @Override
+    public void searchUser(String nickname) {
+
+    }
+
+    @Override
     @Transactional
     public void remit(long myUserId, long otherUserId, int accountPassword, long amount) {
 
@@ -115,7 +158,7 @@ public class AccountServiceImpl implements AccountService {
 
         Optional<Member> optionalMember = memberRepository.findById(userId);
 
-        // 예외1: 해당 사용자가 없을 때
+        // 예외: 해당 사용자가 없을 때
         if(optionalMember.isEmpty()) {
             throw new GlobalException(HttpStatus.NOT_FOUND, "Member Not Found");
         }
