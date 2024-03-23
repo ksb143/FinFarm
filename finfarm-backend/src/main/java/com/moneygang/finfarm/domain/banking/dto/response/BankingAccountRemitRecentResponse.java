@@ -1,6 +1,6 @@
 package com.moneygang.finfarm.domain.banking.dto.response;
 
-import com.moneygang.finfarm.domain.banking.dto.general.BankingAccountRemitUser;
+import com.moneygang.finfarm.domain.banking.dto.general.BankingAccountRemitMember;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -11,13 +11,13 @@ import java.util.List;
 @Builder
 public class BankingAccountRemitRecentResponse {
 
-    List<BankingAccountRemitUser> recentRemitUsers = new ArrayList<>();
+    List<BankingAccountRemitMember> recentRemitMembers = new ArrayList<>();
 
     public static BankingAccountRemitRecentResponse create() {
         return BankingAccountRemitRecentResponse.builder().build();
     }
 
-    public void addUser(BankingAccountRemitUser user) {
-        this.recentRemitUsers.add(user);
+    public void addMember(BankingAccountRemitMember member) {
+        this.recentRemitMembers.add(member);
     }
 }

@@ -10,23 +10,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/banking")
+@RequestMapping("/banking/account")
 @RequiredArgsConstructor
-public class BankingController {
+public class BankingAccountController {
 
     private final AccountService accountService;
 
-    @PostMapping("/account/deposit")
+    @PostMapping("/deposit")
     public void deposit(@RequestBody BankingAccountDepositRequest request) {
 
     }
 
-    @PostMapping("/account/withdraw")
+    @PostMapping("/withdraw")
     public void withdraw(@RequestBody BankingAccountWithdrawRequest request) {
 
     }
 
-    @PostMapping("/account/remit")
+    @PostMapping("/remit")
     public void remit() {
 
     }

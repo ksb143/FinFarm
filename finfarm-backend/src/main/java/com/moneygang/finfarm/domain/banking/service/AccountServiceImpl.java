@@ -1,10 +1,11 @@
 package com.moneygang.finfarm.domain.banking.service;
 
 
-import com.moneygang.finfarm.domain.banking.dto.general.BankingAccountRemitUser;
+import com.moneygang.finfarm.domain.banking.dto.general.BankingAccountRemitMember;
 import com.moneygang.finfarm.domain.banking.dto.response.BankingAccountDepositResponse;
 import com.moneygang.finfarm.domain.banking.dto.response.BankingAccountRemitRecentResponse;
 import com.moneygang.finfarm.domain.banking.dto.response.BankingAccountWithdrawResponse;
+import com.moneygang.finfarm.domain.banking.dto.response.BankingSearchMemberResponse;
 import com.moneygang.finfarm.domain.banking.entity.Account;
 import com.moneygang.finfarm.domain.banking.repository.AccountRepository;
 import com.moneygang.finfarm.domain.member.entity.Member;
@@ -17,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -33,8 +33,8 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     @Transactional
-    public ResponseEntity<BankingAccountDepositResponse> deposit(long userId, long amount) {
-        Optional<Member> optionalMember = memberRepository.findById(userId);
+    public ResponseEntity<BankingAccountDepositResponse> deposit(long memberPk, long amount) {
+        Optional<Member> optionalMember = memberRepository.findById(memberPk);
 
         // 예외1: 해당 사용자가 없을 때
         if(optionalMember.isEmpty()) {
@@ -69,8 +69,8 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     @Transactional
-    public ResponseEntity<BankingAccountWithdrawResponse> withdraw(long userId, int accountPassword, long amount) {
-        Optional<Member> optionalMember = memberRepository.findById(userId);
+    public ResponseEntity<BankingAccountWithdrawResponse> withdraw(long memberPk, int accountPassword, long amount) {
+        Optional<Member> optionalMember = memberRepository.findById(memberPk);
 
         // 예외1: 해당 사용자가 없을 때 (404)
         if(optionalMember.isEmpty()) {
@@ -109,8 +109,8 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public ResponseEntity<BankingAccountRemitRecentResponse> recentRemitUsers(long userId) {
-        Optional<Member> optionalMember = memberRepository.findById(userId);
+    public ResponseEntity<BankingAccountRemitRecentResponse> recentRemitMembers(long memberPk) {
+        Optional<Member> optionalMember = memberRepository.findById(memberPk);
 
         // 예외1: 해당 사용자가 없을 때 (404)
         if(optionalMember.isEmpty()) {
@@ -130,11 +130,19 @@ public class AccountServiceImpl implements AccountService {
         for(Account remit: remits) {
             if(count==6) break;
 
-            /**
-             * 상대방의 이미지를 가져오려면 상대방의 pk 값을 가지고 있어야 함 (논의 필요)
-             */
-            BankingAccountRemitUser user = BankingAccountRemitUser.create(remit.getAccountNickname(), "testImage.img");
-            response.addUser(user);
+            String otherMemberNickname = remit.getAccountNickname();
+            Optional<Member> optionalOtherMember = memberRepository.findByMemberNickname(otherMemberNickname);
+
+            if(optionalOtherMember.isEmpty()) {
+                throw new GlobalException(HttpStatus.NOT_FOUND, "Member Not Found");
+            }
+
+            Member otherMember = optionalOtherMember.get();
+            String otherMemberImageUrl = otherMember.getMemberImageUrl();
+            Long otherMemberPk = otherMember.getMemberPk();
+
+            BankingAccountRemitMember remitMember = BankingAccountRemitMember.create(otherMemberPk, otherMemberNickname, otherMemberImageUrl);
+            response.addMember(remitMember);
 
             count++;
         }
@@ -143,20 +151,32 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void searchUser(String nickname) {
+    public ResponseEntity<BankingSearchMemberResponse> searchMember(String nickname) {
+        Optional<Member> optionalSearchMembers = memberRepository.findByMemberNickname(nickname);
 
+        if(optionalSearchMembers.isEmpty()) {
+            throw new GlobalException(HttpStatus.NOT_FOUND, "Member Not Found");
+        }
+
+        Member searchMember = optionalSearchMembers.get();
+        BankingSearchMemberResponse response = BankingSearchMemberResponse.create(
+                searchMember.getMemberPk(),
+                searchMember.getMemberNickname(),
+                searchMember.getMemberImageUrl());
+
+        return ResponseEntity.ok(response);
     }
 
     @Override
     @Transactional
-    public void remit(long myUserId, long otherUserId, int accountPassword, long amount) {
+    public void remit(long sendMemberPk, long receiveMemberPk, int accountPassword, long amount) {
 
     }
 
     /** 사용자의 계좌 잔액 조회 **/
-    public long getAccountBalance(long userId) {
+    public long getAccountBalance(long memberPk) {
 
-        Optional<Member> optionalMember = memberRepository.findById(userId);
+        Optional<Member> optionalMember = memberRepository.findById(memberPk);
 
         // 예외: 해당 사용자가 없을 때
         if(optionalMember.isEmpty()) {

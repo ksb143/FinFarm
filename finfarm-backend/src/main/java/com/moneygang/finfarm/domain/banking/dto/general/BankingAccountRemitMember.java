@@ -5,15 +5,15 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class BankingAccountRemitUser {
+public class BankingAccountRemitMember {
 
-//    private Long userId;
+    private Long memberPk;
     private String nickname;
     private String imageUrl;
 
-    public static BankingAccountRemitUser create(String nickname, String imageUrl) {
-        return BankingAccountRemitUser.builder()
-//                .userId(userId)
+    public static BankingAccountRemitMember create(Long memberPk, String nickname, String imageUrl) {
+        return BankingAccountRemitMember.builder()
+                .memberPk(memberPk)
                 .nickname(nickname)
                 .imageUrl(imageUrl)
                 .build();
