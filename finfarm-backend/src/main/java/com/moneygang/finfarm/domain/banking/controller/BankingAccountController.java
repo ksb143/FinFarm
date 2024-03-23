@@ -2,12 +2,10 @@ package com.moneygang.finfarm.domain.banking.controller;
 
 import com.moneygang.finfarm.domain.banking.dto.request.BankingAccountDepositRequest;
 import com.moneygang.finfarm.domain.banking.dto.request.BankingAccountWithdrawRequest;
+import com.moneygang.finfarm.domain.banking.dto.response.BankingSearchMemberResponse;
 import com.moneygang.finfarm.domain.banking.service.AccountService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/banking/account")
@@ -16,17 +14,27 @@ public class BankingAccountController {
 
     private final AccountService accountService;
 
-    @PostMapping("/deposit")
+    @PostMapping("deposit")
     public void deposit(@RequestBody BankingAccountDepositRequest request) {
 
     }
 
-    @PostMapping("/withdraw")
+    @PostMapping("withdraw")
     public void withdraw(@RequestBody BankingAccountWithdrawRequest request) {
 
     }
 
-    @PostMapping("/remit")
+    @GetMapping("remit/recent")
+    public void recentRemitMembers() {
+
+    }
+
+    @GetMapping("remit")
+    public void searchMemberForRemit(@RequestBody BankingSearchMemberResponse response) {
+
+    }
+
+    @PostMapping("remit")
     public void remit() {
 
     }

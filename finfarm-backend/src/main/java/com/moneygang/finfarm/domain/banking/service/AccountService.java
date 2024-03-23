@@ -1,9 +1,6 @@
 package com.moneygang.finfarm.domain.banking.service;
 
-import com.moneygang.finfarm.domain.banking.dto.response.BankingAccountDepositResponse;
-import com.moneygang.finfarm.domain.banking.dto.response.BankingAccountRemitRecentResponse;
-import com.moneygang.finfarm.domain.banking.dto.response.BankingAccountWithdrawResponse;
-import com.moneygang.finfarm.domain.banking.dto.response.BankingSearchMemberResponse;
+import com.moneygang.finfarm.domain.banking.dto.response.*;
 import org.springframework.http.ResponseEntity;
 
 public interface AccountService {
@@ -21,5 +18,5 @@ public interface AccountService {
     public ResponseEntity<BankingSearchMemberResponse> searchMember(String nickname);
 
     // 계좌 이체 (다른 사람에게)
-    public void remit(long sendMemberPk, long receiveMemberPk, int accountPassword, long amount);
+    public ResponseEntity<BankingAccountRemitResponse> remit(long sendMemberPk, long receiveMemberPk, int accountPassword, long amount);
 }
