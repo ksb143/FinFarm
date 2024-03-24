@@ -21,5 +21,5 @@ public interface AccountService {
     public ResponseEntity<BankingAccountRemitResponse> remit(long sendMemberPk, long receiveMemberPk, int accountPassword, long amount);
 
     // 계좌 비밀번호 수정
-    public ResponseEntity<BankingPasswordChangeResponse> changePassword(long memberPk, int checkPassword, int changePassword);
+    public ResponseEntity<BankingPasswordChangeResponse> changePassword(long memberPk, int originPassword, int checkPassword, int changePassword);
 }

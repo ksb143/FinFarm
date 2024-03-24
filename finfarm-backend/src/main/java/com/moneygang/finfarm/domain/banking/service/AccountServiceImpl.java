@@ -263,7 +263,7 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     @Transactional
-    public ResponseEntity<BankingPasswordChangeResponse> changePassword(long memberPk, int checkPassword, int changePassword) {
+    public ResponseEntity<BankingPasswordChangeResponse> changePassword(long memberPk, int originPassword, int checkPassword, int changePassword) {
 
         Optional<Member> optionalMember = memberRepository.findById(memberPk);
 
@@ -275,24 +275,31 @@ public class AccountServiceImpl implements AccountService {
         Member member = optionalMember.get();
         String accountPassword = member.getMemberAccountPassword();
         String changePasswordToStr = String.valueOf(changePassword);
+        String checkPasswordToStr = String.valueOf(checkPassword);
 
         // 예외2: 확인 비밀번호가 유저의 비밀번호와 다른 경우 (401)
-        if(!String.valueOf(checkPassword).equals(accountPassword)) {
-            throw new GlobalException(HttpStatus.UNAUTHORIZED, "Password Not Match");
+        if(!String.valueOf(originPassword).equals(accountPassword)) {
+            throw new GlobalException(HttpStatus.BAD_REQUEST, "Password Not Match");
         }
 
         String pattern = "^\\\\d{4}$"; // 4자리 숫자 형태의 정규 표현식
         Pattern regex = Pattern.compile(pattern);
-        Matcher matcher = regex.matcher(changePasswordToStr);
+        Matcher matcher1 = regex.matcher(changePasswordToStr);
+        Matcher matcher2 = regex.matcher(checkPasswordToStr);
 
         // 예외3: 변경할 비밀번호 형식이 안맞을 떄
-        if(!matcher.matches()) {
-            throw new GlobalException(HttpStatus.CONFLICT, "Not Match Input Format");
+        if(!matcher1.matches()||!matcher2.matches()) {
+            throw new GlobalException(HttpStatus.UNAUTHORIZED, "Not Match Input Format");
         }
 
-        // 예외4: 변경할 비밀번호가 기존 비밀번호랑 같을 때
+        // 예외4: 변경 비밀번호와 변경 확인 비밀번호가 다를 때
+        if(!changePasswordToStr.equals(checkPasswordToStr)) {
+            throw new GlobalException(HttpStatus.PAYMENT_REQUIRED, "Check Password Not Match");
+        }
+
+        // 예외5: 변경할 비밀번호가 기존 비밀번호랑 같을 때
         if(changePasswordToStr.equals(accountPassword)) {
-            throw new GlobalException(HttpStatus.CONFLICT, "Same Password");
+            throw new GlobalException(HttpStatus.FORBIDDEN, "Same Password");
         }
 
         member.changeAccountPassword(changePasswordToStr);
