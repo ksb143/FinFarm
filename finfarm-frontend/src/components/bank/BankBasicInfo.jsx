@@ -1,3 +1,8 @@
+import PropTypes from 'prop-types';
+
+BankBasicinfo.propTypes = {
+  isButton: PropTypes.bool,
+};
 import Button from '@/components/layout/Button';
 
 export default function BankBasicinfo({ isButton }) {

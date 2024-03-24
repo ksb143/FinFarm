@@ -5,7 +5,7 @@ Button.propTypes = {
 
 export default function Button({ children }) {
   return (
-    <button className="btn-sm btn bg-lime-500 hover:bg-lime-800 text-white rounded-full font-hopang">
+    <button className="btn btn-sm rounded-full bg-lime-500 font-hopang text-white hover:bg-lime-800">
       {children}
     </button>
   );
