@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -142,6 +143,7 @@ public class AccountServiceImpl implements AccountService {
         BankingAccountRemitRecentResponse response = BankingAccountRemitRecentResponse.create();
 
         int count = 0;
+        HashSet<String> remitMemberNicknames = new HashSet<>(); // 서로 다른 사용자 6명을 구분하기 위한 Set 자료구조
         for(Account remit: remits) {
             if(count==6) break;
 
@@ -152,14 +154,18 @@ public class AccountServiceImpl implements AccountService {
                 throw new GlobalException(HttpStatus.NOT_FOUND, "Member Not Found");
             }
 
-            Member otherMember = optionalOtherMember.get();
-            String otherMemberImageUrl = otherMember.getMemberImageUrl();
-            Long otherMemberPk = otherMember.getMemberPk();
+            if(!remitMemberNicknames.contains(otherMemberNickname)) {
+                remitMemberNicknames.add(otherMemberNickname);
 
-            BankingAccountRemitMember remitMember = BankingAccountRemitMember.create(otherMemberPk, otherMemberNickname, otherMemberImageUrl);
-            response.addMember(remitMember);
+                Member otherMember = optionalOtherMember.get();
+                String otherMemberImageUrl = otherMember.getMemberImageUrl();
+                Long otherMemberPk = otherMember.getMemberPk();
 
-            count++;
+                BankingAccountRemitMember remitMember = BankingAccountRemitMember.create(otherMemberPk, otherMemberNickname, otherMemberImageUrl);
+                response.addMember(remitMember);
+
+                count++;
+            }
         }
 
         return ResponseEntity.ok(response);
