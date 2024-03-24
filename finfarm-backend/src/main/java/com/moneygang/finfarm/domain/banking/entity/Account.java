@@ -43,6 +43,8 @@ public class Account {
         setMember(member);
     }
 
+    protected Account() {}
+
     public void setMember(Member member) {
         this.member = member;
         member.getAccountList().add(this);

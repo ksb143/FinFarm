@@ -2,10 +2,12 @@ package com.moneygang.finfarm.domain.banking.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.Getter;
 import org.springframework.scheduling.annotation.EnableAsync;
 
 import java.util.List;
 
+@Getter
 @Entity(name = "loan_TB")
 public class Loan {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
