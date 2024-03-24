@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.List;
 @Getter
 @Entity
 @Builder
+@DynamicUpdate // Dirty Checking으로 인한 update 시, 변경된 속성만 변경
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name="member_TB")
@@ -76,5 +78,9 @@ public class Member {
 
     public void updateCurPoint(Long amount) {
         this.memberCurPoint += amount;
+    }
+
+    public void changeAccountPassword(String changeAccountPassword) {
+        this.memberAccountPassword = changeAccountPassword;
     }
 }

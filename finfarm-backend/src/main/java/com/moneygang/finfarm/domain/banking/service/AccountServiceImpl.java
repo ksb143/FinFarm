@@ -19,6 +19,8 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -96,8 +98,8 @@ public class AccountServiceImpl implements AccountService {
             throw new GlobalException(HttpStatus.BAD_REQUEST, "Insufficient Account Balance");
         }
 
-        // 예외 3: 입력 비밀번호가 유저의 비밀번호와 다른 경우 (401)
-        if(String.valueOf(accountPassword).equals(member.getMemberAccountPassword())) {
+        // 예외3: 입력 비밀번호가 유저의 비밀번호와 다른 경우 (401)
+        if(!String.valueOf(accountPassword).equals(member.getMemberAccountPassword())) {
             throw new GlobalException(HttpStatus.UNAUTHORIZED, "Password Not Match");
         }
 
@@ -223,8 +225,8 @@ public class AccountServiceImpl implements AccountService {
             throw new GlobalException(HttpStatus.BAD_REQUEST, "Insufficient Account Balance");
         }
 
-        // 예외 3: 입력 비밀번호가 유저의 비밀번호와 다른 경우 (401)
-        if(String.valueOf(accountPassword).equals(sendMember.getMemberAccountPassword())) {
+        // 예외3: 입력 비밀번호가 유저의 비밀번호와 다른 경우 (401)
+        if(!String.valueOf(accountPassword).equals(sendMember.getMemberAccountPassword())) {
             throw new GlobalException(HttpStatus.UNAUTHORIZED, "Password Not Match");
         }
 
@@ -252,6 +254,53 @@ public class AccountServiceImpl implements AccountService {
 
         return ResponseEntity.ok(response);
     }
+
+    /**
+     * 계좌 비밀번호 변경 서비스
+     * @param memberPk
+     * @param checkPassword
+     * @param changePassword
+     */
+    @Override
+    @Transactional
+    public ResponseEntity<BankingPasswordChangeResponse> changePassword(long memberPk, int checkPassword, int changePassword) {
+
+        Optional<Member> optionalMember = memberRepository.findById(memberPk);
+
+        // 예외1: 해당 사용자가 없을 때
+        if(optionalMember.isEmpty()) {
+            throw new GlobalException(HttpStatus.NOT_FOUND, "Member Not Found");
+        }
+
+        Member member = optionalMember.get();
+        String accountPassword = member.getMemberAccountPassword();
+        String changePasswordToStr = String.valueOf(changePassword);
+
+        // 예외2: 확인 비밀번호가 유저의 비밀번호와 다른 경우 (401)
+        if(!String.valueOf(checkPassword).equals(accountPassword)) {
+            throw new GlobalException(HttpStatus.UNAUTHORIZED, "Password Not Match");
+        }
+
+        String pattern = "^\\\\d{4}$"; // 4자리 숫자 형태의 정규 표현식
+        Pattern regex = Pattern.compile(pattern);
+        Matcher matcher = regex.matcher(changePasswordToStr);
+
+        // 예외3: 변경할 비밀번호 형식이 안맞을 떄
+        if(!matcher.matches()) {
+            throw new GlobalException(HttpStatus.CONFLICT, "Not Match Input Format");
+        }
+
+        // 예외4: 변경할 비밀번호가 기존 비밀번호랑 같을 때
+        if(changePasswordToStr.equals(accountPassword)) {
+            throw new GlobalException(HttpStatus.CONFLICT, "Same Password");
+        }
+
+        member.changeAccountPassword(changePasswordToStr);
+        BankingPasswordChangeResponse response = BankingPasswordChangeResponse.create(true);
+
+        return ResponseEntity.ok(response);
+    }
+
 
     /** 사용자의 계좌 잔액 조회 함수 **/
     public long getAccountBalance(long memberPk) {

@@ -19,4 +19,7 @@ public interface AccountService {
 
     // 계좌 이체 (다른 사람에게)
     public ResponseEntity<BankingAccountRemitResponse> remit(long sendMemberPk, long receiveMemberPk, int accountPassword, long amount);
+
+    // 계좌 비밀번호 수정
+    public ResponseEntity<BankingPasswordChangeResponse> changePassword(long memberPk, int checkPassword, int changePassword);
 }
