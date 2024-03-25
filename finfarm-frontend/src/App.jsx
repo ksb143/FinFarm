@@ -20,7 +20,7 @@ function App() {
           <Route path="home" element={<MainHome />} />
           <Route path="Entrance/*" element={<Entrance />} />
           <Route path="bank/*" element={<Bank />} />
-          <Route path="/oauth/callback/kakao" element={<RedirectPage/>} />
+          <Route path="oauth/callback/kakao" element={<RedirectPage/>} />
         </Routes>
       </div>
     </Router>
