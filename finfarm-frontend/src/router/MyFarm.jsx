@@ -1,6 +1,6 @@
 import React from "react";
 import { Routes, Route } from 'react-router-dom';
-import MyFarmPage from '@/pages/MyFarm/MyFarmPage';
+import MyFarmPage from '@/pages/myFarm/MyFarmPage';
 
 export default function MyFarm() {
     return (
