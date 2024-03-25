@@ -69,7 +69,8 @@ public class MarketController {
                     (message : "member not found", code : 404)
                     
                     (message : "seed not found", code : 404)
-                    
+                    """, content = @Content),
+            @ApiResponse(responseCode = "402", description = """
                     (message : "Payment Required", code : 402)
                     """, content = @Content)
     })
@@ -88,7 +89,8 @@ public class MarketController {
                     (message : "agriculture not found", code : 404)
                     
                     (message : "No items owned", code : 404)
-                    
+                    """, content = @Content),
+            @ApiResponse(responseCode = "422", description = """
                     (message : "Insufficient stock for sale", code : 422)
                     """, content = @Content)
     })
