@@ -1,13 +1,16 @@
 package com.moneygang.finfarm.domain.market.service;
 
+import com.moneygang.finfarm.domain.farm.entity.Warehouse;
+import com.moneygang.finfarm.domain.farm.repository.WarehouseRepository;
 import com.moneygang.finfarm.domain.market.dto.StoreViewAllResponse;
-import com.moneygang.finfarm.domain.market.dto.detail.AgricultureDTO;
-import com.moneygang.finfarm.domain.market.dto.detail.AgriculturePriceHistoryDTO;
+import com.moneygang.finfarm.domain.market.dto.detail.*;
 import com.moneygang.finfarm.domain.market.entity.Agriculture;
 import com.moneygang.finfarm.domain.market.entity.AgriculturePrice;
 import com.moneygang.finfarm.domain.market.repository.AgriculturePriceRepository;
 import com.moneygang.finfarm.domain.market.repository.AgricultureRepository;
 
+import com.moneygang.finfarm.domain.member.entity.Member;
+import com.moneygang.finfarm.global.base.CommonUtil;
 import lombok.RequiredArgsConstructor;
 
 import org.json.JSONArray;
@@ -34,21 +37,46 @@ import java.util.Optional;
 public class MarketServiceImpl implements MarketService {
     private final AgricultureRepository agricultureRepository;
     private final AgriculturePriceRepository agriculturePriceRepository;
+    private final WarehouseRepository warehouseRepository;
+    private final CommonUtil commonUtil;
 
     @Override
     public ResponseEntity<StoreViewAllResponse> storeView() {
+        Member member = commonUtil.getMember();
+
+        List<Warehouse> warehouseList = warehouseRepository.findAllByMember_MemberPk(member.getMemberPk());
+        List<SeedInfo> seedInfoList = new ArrayList<>();
+        List<AgricultureInfo> agricultureInfoList = new ArrayList<>();
+        for(Warehouse warehouse : warehouseList){
+            if(warehouse.getWarehouseCategory() == 1){ //씨앗=1
+                seedInfoList.add(
+                        SeedInfo.create(
+                                warehouse.getAgriculture().getSeed()
+                                , warehouse.getWarehouseAmount()
+                        )
+                );
+            }else{ //농산물=2
+                agricultureInfoList.add(
+                        AgricultureInfo.create(
+                                warehouse.getAgriculture(),
+                                warehouse.getWarehouseAmount()
+                        )
+                );
+            }
+        }
+        MemberItemsDTO memberItemsDTO =
+                MemberItemsDTO.create(seedInfoList, agricultureInfoList);
+
         List<AgricultureDTO> agricultureDTOList = new ArrayList<>();
         for(long i=1;i<=10;i++) {
             Optional<Agriculture> agricultureOptional = agricultureRepository.findById(i);
             List<AgriculturePrice> agriculturePriceList =
-                    agriculturePriceRepository.findByAgriculture_AgriculturePkAndAgriculturePriceDateBetweenOrderByAgriculturePriceDateAsc(
+                    agriculturePriceRepository.findAllByAgriculture_AgriculturePkAndAgriculturePriceDateBetweenOrderByAgriculturePriceDateAsc(
                             agricultureOptional.get().getAgriculturePk(),
                             LocalDate.now().minusDays(364),
                             LocalDate.now()
                     );
-            System.out.println(agriculturePriceList.size());
             int minPrice = Integer.MAX_VALUE, maxPrice = Integer.MIN_VALUE;
-
             for (int idx = agriculturePriceList.size() - 1; idx >= agriculturePriceList.size() - 7; idx--) {
                 minPrice = Math.min(minPrice, agriculturePriceList.get(idx).getAgriculturePriceValue());
                 maxPrice = Math.max(maxPrice, agriculturePriceList.get(idx).getAgriculturePriceValue());
@@ -56,15 +84,14 @@ public class MarketServiceImpl implements MarketService {
             List<AgriculturePriceHistoryDTO> agriculturePriceHistoryDTOList = new ArrayList<>();
             for (AgriculturePrice agriculturePrice : agriculturePriceList) {
                 agriculturePriceHistoryDTOList.add(
-                        AgriculturePriceHistoryDTO.createAgriculturePriceHistoryDTO(
+                        AgriculturePriceHistoryDTO.create(
                                 agriculturePrice.getAgriculturePriceDate(),
                                 agriculturePrice.getAgriculturePriceValue()
                         )
                 );
             }
-
             agricultureDTOList.add(
-                AgricultureDTO.createAgricultureDTO(
+                AgricultureDTO.create(
                         agricultureOptional.get(),
                         agriculturePriceList,
                         minPrice, maxPrice,
@@ -73,7 +100,7 @@ public class MarketServiceImpl implements MarketService {
             );
         }
         StoreViewAllResponse storeViewAllResponse =
-                StoreViewAllResponse.createStoreViewAllResponse(agricultureDTOList);
+                StoreViewAllResponse.create(agricultureDTOList, memberItemsDTO);
 
         return ResponseEntity.ok(storeViewAllResponse);
     }

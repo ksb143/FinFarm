@@ -11,13 +11,13 @@ import java.util.List;
 @Builder
 public class StoreViewAllResponse {
     private List<AgricultureDTO> agricultureDTO;
-    //private MemberItemsDTO memberItemsDTO;
+    private MemberItemsDTO memberItemsDTO;
 
-    public static StoreViewAllResponse createStoreViewAllResponse(List<AgricultureDTO> agricultureDTOList
-                                                                  ){//,MemberItemsDTO memberItemsDTO
+    public static StoreViewAllResponse create(List<AgricultureDTO> agricultureDTOList
+                                                                  ,MemberItemsDTO memberItems){
         return StoreViewAllResponse.builder()
                 .agricultureDTO(agricultureDTOList)
-                //.memberItemsDTO(memberItemsDTO)
+                .memberItemsDTO(memberItems)
                 .build();
     }
 }

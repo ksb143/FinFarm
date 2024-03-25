@@ -37,6 +37,6 @@ public class Agriculture {
     private List<AgriculturePrice> agriculturePriceList;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "agriculture")
-    private List<Seed> seedList;
+    @OneToOne(mappedBy = "agriculture")
+    private Seed seed;
 }

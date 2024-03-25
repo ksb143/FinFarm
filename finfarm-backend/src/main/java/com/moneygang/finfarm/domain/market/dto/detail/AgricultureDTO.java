@@ -21,7 +21,7 @@ public class AgricultureDTO {
     private Double fluctuationRate;
     private List<AgriculturePriceHistoryDTO> agriculturePriceHistoryDTO;
 
-    public static AgricultureDTO createAgricultureDTO(Agriculture agriculture,
+    public static AgricultureDTO create(Agriculture agriculture,
                                                       List<AgriculturePrice> agriculturePriceList
                                                       ,Integer minPrice, Integer maxPrice
                                                       ,List<AgriculturePriceHistoryDTO> agriculturePriceHistoryDTOList

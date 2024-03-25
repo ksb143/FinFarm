@@ -3,7 +3,9 @@ package com.moneygang.finfarm.domain.farm.entity;
 import com.moneygang.finfarm.domain.member.entity.Member;
 import com.moneygang.finfarm.domain.market.entity.Agriculture;
 import jakarta.persistence.*;
+import lombok.Getter;
 
+@Getter
 @Entity(name ="warehouse_TB")
 public class Warehouse {
     @Id

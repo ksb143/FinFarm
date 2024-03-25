@@ -23,7 +23,7 @@ public class Seed {
     @Column(name = "seed_period")
     private Long seedPeriod;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "agriculture_pk")
     private Agriculture agriculture;
 

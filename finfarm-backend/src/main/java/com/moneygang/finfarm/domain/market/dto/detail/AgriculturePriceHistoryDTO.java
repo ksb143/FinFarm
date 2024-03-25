@@ -11,7 +11,7 @@ public class AgriculturePriceHistoryDTO {
     private LocalDate date;
     private Integer agriculturePrice;
 
-    public static AgriculturePriceHistoryDTO createAgriculturePriceHistoryDTO(LocalDate date, Integer agriculturePrice){
+    public static AgriculturePriceHistoryDTO create(LocalDate date, Integer agriculturePrice){
         return AgriculturePriceHistoryDTO.builder()
                 .date(date)
                 .agriculturePrice(agriculturePrice)

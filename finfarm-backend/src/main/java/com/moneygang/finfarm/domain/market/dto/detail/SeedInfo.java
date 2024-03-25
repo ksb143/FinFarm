@@ -2,7 +2,9 @@ package com.moneygang.finfarm.domain.market.dto.detail;
 
 import com.moneygang.finfarm.domain.market.entity.Seed;
 import lombok.Builder;
+import lombok.Getter;
 
+@Getter
 @Builder
 public class SeedInfo {
     private String seedName;
@@ -10,7 +12,7 @@ public class SeedInfo {
     private String seedContent;
     private Integer seedAmount;
 
-    public static SeedInfo createSeedInfo(Seed seed, Integer amount){
+    public static SeedInfo create(Seed seed, Integer amount){
         return SeedInfo.builder()
                 .seedName(seed.getSeedName())
                 .seedPeriod(seed.getSeedPeriod())
