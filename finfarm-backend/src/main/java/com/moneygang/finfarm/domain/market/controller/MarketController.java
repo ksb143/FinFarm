@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
+
 @CrossOrigin("*")
 @RequiredArgsConstructor
 @RestController
@@ -15,12 +16,7 @@ public class MarketController {
     private final MarketService storeService;
 
     @GetMapping
-    public ResponseEntity<StoreViewAllResponse> marketView(){
-        return ResponseEntity.ok(
-                StoreViewAllResponse.createStoreViewAllResponse(
-                        null,
-                        null
-                )
-        );
+    public ResponseEntity<StoreViewAllResponse> marketView() {
+        return storeService.storeView();
     }
 }

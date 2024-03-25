@@ -21,6 +21,9 @@ public class Agriculture {
     @Column(name = "agriculture_unit")
     private String agricultureUnit;
 
+    @Column(name = "agriculture_content")
+    private String agricultureContent;
+
     @JsonIgnore
     @OneToMany(mappedBy = "agriculture")
     private List<FarmField> farmFieldList;

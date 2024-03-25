@@ -18,7 +18,7 @@ public class Seed {
     private String seedContent;
 
     @Column(name = "seed_price")
-    private Integer seedPrice;
+    private Double seedPrice;
 
     @Column(name = "seed_period")
     private Long seedPeriod;
