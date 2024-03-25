@@ -11,8 +11,8 @@ public class Reinforce {
     @Column(name = "reinforce_level")
     private Integer reinforceLevel;
 
-    @Column(name = "reinforce_success_percentage")
-    private Double reinforceSuccessPercentage;
+    @Column(name = "reinforce_success_probability")
+    private Double reinforceSuccessProbability;
 
     @Column(name = "reinforce_production_efficiency")
     private Double reinforceProductionEfficiency;

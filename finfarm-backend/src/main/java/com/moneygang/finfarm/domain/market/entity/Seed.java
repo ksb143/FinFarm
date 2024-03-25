@@ -1,7 +1,9 @@
 package com.moneygang.finfarm.domain.market.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
+@Getter
 @Entity(name = "seed_TB")
 public class Seed {
     @Id
@@ -16,7 +18,7 @@ public class Seed {
     private String seedContent;
 
     @Column(name = "seed_price")
-    private Integer seedPrice;
+    private Double seedPrice;
 
     @Column(name = "seed_period")
     private Long seedPeriod;
