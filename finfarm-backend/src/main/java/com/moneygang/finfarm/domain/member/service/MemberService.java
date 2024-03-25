@@ -9,12 +9,20 @@ import com.moneygang.finfarm.domain.member.dto.response.MemberJoinResponse;
 import com.moneygang.finfarm.domain.member.dto.response.MemberLoginResponse;
 import com.moneygang.finfarm.domain.member.entity.Member;
 import com.moneygang.finfarm.domain.member.repository.MemberRepository;
+import com.moneygang.finfarm.global.base.CommonUtil;
 import com.moneygang.finfarm.global.base.JwtTokenProvider;
+import com.moneygang.finfarm.global.base.TokenProvider;
 import com.moneygang.finfarm.global.exception.GlobalException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.token.TokenService;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -23,18 +31,16 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class MemberService {
 
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenProvider tokenProvider;
     private final MemberRepository memberRepository;
+    private final CommonUtil commonUtil;
 
     public ResponseEntity<List<Member>> selcetAll() {
         List<Member> findAll = memberRepository.findAll();
@@ -66,16 +72,9 @@ public class MemberService {
     }
 
     public ResponseEntity<MemberAutoLoginResponse> autoLogin() {
-        log.info("member auto-login");
-        //토큰에서 이메일 추출
-        String email = "";
+        // authentication 에서 member 객체 조회
+        Member member = commonUtil.getMember();
 
-        //이메일로 회원 조회
-        Optional<Member> optionalMember = memberRepository.findByMemberEmail(email);
-        if(optionalMember.isEmpty())
-            throw new GlobalException(HttpStatus.NOT_FOUND, "회원이 존재하지 않습니다.");
-
-        Member member = optionalMember.get();
         return ResponseEntity.ok(MemberAutoLoginResponse.create(member.getMemberNickname(), member.isMemberSolveQuiz(), member.getMemberCurPoint(), member.getMemberImageUrl()));
     }
 
@@ -86,8 +85,8 @@ public class MemberService {
         if(optionalMember.isPresent()) {
             Member member = optionalMember.get();
 
-            String accessToken = jwtTokenProvider.createAccessToken(jwtTokenProvider, memberEmail);
-            String refreshToken = jwtTokenProvider.createRefreshToken(jwtTokenProvider, memberEmail);
+            String accessToken = tokenProvider.createAccessToken(memberEmail);
+            String refreshToken = tokenProvider.createRefreshToken(memberEmail);
 
             return ResponseEntity.ok(MemberLoginResponse.create(accessToken, refreshToken, member.getMemberNickname(), member.isMemberSolveQuiz(), member.getMemberCurPoint(), member.getMemberImageUrl()));
         }
@@ -110,7 +109,7 @@ public class MemberService {
             Map<Object, Object> data = new HashMap<>();
             data.put("grant_type", "authorization_code");
             data.put("client_id", "434c09e04423ad80d97eb8f45f3bc229");
-            data.put("redirect_uri", "http://localhost:8080/oauth/callback/kakao");
+            data.put("redirect_uri", "https://j10d203.p.ssafy.io/oauth/callback/kakao");
             data.put("code", authorize_code);
 
             // 요청 본문 생성
@@ -191,4 +190,5 @@ public class MemberService {
         }
         return userInfo;
     }
+
 }
