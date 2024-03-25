@@ -15,13 +15,11 @@ const RedirectPage = () => {
 
   const sendCodeToBackend = async (code) => {
     const headers = {
-      "Content-Type" : "application/x-www-form-urlencoded;charset=utf-8",
-      withCredintails : true
+      "Content-Type" : "application/x-www-form-urlencoded",
     }
     try {
-      const response = await axios.post('https://j10d203.p.ssafy.io/api/member/login', {
-        code,
-      },{headers});
+      const response = await axios.post('https://j10d203.p.ssafy.io/api/member/login', 
+        `code=${code}`, { withCredentials: true, headers });
       console.log('Success:', response.data);
       // 여기서 추가적인 성공 로직을 처리할 수 있습니다.
     } catch (error) {
