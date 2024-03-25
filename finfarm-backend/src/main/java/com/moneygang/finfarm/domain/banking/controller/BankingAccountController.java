@@ -19,7 +19,7 @@ public class BankingAccountController {
 
     private final AccountService accountService;
 
-    
+
     @Operation(summary = "계좌 입금", description = "계좌에 원하는 금액을 입금합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
