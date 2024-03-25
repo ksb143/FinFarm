@@ -1,9 +1,6 @@
 package com.moneygang.finfarm.domain.banking.service;
 
-import com.moneygang.finfarm.domain.banking.dto.request.BankingAccountDepositRequest;
-import com.moneygang.finfarm.domain.banking.dto.request.BankingAccountRemitRequest;
-import com.moneygang.finfarm.domain.banking.dto.request.BankingAccountWithdrawRequest;
-import com.moneygang.finfarm.domain.banking.dto.request.BankingPasswordChangeRequest;
+import com.moneygang.finfarm.domain.banking.dto.request.*;
 import com.moneygang.finfarm.domain.banking.dto.response.*;
 import org.springframework.http.ResponseEntity;
 
@@ -19,7 +16,7 @@ public interface AccountService {
     public ResponseEntity<BankingAccountRemitRecentResponse> recentRemitMembers();
 
     // 사용자 닉네임 검색
-    public ResponseEntity<BankingSearchMemberResponse> searchMember(String nickname);
+    public ResponseEntity<BankingMemberSearchResponse> searchMember(BankingMemberSearchRequest request);
 
     // 계좌 이체 (다른 사람에게)
     public ResponseEntity<BankingAccountRemitResponse> remit(BankingAccountRemitRequest request);

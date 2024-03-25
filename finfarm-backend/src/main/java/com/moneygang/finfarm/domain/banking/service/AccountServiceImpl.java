@@ -2,10 +2,7 @@ package com.moneygang.finfarm.domain.banking.service;
 
 
 import com.moneygang.finfarm.domain.banking.dto.general.BankingAccountRemitMember;
-import com.moneygang.finfarm.domain.banking.dto.request.BankingAccountDepositRequest;
-import com.moneygang.finfarm.domain.banking.dto.request.BankingAccountRemitRequest;
-import com.moneygang.finfarm.domain.banking.dto.request.BankingAccountWithdrawRequest;
-import com.moneygang.finfarm.domain.banking.dto.request.BankingPasswordChangeRequest;
+import com.moneygang.finfarm.domain.banking.dto.request.*;
 import com.moneygang.finfarm.domain.banking.dto.response.*;
 import com.moneygang.finfarm.domain.banking.entity.Account;
 import com.moneygang.finfarm.domain.banking.repository.AccountRepository;
@@ -14,12 +11,10 @@ import com.moneygang.finfarm.domain.member.repository.MemberRepository;
 import com.moneygang.finfarm.global.base.CommonUtil;
 import com.moneygang.finfarm.global.exception.GlobalException;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
@@ -159,12 +154,10 @@ public class AccountServiceImpl implements AccountService {
 
     /**
      * 닉네임으로 사용자 조회 서비스
-     * @param nickname
-     * @return
      */
     @Override
-    public ResponseEntity<BankingSearchMemberResponse> searchMember(String nickname) {
-
+    public ResponseEntity<BankingMemberSearchResponse> searchMember(BankingMemberSearchRequest request) {
+        String nickname = request.getNickname();
         Optional<Member> optionalSearchMembers = memberRepository.findByMemberNickname(nickname);
 
         if(optionalSearchMembers.isEmpty()) {
@@ -172,7 +165,7 @@ public class AccountServiceImpl implements AccountService {
         }
 
         Member searchMember = optionalSearchMembers.get();
-        BankingSearchMemberResponse response = BankingSearchMemberResponse.create(
+        BankingMemberSearchResponse response = BankingMemberSearchResponse.create(
                 searchMember.getMemberPk(),
                 searchMember.getMemberNickname(),
                 searchMember.getMemberImageUrl());

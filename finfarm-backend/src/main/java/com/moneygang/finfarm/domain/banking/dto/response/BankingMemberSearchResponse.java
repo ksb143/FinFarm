@@ -5,13 +5,13 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class BankingSearchMemberResponse {
+public class BankingMemberSearchResponse {
     private Long memberPk;
     private String nickname;
     private String imageUrl;
 
-    public static BankingSearchMemberResponse create(Long memberPk, String nickname, String imageUrl) {
-        return BankingSearchMemberResponse.builder()
+    public static BankingMemberSearchResponse create(Long memberPk, String nickname, String imageUrl) {
+        return BankingMemberSearchResponse.builder()
                 .memberPk(memberPk)
                 .nickname(nickname)
                 .imageUrl(imageUrl)
