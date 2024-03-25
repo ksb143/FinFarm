@@ -1,4 +1,4 @@
-import React from 'react';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
@@ -12,23 +12,37 @@ import './BankHome.css';
 import Ad from '@/components/bank/BankHome/Ad';
 import SquareButton from '@/components/layout/SquareButton';
 
+NextArrow.propTypes = {
+  className: PropTypes.string,
+  style: PropTypes.object,
+  onClick: PropTypes.func,
+};
+
+PrevArrow.propTypes = {
+  className: PropTypes.string,
+  style: PropTypes.object,
+  onClick: PropTypes.func,
+};
+
 function NextArrow(props) {
   const { className, style, onClick } = props;
   return (
-    <div
+    <button
       className={`${className} custom-arrow`}
       style={{ ...style, display: 'block' }}
       onClick={onClick}
+      tabIndex="0"
     />
   );
 }
 function PrevArrow(props) {
   const { className, style, onClick } = props;
   return (
-    <div
+    <button
       className={`${className} custom-arrow`}
       style={{ ...style, display: 'block' }}
       onClick={onClick}
+      tabIndex="0"
     />
   );
 }

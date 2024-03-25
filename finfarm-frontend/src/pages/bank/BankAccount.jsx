@@ -1,16 +1,21 @@
+import { accountCheck } from '@/api/bank';
+
 import BankBasicinfo from '@/components/bank/BankBasicInfo';
 import BankAccountTable from '@/components/bank/BankAccount/BankAccountTable';
 import { useState } from 'react';
 
 export default function BankAccount() {
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+  const today = new Date();
+  const [startDate, setStartDate] = useState(today.toISOString().split('T')[0]);
+  const [endDate, setEndDate] = useState(today.toISOString().split('T')[0]);
   const [transitionType, setTransitionType] = useState('all');
-  const [accountNumber, setAccountNumber] = useState('');
+  const [recordName, setRecordName] = useState('');
   const [recordsView, setRecordView] = useState(15);
   const [sortOrder, setSortOrder] = useState('newest');
   const [selectedRange, setSelectedRange] = useState('');
+  const [accountData, setAccountData] = useState(null);
 
+  // 함수
   const setDateRange = (days) => {
     setSelectedRange(days);
     const end = new Date();
@@ -21,6 +26,16 @@ export default function BankAccount() {
     setStartDate(start.toISOString().split('T')[0]);
   };
 
+  const handleAccountData = async (accountContent) => {
+    try {
+      const data = await accountCheck(accountContent);
+      setAccountData(data);
+    } catch (error) {
+      console.log('조회 실패:', error);
+    }
+  };
+
+  // 버튼 스타일
   const dateButtonStyle = (days) =>
     `min-w-20 rounded-lg border-2 border-solid border-gray-300 ${
       selectedRange === days
@@ -31,7 +46,29 @@ export default function BankAccount() {
   const typeButtonStyle = (type) =>
     `w-full rounded-lg border-2 border-solid border-gray-300 ${transitionType === type ? 'bg-lime-500 text-white' : 'bg-gray-100 text-black'} py-1`;
 
-  const handleSubmit = () => {};
+  // 데이터
+  const dateRanges = [
+    { text: '당일', days: 0 },
+    { text: '3일', days: 2 },
+    { text: '1주', days: 6 },
+    { text: '1개월', days: 30 },
+    { text: '3개월', days: 90 },
+  ];
+
+  const recordNums = [
+    { text: '15건', num: 15, checked: true, id: 'record15' },
+    { text: '30건', num: 30, checked: false, id: 'record30' },
+    { text: '50건', num: 50, checked: false, id: 'record50' },
+    { text: '100건', num: 100, checked: false, id: 'record100' },
+  ];
+
+  const accountContent = {
+    startDate,
+    endDate,
+    transitionType,
+    recordName,
+    sortOrder,
+  };
 
   return (
     <div className="mx-24 flex flex-col gap-3 px-4">
@@ -59,36 +96,15 @@ export default function BankAccount() {
             </div>
           </div>
           <div className="flex w-6/12 items-center justify-between">
-            <button
-              onClick={() => setDateRange(0)}
-              className={dateButtonStyle(0)}
-            >
-              당일
-            </button>
-            <button
-              onClick={() => setDateRange(2)}
-              className={dateButtonStyle(2)}
-            >
-              3일
-            </button>
-            <button
-              onClick={() => setDateRange(6)}
-              className={dateButtonStyle(6)}
-            >
-              1주
-            </button>
-            <button
-              onClick={() => setDateRange(30)}
-              className={dateButtonStyle(30)}
-            >
-              1개월
-            </button>
-            <button
-              onClick={() => setDateRange(90)}
-              className={dateButtonStyle(90)}
-            >
-              3개월
-            </button>
+            {dateRanges.map((dateRange, idx) => (
+              <button
+                key={idx}
+                onClick={() => setDateRange(dateRange.days)}
+                className={dateButtonStyle(dateRange.days)}
+              >
+                {dateRange.text}
+              </button>
+            ))}
           </div>
         </div>
         <div className="flex items-center">
@@ -107,8 +123,8 @@ export default function BankAccount() {
               출금 내역
             </button>
             <button
-              onClick={() => setTransitionType('withdrawal')}
-              className={typeButtonStyle('withdrawal')}
+              onClick={() => setTransitionType('withdraw')}
+              className={typeButtonStyle('withdraw')}
             >
               입금 내역
             </button>
@@ -120,61 +136,31 @@ export default function BankAccount() {
             type="text"
             placeholder="조회할 계좌번호를 입력하세요"
             className="w-11/12 rounded-lg border-2 border-solid border-gray-300 bg-white px-5 py-1"
+            onChange={(e) => {
+              setRecordName(e.target.value);
+            }}
           />
         </div>
         <div className="flex items-center">
           <div className="w-1/12">정렬 방식</div>
           <div className="flex w-6/12 items-center justify-around">
             <div className="text-sm text-gray-500">건수</div>
-            <div className="flex items-center gap-3">
-              <input
-                type="radio"
-                name="views"
-                className="radio"
-                value={15}
-                id="records15"
-                defaultChecked
-              />
-              <label htmlFor="records15" className="text-xs">
-                15건
-              </label>
-            </div>
-            <div className="flex items-center gap-3">
-              <input
-                type="radio"
-                name="views"
-                className="radio"
-                value={30}
-                id="records30"
-              />
-              <label htmlFor="records30" className="text-xs">
-                30건
-              </label>
-            </div>
-            <div className="flex items-center gap-3">
-              <input
-                type="radio"
-                name="views"
-                className="radio"
-                value={50}
-                id="records50"
-              />
-              <label htmlFor="records50" className="text-xs">
-                50건
-              </label>
-            </div>
-            <div className="flex items-center gap-3">
-              <input
-                type="radio"
-                name="views"
-                className="radio"
-                value={100}
-                id="records100"
-              />
-              <label htmlFor="records100" className="text-xs">
-                100건
-              </label>
-            </div>
+            {recordNums.map((record, idx) => (
+              <div className="flex items-center gap-3" key={idx}>
+                <input
+                  type="radio"
+                  name="views"
+                  className="radio"
+                  value={record.num}
+                  id={record.id}
+                  defaultChecked={record.checked}
+                  onChange={(e) => setRecordView(Number(e.target.value))}
+                />
+                <label htmlFor={record.id} className="text-xs">
+                  {record.text}
+                </label>
+              </div>
+            ))}
           </div>
           <div className="flex w-5/12 items-center justify-around">
             <div className="text-sm text-gray-500">순서</div>
@@ -186,6 +172,7 @@ export default function BankAccount() {
                 value={'newest'}
                 id="newest"
                 defaultChecked
+                onChange={(e) => setSortOrder(e.target.value)}
               />
               <label htmlFor="newest" className="text-xs">
                 최근거래먼저
@@ -198,6 +185,7 @@ export default function BankAccount() {
                 className="radio"
                 value={'oldest'}
                 id="oldest"
+                onChange={(e) => setSortOrder(e.target.value)}
               />
               <label htmlFor="oldest" className="text-xs">
                 과거거래먼저
@@ -208,14 +196,19 @@ export default function BankAccount() {
       </div>
       <div className="flex justify-end">
         <button
-          onClick={handleSubmit}
-          className="w-2/6 rounded-lg bg-lime-500 py-1 font-hopang text-white hover:bg-lime-800 hover:shadow-lime-800/50 hover:drop-shadow-lg "
+          className="w-2/6 rounded-lg bg-lime-500 py-1 font-hopang text-white hover:bg-lime-800 hover:shadow-lime-800/50 hover:drop-shadow-lg"
+          onClick={() => handleAccountData(accountContent)}
         >
           조회
         </button>
       </div>
       <div className="overflow-x-auto">
-        <BankAccountTable></BankAccountTable>
+        {accountData && (
+          <BankAccountTable
+            data={accountData}
+            recordsView={recordsView}
+          ></BankAccountTable>
+        )}
       </div>
     </div>
   );
