@@ -8,11 +8,14 @@ const RedirectPage = () => {
     if (code) {
       sendCodeToBackend(code);
     }
+    else {
+      console.log('인가코드가 없습니다.')
+    }
   }, []);
 
   const sendCodeToBackend = async (code) => {
     try {
-      const response = await axios.post('YOUR_BACKEND_ENDPOINT', {
+      const response = await axios.post('https://j10d203.p.ssafy.io/api/member/login', {
         code,
       });
       console.log('Success:', response.data);

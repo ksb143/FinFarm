@@ -1,7 +1,7 @@
 import React from 'react';
-import KakaoLoginButton from '@/components/loginAndSignup/KakaoLoginButton';
+import KakaoLoginButton from '@/components/entrance/KakaoLoginButton';
 
-export default function Entrance() {
+export default function EntrancePage() {
 
     return(
         <div>
