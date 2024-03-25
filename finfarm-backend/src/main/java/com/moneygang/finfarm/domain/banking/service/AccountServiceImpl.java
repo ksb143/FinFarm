@@ -9,6 +9,7 @@ import com.moneygang.finfarm.domain.member.entity.Member;
 import com.moneygang.finfarm.domain.member.repository.MemberRepository;
 import com.moneygang.finfarm.global.exception.GlobalException;
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -180,6 +181,7 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public ResponseEntity<BankingSearchMemberResponse> searchMember(String nickname) {
+
         Optional<Member> optionalSearchMembers = memberRepository.findByMemberNickname(nickname);
 
         if(optionalSearchMembers.isEmpty()) {
@@ -310,6 +312,7 @@ public class AccountServiceImpl implements AccountService {
 
 
     /** 사용자의 계좌 잔액 조회 함수 **/
+    @Override
     public long getAccountBalance(long memberPk) {
 
         Optional<Member> optionalMember = memberRepository.findById(memberPk);

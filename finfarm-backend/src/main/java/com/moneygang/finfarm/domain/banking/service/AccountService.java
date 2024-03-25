@@ -22,4 +22,7 @@ public interface AccountService {
 
     // 계좌 비밀번호 수정
     public ResponseEntity<BankingPasswordChangeResponse> changePassword(long memberPk, int originPassword, int checkPassword, int changePassword);
+
+    // 계좌 잔액 조회
+    public long getAccountBalance(long memberPk);
 }

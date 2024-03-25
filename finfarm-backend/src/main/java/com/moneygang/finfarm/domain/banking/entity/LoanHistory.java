@@ -32,11 +32,15 @@ public class LoanHistory {
     @JoinColumn(name = "loan_pk")
     private Loan loan;
 
+    @Column(name = "loan_history_is_repay")
+    private Boolean isRepay;
+
     @Builder
     public LoanHistory(Long amount, Member member, Loan loan) {
         this.loanHistoryPrice = amount;
         this.loanHistoryStartDate = LocalDate.now();
         this.loanHistoryEndDate = LocalDate.now().plusDays(loan.getLoanPeriod());
+        this.isRepay = false;
         setMember(member);
         setLoan(loan);
     }
@@ -59,5 +63,9 @@ public class LoanHistory {
     public void setLoan(Loan loan) {
         this.loan = loan;
         loan.getLoanHistoryList().add(this);
+    }
+
+    public void setRepay() {
+        this.isRepay = true;
     }
 }
