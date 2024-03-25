@@ -8,7 +8,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class SeedInfo {
-    @Schema(description = "씨앗 이름", example = "감자 씨앗")
+    @Schema(description = "씨앗 이름", example = "씨감자")
     private String seedName;
     @Schema(description = "씨앗 재배기간", example = "345")
     private Long seedPeriod;

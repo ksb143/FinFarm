@@ -2,6 +2,7 @@ package com.moneygang.finfarm.domain.market.service;
 
 import com.moneygang.finfarm.domain.farm.entity.Warehouse;
 import com.moneygang.finfarm.domain.farm.repository.WarehouseRepository;
+import com.moneygang.finfarm.domain.market.dto.AgricultureInfoResponse;
 import com.moneygang.finfarm.domain.market.dto.MarketViewAllResponse;
 import com.moneygang.finfarm.domain.market.dto.SeedInfoResponse;
 import com.moneygang.finfarm.domain.market.dto.detail.*;
@@ -120,9 +121,11 @@ public class MarketServiceImpl implements MarketService {
     }
 
     @Override
-    public ResponseEntity<?> agricultureDetailView(String seedName) {
-
-        return null;
+    public ResponseEntity<?> agricultureDetailView(String agricultureName) {
+        Agriculture agriculture = agricultureRepository.findByAgricultureName(agricultureName)
+                .orElseThrow(() -> new GlobalException(HttpStatus.NOT_FOUND, "agriculture not found"));
+        AgricultureInfoResponse response = AgricultureInfoResponse.create(agriculture);
+        return ResponseEntity.ok(response);
     }
 
     public void getPriceStatus() throws IOException {
