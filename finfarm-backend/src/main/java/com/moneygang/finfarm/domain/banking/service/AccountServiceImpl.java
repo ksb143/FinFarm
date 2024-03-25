@@ -44,7 +44,7 @@ public class AccountServiceImpl implements AccountService {
 
         long amount = request.getAmount();
 
-        // 예외1: 입금 요청 금액보다 보유 포인트가 적은 경우
+        // 예외1: 입금 요청 금액보다 보유 포인트가 적은 경우 (400)
         if(amount > member.getMemberCurPoint()) {
             throw new GlobalException(HttpStatus.BAD_REQUEST, "Insufficient Current Point");
         }
@@ -80,14 +80,14 @@ public class AccountServiceImpl implements AccountService {
         int accountPassword = request.getAccountPassword();
         long accountBalance = getAccountBalance(member.getMemberPk());
 
-        // 예외2: 출금 요청 금액보다 보유 계좌 잔고가 적은 경우 (400)
+        // 예외1: 출금 요청 금액보다 보유 계좌 잔고가 적은 경우 (400)
         if(amount > accountBalance) {
             throw new GlobalException(HttpStatus.BAD_REQUEST, "Insufficient Account Balance");
         }
 
-        // 예외3: 입력 비밀번호가 유저의 비밀번호와 다른 경우 (401)
+        // 예외2: 입력 비밀번호가 유저의 비밀번호와 다른 경우 (400)
         if(!String.valueOf(accountPassword).equals(member.getMemberAccountPassword())) {
-            throw new GlobalException(HttpStatus.UNAUTHORIZED, "Password Not Match");
+            throw new GlobalException(HttpStatus.BAD_REQUEST, "Password Not Match");
         }
 
         Account withdraw = Account.builder()
@@ -131,8 +131,9 @@ public class AccountServiceImpl implements AccountService {
             String otherMemberNickname = remit.getAccountNickname();
             Optional<Member> optionalOtherMember = memberRepository.findByMemberNickname(otherMemberNickname);
 
+            // 예외1: 최근 송금한 사용자가 없을 때? (400)
             if(optionalOtherMember.isEmpty()) {
-                throw new GlobalException(HttpStatus.NOT_FOUND, "Member Not Found");
+                throw new GlobalException(HttpStatus.BAD_REQUEST, "Member Not Found");
             }
 
             if(!remitMemberNicknames.contains(otherMemberNickname)) {
@@ -160,8 +161,9 @@ public class AccountServiceImpl implements AccountService {
         String nickname = request.getNickname();
         Optional<Member> optionalSearchMembers = memberRepository.findByMemberNickname(nickname);
 
+        // 예외1: 해당 닉네임의 사용자가 없을 경우 (400)
         if(optionalSearchMembers.isEmpty()) {
-            throw new GlobalException(HttpStatus.NOT_FOUND, "Member Not Found");
+            throw new GlobalException(HttpStatus.BAD_REQUEST, "Searched Member Not Found");
         }
 
         Member searchMember = optionalSearchMembers.get();
@@ -183,7 +185,7 @@ public class AccountServiceImpl implements AccountService {
         Member sendMember = commonUtil.getMember();
         Optional<Member> optionalReceiveMember = memberRepository.findById(request.getOtherUserPk());
 
-        // 예외1: 송금할 사용자가 없을 때 (404)
+        // 예외1: 송금할 사용자가 없을 때 (400)
         if(optionalReceiveMember.isEmpty()) {
             throw new GlobalException(HttpStatus.NOT_FOUND, "Received Member Not Found");
         }
@@ -199,9 +201,9 @@ public class AccountServiceImpl implements AccountService {
             throw new GlobalException(HttpStatus.BAD_REQUEST, "Insufficient Account Balance");
         }
 
-        // 예외3: 입력 비밀번호가 유저의 비밀번호와 다른 경우 (401)
+        // 예외3: 입력 비밀번호가 유저의 비밀번호와 다른 경우 (400)
         if(!String.valueOf(accountPassword).equals(sendMember.getMemberAccountPassword())) {
-            throw new GlobalException(HttpStatus.UNAUTHORIZED, "Password Not Match");
+            throw new GlobalException(HttpStatus.BAD_REQUEST, "Password Not Match");
         }
 
         Account sendRemit = Account.builder()
@@ -246,7 +248,7 @@ public class AccountServiceImpl implements AccountService {
         String changePasswordToStr = String.valueOf(changePassword);
         String checkPasswordToStr = String.valueOf(checkPassword);
 
-        // 예외2: 확인 비밀번호가 유저의 비밀번호와 다른 경우 (401)
+        // 예외1: 확인 비밀번호가 유저의 비밀번호와 다른 경우 (400)
         if(!String.valueOf(originPassword).equals(accountPassword)) {
             throw new GlobalException(HttpStatus.BAD_REQUEST, "Password Not Match");
         }
@@ -256,19 +258,19 @@ public class AccountServiceImpl implements AccountService {
         Matcher matcher1 = regex.matcher(changePasswordToStr);
         Matcher matcher2 = regex.matcher(checkPasswordToStr);
 
-        // 예외3: 변경할 비밀번호 형식이 안맞을 떄
+        // 예외2: 변경할 비밀번호 형식이 안맞을 때 (400)
         if(!matcher1.matches()||!matcher2.matches()) {
-            throw new GlobalException(HttpStatus.UNAUTHORIZED, "Not Match Input Format");
+            throw new GlobalException(HttpStatus.BAD_REQUEST, "Not Match Input Format");
         }
 
-        // 예외4: 변경 비밀번호와 변경 확인 비밀번호가 다를 때
+        // 예외3: 변경 비밀번호와 변경 확인 비밀번호가 다를 때 (400)
         if(!changePasswordToStr.equals(checkPasswordToStr)) {
-            throw new GlobalException(HttpStatus.PAYMENT_REQUIRED, "Check Password Not Match");
+            throw new GlobalException(HttpStatus.BAD_REQUEST, "Check Password Not Match");
         }
 
-        // 예외5: 변경할 비밀번호가 기존 비밀번호랑 같을 때
+        // 예외4: 변경할 비밀번호가 기존 비밀번호랑 같을 때 (400)
         if(changePasswordToStr.equals(accountPassword)) {
-            throw new GlobalException(HttpStatus.FORBIDDEN, "Same Password");
+            throw new GlobalException(HttpStatus.BAD_REQUEST, "Same Change Password");
         }
 
         member.changeAccountPassword(changePasswordToStr);
@@ -286,7 +288,7 @@ public class AccountServiceImpl implements AccountService {
 
         // 예외: 해당 사용자가 없을 때
         if(optionalMember.isEmpty()) {
-            throw new GlobalException(HttpStatus.NOT_FOUND, "Member Not Found");
+            throw new GlobalException(HttpStatus.BAD_REQUEST, "Member Not Found");
         }
 
         Member member = optionalMember.get();

@@ -15,8 +15,8 @@ public class LoanHistory {
     @Column(name = "loan_history_pk")
     private Long loanHistoryPk;
 
-    @Column(name = "loan_history_price")
-    private Long loanHistoryPrice;
+    @Column(name = "loan_history_amount")
+    private Long loanHistoryAmount;
 
     @Column(name = "loan_history_start_date")
     private LocalDate loanHistoryStartDate;
@@ -35,12 +35,16 @@ public class LoanHistory {
     @Column(name = "loan_history_is_repay")
     private Boolean isRepay;
 
+    @Column(name = "loan_history_repay_amount")
+    private Long repayAmount;
+
     @Builder
     public LoanHistory(Long amount, Member member, Loan loan) {
-        this.loanHistoryPrice = amount;
+        this.loanHistoryAmount = amount;
         this.loanHistoryStartDate = LocalDate.now();
         this.loanHistoryEndDate = LocalDate.now().plusDays(loan.getLoanPeriod());
         this.isRepay = false;
+        this.repayAmount = Math.round(this.loanHistoryAmount * (1+loan.getLoanInterest())); // 상환금: 대출금*(1+이자율)
         setMember(member);
         setLoan(loan);
     }

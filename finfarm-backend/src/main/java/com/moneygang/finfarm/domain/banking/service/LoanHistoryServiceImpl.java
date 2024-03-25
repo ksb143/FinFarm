@@ -47,12 +47,12 @@ public class LoanHistoryServiceImpl implements LoanHistoryService {
         Member member = commonUtil.getMember();
         Optional<Loan> optionalLoan = loanRepository.findById(request.getLoanPk());
 
-        // 예외1: 해당 대출 상품이 없을 때 (404)
+        // 예외1: 해당 대출 상품이 없을 때 (400)
         if(optionalLoan.isEmpty()) {
             throw new GlobalException(HttpStatus.NOT_FOUND, "Loan Not Found");
         }
 
-        // 예외2: 입력 비밀번호가 계좌 비밀번호랑 다를 때 (401)
+        // 예외2: 입력 비밀번호가 계좌 비밀번호랑 다를 때 (400)
         if(!member.getMemberAccountPassword().equals(String.valueOf(request.getAccountPassword()))) {
             throw new GlobalException(HttpStatus.UNAUTHORIZED, "Password Not Match");
         }
@@ -90,6 +90,11 @@ public class LoanHistoryServiceImpl implements LoanHistoryService {
 
     @Override
     public void loanAudit() {
+        Member member = commonUtil.getMember();
+
+        /**
+         * (API 참고) Member에 isCurrentlyLoan, haveOverDue, haveBankruptcy 여부를 추가할지, 계산할지
+         */
 
     }
 
@@ -99,15 +104,16 @@ public class LoanHistoryServiceImpl implements LoanHistoryService {
         Long loanHistoryPk = request.getLoanHistoryPk();
         Optional<LoanHistory> optionalLoanHistory = loanHistoryRepository.findById(loanHistoryPk);
 
-        // 예외1: 해당 대출 상품이 없을 때 (404)
+        // 예외1: 해당 대출 상품이 없을 때 (400)
         if(optionalLoanHistory.isEmpty()) {
             throw new GlobalException(HttpStatus.NOT_FOUND, "Loan History Not Found");
         }
 
-        // 예외2: 입력 비밀번호가 계좌 비밀번호랑 다를 때 (401)
+        // 예외2: 입력 비밀번호가 계좌 비밀번호랑 다를 때 (400)
         if(!member.getMemberAccountPassword().equals(String.valueOf(request.getAccountPassword()))) {
             throw new GlobalException(HttpStatus.UNAUTHORIZED, "Password Not Match");
         }
+
 
         LoanHistory loanHistory = optionalLoanHistory.get();
 
