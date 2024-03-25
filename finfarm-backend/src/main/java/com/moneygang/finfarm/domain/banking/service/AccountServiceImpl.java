@@ -2,11 +2,16 @@ package com.moneygang.finfarm.domain.banking.service;
 
 
 import com.moneygang.finfarm.domain.banking.dto.general.BankingAccountRemitMember;
+import com.moneygang.finfarm.domain.banking.dto.request.BankingAccountDepositRequest;
+import com.moneygang.finfarm.domain.banking.dto.request.BankingAccountRemitRequest;
+import com.moneygang.finfarm.domain.banking.dto.request.BankingAccountWithdrawRequest;
+import com.moneygang.finfarm.domain.banking.dto.request.BankingPasswordChangeRequest;
 import com.moneygang.finfarm.domain.banking.dto.response.*;
 import com.moneygang.finfarm.domain.banking.entity.Account;
 import com.moneygang.finfarm.domain.banking.repository.AccountRepository;
 import com.moneygang.finfarm.domain.member.entity.Member;
 import com.moneygang.finfarm.domain.member.repository.MemberRepository;
+import com.moneygang.finfarm.global.base.CommonUtil;
 import com.moneygang.finfarm.global.exception.GlobalException;
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
@@ -14,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
@@ -31,26 +37,19 @@ public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
     private final MemberRepository memberRepository;
+    private final CommonUtil commonUtil;
 
     /**
      * 입금 서비스
-     * @param memberPk
-     * @param amount
-     * @return
      */
     @Override
     @Transactional
-    public ResponseEntity<BankingAccountDepositResponse> deposit(long memberPk, long amount) {
-        Optional<Member> optionalMember = memberRepository.findById(memberPk);
+    public ResponseEntity<BankingAccountDepositResponse> deposit(@RequestBody BankingAccountDepositRequest request) {
+        Member member = commonUtil.getMember();
 
-        // 예외1: 해당 사용자가 없을 때
-        if(optionalMember.isEmpty()) {
-            throw new GlobalException(HttpStatus.NOT_FOUND, "Member Not Found");
-        }
+        long amount = request.getAmount();
 
-        Member member = optionalMember.get();
-
-        // 예외2: 입금 요청 금액보다 보유 포인트가 적은 경우
+        // 예외1: 입금 요청 금액보다 보유 포인트가 적은 경우
         if(amount > member.getMemberCurPoint()) {
             throw new GlobalException(HttpStatus.BAD_REQUEST, "Insufficient Current Point");
         }
@@ -76,22 +75,14 @@ public class AccountServiceImpl implements AccountService {
 
     /**
      * 출금 서비스
-     * @param memberPk
-     * @param accountPassword
-     * @param amount
-     * @return
      */
     @Override
     @Transactional
-    public ResponseEntity<BankingAccountWithdrawResponse> withdraw(long memberPk, int accountPassword, long amount) {
-        Optional<Member> optionalMember = memberRepository.findById(memberPk);
+    public ResponseEntity<BankingAccountWithdrawResponse> withdraw(@RequestBody BankingAccountWithdrawRequest request) {
+        Member member = commonUtil.getMember();
 
-        // 예외1: 해당 사용자가 없을 때 (404)
-        if(optionalMember.isEmpty()) {
-            throw new GlobalException(HttpStatus.NOT_FOUND, "Member Not Found");
-        }
-
-        Member member = optionalMember.get();
+        long amount = request.getAmount();
+        int accountPassword = request.getAccountPassword();
         long accountBalance = getAccountBalance(member.getMemberPk());
 
         // 예외2: 출금 요청 금액보다 보유 계좌 잔고가 적은 경우 (400)
@@ -124,19 +115,11 @@ public class AccountServiceImpl implements AccountService {
 
     /**
      * 최근 송금한 (6명) 사용자 조회 서비스
-     * @param memberPk
-     * @return
      */
     @Override
-    public ResponseEntity<BankingAccountRemitRecentResponse> recentRemitMembers(long memberPk) {
-        Optional<Member> optionalMember = memberRepository.findById(memberPk);
+    public ResponseEntity<BankingAccountRemitRecentResponse> recentRemitMembers() {
+        Member member = commonUtil.getMember();
 
-        // 예외1: 해당 사용자가 없을 때 (404)
-        if(optionalMember.isEmpty()) {
-            throw new GlobalException(HttpStatus.NOT_FOUND, "Member Not Found");
-        }
-
-        Member member = optionalMember.get();
         List<Account> remits = member.getAccountList()
                 .stream()
                 .filter(a -> a.getAccountType().equals("송금")) // 송금 내역 필터링
@@ -199,27 +182,23 @@ public class AccountServiceImpl implements AccountService {
 
     /**
      * 송금 서비스
-     * @param sendMemberPk
-     * @param receiveMemberPk
-     * @param accountPassword
-     * @param amount
-     * @return
      */
     @Override
     @Transactional
-    public ResponseEntity<BankingAccountRemitResponse> remit(long sendMemberPk, long receiveMemberPk, int accountPassword, long amount) {
+    public ResponseEntity<BankingAccountRemitResponse> remit(@RequestBody BankingAccountRemitRequest request) {
 
-        Optional<Member> optionalSendMember = memberRepository.findById(sendMemberPk);
-        Optional<Member> optionalReceiveMember = memberRepository.findById(receiveMemberPk);
+        Member sendMember = commonUtil.getMember();
+        Optional<Member> optionalReceiveMember = memberRepository.findById(request.getOtherUserPk());
 
-        // 예외1: 사용자가 없을 때 (404)
-        if(optionalSendMember.isEmpty()||optionalReceiveMember.isEmpty()) {
-            throw new GlobalException(HttpStatus.NOT_FOUND, "Member Not Found");
+        // 예외1: 송금할 사용자가 없을 때 (404)
+        if(optionalReceiveMember.isEmpty()) {
+            throw new GlobalException(HttpStatus.NOT_FOUND, "Received Member Not Found");
         }
 
-        Member sendMember = optionalSendMember.get();
         Member receiveMember = optionalReceiveMember.get();
 
+        long amount = request.getAmount();
+        long accountPassword = request.getAccountPassword();
         long accountBalance = getAccountBalance(sendMember.getMemberPk());
 
         // 예외2: 송금 요청 금액보다 보유 계좌 잔고가 적은 경우 (400)
@@ -249,7 +228,7 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.save(sendRemit);
         accountRepository.save(receiveRemit);
 
-        accountBalance = getAccountBalance(sendMemberPk);
+        accountBalance = getAccountBalance(sendMember.getMemberPk());
         LocalDateTime requestTime = sendRemit.getAccountDate();
 
         BankingAccountRemitResponse response = BankingAccountRemitResponse.create(accountBalance, requestTime);
@@ -259,22 +238,17 @@ public class AccountServiceImpl implements AccountService {
 
     /**
      * 계좌 비밀번호 변경 서비스
-     * @param memberPk
-     * @param checkPassword
-     * @param changePassword
      */
     @Override
     @Transactional
-    public ResponseEntity<BankingPasswordChangeResponse> changePassword(long memberPk, int originPassword, int checkPassword, int changePassword) {
+    public ResponseEntity<BankingPasswordChangeResponse> changePassword(@RequestBody BankingPasswordChangeRequest request) {
 
-        Optional<Member> optionalMember = memberRepository.findById(memberPk);
+        Member member = commonUtil.getMember();
 
-        // 예외1: 해당 사용자가 없을 때
-        if(optionalMember.isEmpty()) {
-            throw new GlobalException(HttpStatus.NOT_FOUND, "Member Not Found");
-        }
+        Integer changePassword = request.getChangePassword();
+        Integer checkPassword = request.getCheckPassword();
+        Integer originPassword = request.getOriginPassword();
 
-        Member member = optionalMember.get();
         String accountPassword = member.getMemberAccountPassword();
         String changePasswordToStr = String.valueOf(changePassword);
         String checkPasswordToStr = String.valueOf(checkPassword);
