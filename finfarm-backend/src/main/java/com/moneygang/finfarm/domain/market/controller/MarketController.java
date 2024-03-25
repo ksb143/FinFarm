@@ -1,10 +1,8 @@
 package com.moneygang.finfarm.domain.market.controller;
 
+import com.moneygang.finfarm.domain.market.dto.request.AgricultureSellRequest;
 import com.moneygang.finfarm.domain.market.dto.request.SeedPurchaseRequest;
-import com.moneygang.finfarm.domain.market.dto.response.AgricultureInfoResponse;
-import com.moneygang.finfarm.domain.market.dto.response.MarketViewAllResponse;
-import com.moneygang.finfarm.domain.market.dto.response.SeedInfoResponse;
-import com.moneygang.finfarm.domain.market.dto.response.SeedPurchaseResponse;
+import com.moneygang.finfarm.domain.market.dto.response.*;
 import com.moneygang.finfarm.domain.market.service.MarketService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -22,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/store")
 public class MarketController {
-    private final MarketService storeService;
+    private final MarketService marketService;
 
     @Operation(summary = "장터 조회", description = "10가지 농산물 정보와 나의 아이템을 조회합니다.")
     @ApiResponses({
@@ -34,7 +32,7 @@ public class MarketController {
     })
     @GetMapping
     public ResponseEntity<MarketViewAllResponse> marketView() {
-        return storeService.storeView();
+        return marketService.storeView();
     }
 
     @Operation(summary = "씨앗 세부 조회", description = "씨앗 정보를 세부 조회합니다.")
@@ -47,7 +45,7 @@ public class MarketController {
     })
     @GetMapping("seed")
     public ResponseEntity<?> seedDetailView(@RequestParam("seedName") String seedName) {
-        return storeService.seedDetailView(seedName);
+        return marketService.seedDetailView(seedName);
     }
 
     @Operation(summary = "농산물 세부 조회", description = "농산물 정보를 세부 조회합니다.")
@@ -60,7 +58,7 @@ public class MarketController {
     })
     @GetMapping("agriculture")
     public ResponseEntity<?> agricultureDetailView(@RequestParam("agricultureName") String agricultureName) {
-        return storeService.agricultureDetailView(agricultureName);
+        return marketService.agricultureDetailView(agricultureName);
     }
 
     @Operation(summary = "농산물 씨앗 구매", description = "씨앗을 구매합니다.")
@@ -77,6 +75,25 @@ public class MarketController {
     })
     @PostMapping("seed")
     public ResponseEntity<?> seedPurchase(@RequestBody SeedPurchaseRequest request){
-        return storeService.seedPurchase(request);
+        return marketService.seedPurchase(request);
+    }
+
+    @Operation(summary = "농산물 판매", description = "사용자가 보유한 농산물을 판매합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
+                    content = @Content(schema = @Schema(implementation = AgricultureSellResponse.class))),
+            @ApiResponse(responseCode = "404", description = """
+                    (message : "member not found", code : 404)
+                    
+                    (message : "agriculture not found", code : 404)
+                    
+                    (message : "No items owned", code : 404)
+                    
+                    (message : "Insufficient stock for sale", code : 422)
+                    """, content = @Content)
+    })
+    @PostMapping("sell")
+    public ResponseEntity<?> agricultureSell(@RequestBody AgricultureSellRequest request){
+        return marketService.agricultureSell(request);
     }
 }

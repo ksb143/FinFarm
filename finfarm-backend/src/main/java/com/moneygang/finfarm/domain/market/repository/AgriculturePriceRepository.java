@@ -10,5 +10,7 @@ import java.util.Optional;
 public interface AgriculturePriceRepository extends JpaRepository<AgriculturePrice, Long> {
     //농산물 PK에 해당하는 농산물 가격을 start, end 날짜 기준으로 들고오기
     List<AgriculturePrice> findAllByAgriculture_AgriculturePkAndAgriculturePriceDateBetweenOrderByAgriculturePriceDateAsc(
-            Long agricultureId, LocalDate startDate, LocalDate endDate);
+            Long agriculturePk, LocalDate startDate, LocalDate endDate);
+    List<AgriculturePrice> findAllByAgriculture_AgriculturePkAndAgriculturePriceDateBetweenOrderByAgriculturePriceDateDesc(
+            Long agriculturePk, LocalDate startDate, LocalDate endDate);
 }

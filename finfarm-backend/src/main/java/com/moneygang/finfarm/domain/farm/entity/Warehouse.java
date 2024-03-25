@@ -5,8 +5,10 @@ import com.moneygang.finfarm.domain.market.entity.Agriculture;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 
+@Setter
 @Getter
 @Entity(name ="warehouse_TB")
 public class Warehouse {

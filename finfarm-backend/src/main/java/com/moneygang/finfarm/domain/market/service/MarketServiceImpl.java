@@ -2,12 +2,10 @@ package com.moneygang.finfarm.domain.market.service;
 
 import com.moneygang.finfarm.domain.farm.entity.Warehouse;
 import com.moneygang.finfarm.domain.farm.repository.WarehouseRepository;
+import com.moneygang.finfarm.domain.market.dto.request.AgricultureSellRequest;
 import com.moneygang.finfarm.domain.market.dto.request.SeedPurchaseRequest;
-import com.moneygang.finfarm.domain.market.dto.response.AgricultureInfoResponse;
-import com.moneygang.finfarm.domain.market.dto.response.MarketViewAllResponse;
-import com.moneygang.finfarm.domain.market.dto.response.SeedInfoResponse;
+import com.moneygang.finfarm.domain.market.dto.response.*;
 import com.moneygang.finfarm.domain.market.dto.detail.*;
-import com.moneygang.finfarm.domain.market.dto.response.SeedPurchaseResponse;
 import com.moneygang.finfarm.domain.market.entity.Agriculture;
 import com.moneygang.finfarm.domain.market.entity.AgriculturePrice;
 import com.moneygang.finfarm.domain.market.entity.Seed;
@@ -138,6 +136,46 @@ public class MarketServiceImpl implements MarketService {
         warehouseRepository.save(warehouse);
 
         return ResponseEntity.ok(SeedPurchaseResponse.create(
+                commonUtil.getMember().getMemberCurPoint(),
+                commonUtil.getMemberItem().getMemberItems()
+        ));
+    }
+
+    @Transactional
+    @Override
+    public ResponseEntity<?> agricultureSell(AgricultureSellRequest request) {
+        Member member = commonUtil.getMember();
+
+        Agriculture agriculture = agricultureRepository.findByAgricultureName(request.getAgricultureName())
+                        .orElseThrow(() -> new GlobalException(HttpStatus.NOT_FOUND, "agriculture not found"));
+
+        Warehouse warehouse =
+                warehouseRepository.findByMember_MemberPkAndAgriculture_AgriculturePkAndWarehouseCategory(
+                        member.getMemberPk(), agriculture.getAgriculturePk(), 2
+                ).orElseThrow(() -> new GlobalException(HttpStatus.NOT_FOUND, "No items owned"));
+
+        if(warehouse.getWarehouseAmount() < request.getAgricultureAmount()){
+            throw new GlobalException(HttpStatus.UNPROCESSABLE_ENTITY, "Insufficient stock for sale");
+        }
+
+        List<AgriculturePrice> agriculturePriceList =
+        agriculturePriceRepository.findAllByAgriculture_AgriculturePkAndAgriculturePriceDateBetweenOrderByAgriculturePriceDateDesc(
+                agriculture.getAgriculturePk(), LocalDate.now().minusDays(7), LocalDate.now()
+        );
+
+        long salePrice = (long) agriculturePriceList.get(0).getAgriculturePriceValue() * request.getAgricultureAmount();
+        member.updateCurPoint(salePrice);
+        memberRepository.save(member);
+
+        int updateAmount = warehouse.getWarehouseAmount() - request.getAgricultureAmount();
+        if(updateAmount <= 0){
+            warehouseRepository.delete(warehouse);
+        }else{
+            warehouse.setWarehouseAmount(updateAmount);
+            warehouseRepository.save(warehouse);
+        }
+
+        return ResponseEntity.ok(AgricultureSellResponse.create(
                 commonUtil.getMember().getMemberCurPoint(),
                 commonUtil.getMemberItem().getMemberItems()
         ));
