@@ -1,4 +1,4 @@
-package com.moneygang.finfarm.domain.market.dto;
+package com.moneygang.finfarm.domain.market.dto.response;
 
 import com.moneygang.finfarm.domain.market.entity.Agriculture;
 import io.swagger.v3.oas.annotations.media.Schema;

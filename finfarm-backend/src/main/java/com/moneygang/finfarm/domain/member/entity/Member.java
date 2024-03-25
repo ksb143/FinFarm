@@ -7,16 +7,14 @@ import com.moneygang.finfarm.domain.banking.entity.Point;
 import com.moneygang.finfarm.domain.farm.entity.FarmField;
 import com.moneygang.finfarm.domain.farm.entity.Warehouse;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Getter
+@Setter
 @Builder
 @Entity
 @DynamicUpdate // Dirty Checking으로 인한 update 시, 변경된 속성만 변경

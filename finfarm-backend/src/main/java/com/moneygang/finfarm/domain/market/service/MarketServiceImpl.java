@@ -2,10 +2,12 @@ package com.moneygang.finfarm.domain.market.service;
 
 import com.moneygang.finfarm.domain.farm.entity.Warehouse;
 import com.moneygang.finfarm.domain.farm.repository.WarehouseRepository;
-import com.moneygang.finfarm.domain.market.dto.AgricultureInfoResponse;
-import com.moneygang.finfarm.domain.market.dto.MarketViewAllResponse;
-import com.moneygang.finfarm.domain.market.dto.SeedInfoResponse;
+import com.moneygang.finfarm.domain.market.dto.request.SeedPurchaseRequest;
+import com.moneygang.finfarm.domain.market.dto.response.AgricultureInfoResponse;
+import com.moneygang.finfarm.domain.market.dto.response.MarketViewAllResponse;
+import com.moneygang.finfarm.domain.market.dto.response.SeedInfoResponse;
 import com.moneygang.finfarm.domain.market.dto.detail.*;
+import com.moneygang.finfarm.domain.market.dto.response.SeedPurchaseResponse;
 import com.moneygang.finfarm.domain.market.entity.Agriculture;
 import com.moneygang.finfarm.domain.market.entity.AgriculturePrice;
 import com.moneygang.finfarm.domain.market.entity.Seed;
@@ -14,8 +16,10 @@ import com.moneygang.finfarm.domain.market.repository.AgricultureRepository;
 
 import com.moneygang.finfarm.domain.market.repository.SeedRepository;
 import com.moneygang.finfarm.domain.member.entity.Member;
+import com.moneygang.finfarm.domain.member.repository.MemberRepository;
 import com.moneygang.finfarm.global.base.CommonUtil;
 import com.moneygang.finfarm.global.exception.GlobalException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import org.json.JSONArray;
@@ -45,35 +49,11 @@ public class MarketServiceImpl implements MarketService {
     private final AgriculturePriceRepository agriculturePriceRepository;
     private final WarehouseRepository warehouseRepository;
     private final SeedRepository seedRepository;
+    private final MemberRepository memberRepository;
     private final CommonUtil commonUtil;
 
     @Override
     public ResponseEntity<MarketViewAllResponse> storeView() {
-        Member member = commonUtil.getMember();
-
-        List<Warehouse> warehouseList = warehouseRepository.findAllByMember_MemberPk(member.getMemberPk());
-        List<SeedInfo> seedInfoList = new ArrayList<>();
-        List<AgricultureInfo> agricultureInfoList = new ArrayList<>();
-        for(Warehouse warehouse : warehouseList){
-            if(warehouse.getWarehouseCategory() == 1){ //씨앗=1
-                seedInfoList.add(
-                        SeedInfo.create(
-                                warehouse.getAgriculture().getSeed(),
-                                warehouse.getWarehouseAmount()
-                        )
-                );
-            }else{ //농산물=2
-                agricultureInfoList.add(
-                        AgricultureInfo.create(
-                                warehouse.getAgriculture(),
-                                warehouse.getWarehouseAmount()
-                        )
-                );
-            }
-        }
-        MemberItemsDTO memberItemsDTO =
-                MemberItemsDTO.create(seedInfoList, agricultureInfoList);
-
         List<AgricultureDTO> agricultureDTOList = new ArrayList<>();
         for(long i=1;i<=10;i++) {
             Optional<Agriculture> agricultureOptional = agricultureRepository.findById(i);
@@ -107,7 +87,7 @@ public class MarketServiceImpl implements MarketService {
             );
         }
         MarketViewAllResponse marketViewAllResponse =
-                MarketViewAllResponse.create(agricultureDTOList, memberItemsDTO);
+                MarketViewAllResponse.create(agricultureDTOList, commonUtil.getMemberItem().getMemberItems());
 
         return ResponseEntity.ok(marketViewAllResponse);
     }
@@ -126,6 +106,41 @@ public class MarketServiceImpl implements MarketService {
                 .orElseThrow(() -> new GlobalException(HttpStatus.NOT_FOUND, "agriculture not found"));
         AgricultureInfoResponse response = AgricultureInfoResponse.create(agriculture);
         return ResponseEntity.ok(response);
+    }
+
+    @Transactional
+    @Override
+    public ResponseEntity<?> seedPurchase(SeedPurchaseRequest request) {
+        Member member = commonUtil.getMember();
+
+        Seed seed = seedRepository.findBySeedName(request.getSeedName())
+                .orElseThrow(() -> new GlobalException(HttpStatus.NOT_FOUND, "seed not found"));
+
+        double purchasePrice =  seed.getSeedPrice() * request.getSeedCount();
+        if(purchasePrice > member.getMemberCurPoint()){
+            throw new GlobalException(HttpStatus.PAYMENT_REQUIRED, "Payment Required");
+        }
+
+        member.setMemberCurPoint((long) (member.getMemberCurPoint() - purchasePrice));
+        memberRepository.save(member);
+
+        Optional<Warehouse> warehouseOptional =
+                warehouseRepository.findByMember_MemberPkAndAgriculture_AgriculturePkAndWarehouseCategory(
+                        member.getMemberPk(), seed.getAgriculture().getAgriculturePk(), 1
+                );
+        Warehouse warehouse;
+        if(warehouseOptional.isPresent()){
+            warehouse = warehouseOptional.get();
+            warehouse.updateSeedCount(request.getSeedCount());
+        }else{
+            warehouse = new Warehouse(1, request.getSeedCount(), member, seed.getAgriculture());
+        }
+        warehouseRepository.save(warehouse);
+
+        return ResponseEntity.ok(SeedPurchaseResponse.create(
+                commonUtil.getMember().getMemberCurPoint(),
+                commonUtil.getMemberItem().getMemberItems()
+        ));
     }
 
     public void getPriceStatus() throws IOException {

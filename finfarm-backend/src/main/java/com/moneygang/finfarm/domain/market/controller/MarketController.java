@@ -1,8 +1,10 @@
 package com.moneygang.finfarm.domain.market.controller;
 
-import com.moneygang.finfarm.domain.market.dto.AgricultureInfoResponse;
-import com.moneygang.finfarm.domain.market.dto.MarketViewAllResponse;
-import com.moneygang.finfarm.domain.market.dto.SeedInfoResponse;
+import com.moneygang.finfarm.domain.market.dto.request.SeedPurchaseRequest;
+import com.moneygang.finfarm.domain.market.dto.response.AgricultureInfoResponse;
+import com.moneygang.finfarm.domain.market.dto.response.MarketViewAllResponse;
+import com.moneygang.finfarm.domain.market.dto.response.SeedInfoResponse;
+import com.moneygang.finfarm.domain.market.dto.response.SeedPurchaseResponse;
 import com.moneygang.finfarm.domain.market.service.MarketService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -59,5 +61,22 @@ public class MarketController {
     @GetMapping("agriculture")
     public ResponseEntity<?> agricultureDetailView(@RequestParam("agricultureName") String agricultureName) {
         return storeService.agricultureDetailView(agricultureName);
+    }
+
+    @Operation(summary = "농산물 씨앗 구매", description = "씨앗을 구매합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
+                    content = @Content(schema = @Schema(implementation = SeedPurchaseResponse.class))),
+            @ApiResponse(responseCode = "404", description = """
+                    (message : "member not found", code : 404)
+                    
+                    (message : "seed not found", code : 404)
+                    
+                    (message : "Payment Required", code : 402)
+                    """, content = @Content)
+    })
+    @PostMapping("seed")
+    public ResponseEntity<?> seedPurchase(@RequestBody SeedPurchaseRequest request){
+        return storeService.seedPurchase(request);
     }
 }
