@@ -1,3 +1,13 @@
+import PropTypes from 'prop-types';
+
+Ad.propTypes = {
+  color: PropTypes.string,
+  eventType: PropTypes.string,
+  title: PropTypes.string,
+  content: PropTypes.string,
+  adImage: PropTypes.string,
+};
+
 export default function Ad({ color, eventType, title, content, adImage }) {
   return (
     <div
