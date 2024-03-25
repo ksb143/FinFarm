@@ -14,12 +14,12 @@ public class BankingController {
 
     private final AccountService accountService;
 
-    @PutMapping("/password")
-    public ResponseEntity<BankingPasswordChangeResponse> changePassword(@RequestBody BankingPasswordChangeRequest request) {
-        int originPassword = request.getOriginPassword();
-        int changePassword = request.getChangePassword();
-        int checkPassword = request.getCheckPassword();
-
-        return accountService.changePassword(1, originPassword, changePassword, checkPassword);
-    }
+//    @PutMapping("/password")
+//    public ResponseEntity<BankingPasswordChangeResponse> changePassword(@RequestBody BankingPasswordChangeRequest request) {
+//        int originPassword = request.getOriginPassword();
+//        int changePassword = request.getChangePassword();
+//        int checkPassword = request.getCheckPassword();
+//
+////        return accountService.changePassword(1, originPassword, changePassword, checkPassword);
+//    }
 }

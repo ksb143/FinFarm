@@ -44,7 +44,7 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     @Transactional
-    public ResponseEntity<BankingAccountDepositResponse> deposit(@RequestBody BankingAccountDepositRequest request) {
+    public ResponseEntity<BankingAccountDepositResponse> deposit(BankingAccountDepositRequest request) {
         Member member = commonUtil.getMember();
 
         long amount = request.getAmount();
@@ -78,7 +78,7 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     @Transactional
-    public ResponseEntity<BankingAccountWithdrawResponse> withdraw(@RequestBody BankingAccountWithdrawRequest request) {
+    public ResponseEntity<BankingAccountWithdrawResponse> withdraw(BankingAccountWithdrawRequest request) {
         Member member = commonUtil.getMember();
 
         long amount = request.getAmount();
@@ -185,7 +185,7 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     @Transactional
-    public ResponseEntity<BankingAccountRemitResponse> remit(@RequestBody BankingAccountRemitRequest request) {
+    public ResponseEntity<BankingAccountRemitResponse> remit(BankingAccountRemitRequest request) {
 
         Member sendMember = commonUtil.getMember();
         Optional<Member> optionalReceiveMember = memberRepository.findById(request.getOtherUserPk());
@@ -241,7 +241,7 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     @Transactional
-    public ResponseEntity<BankingPasswordChangeResponse> changePassword(@RequestBody BankingPasswordChangeRequest request) {
+    public ResponseEntity<BankingPasswordChangeResponse> changePassword(BankingPasswordChangeRequest request) {
 
         Member member = commonUtil.getMember();
 
