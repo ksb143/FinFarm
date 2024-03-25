@@ -2,12 +2,11 @@ import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from '@/components/layout/Navbar';
 
-import MainHome from '@/pages/home/MainHome';
+import MainHomePage from '@/pages/home/MainHomePage';
 import EntrancePage from '@/pages/entrance/EntrancePage';
 import RedirectPage from '@/pages/entrance/RedirectPage';
 import Bank from '@/router/Bank';
 import Entrance from '@/router/Entrance';
-
 
 function App() {
   return (
@@ -15,11 +14,11 @@ function App() {
       <div className="min-h-screen bg-gray-50 px-32">
         <Navbar></Navbar>
         <Routes>
-          <Route path="/" element={<EntrancePage/>} />
-          <Route path="home" element={<MainHome />} />
+          <Route path="/" element={<EntrancePage />} />
+          <Route path="home" element={<MainHomePage />} />
           <Route path="Entrance/*" element={<Entrance />} />
           <Route path="bank/*" element={<Bank />} />
-          <Route path="oauth/callback/kakao" element={<RedirectPage/>} />
+          <Route path="oauth/callback/kakao" element={<RedirectPage />} />
         </Routes>
       </div>
     </Router>

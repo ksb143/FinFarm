@@ -7,7 +7,7 @@ import 'slick-carousel/slick/slick-theme.css';
 import adImage1 from '@/assets/images/adLoan.png';
 import adImage2 from '@/assets/images/adSave.png';
 import adImage3 from '@/assets/images/adTransfer.png';
-import './BankHome.css';
+import './BankHomePage.css';
 
 import Ad from '@/components/bank/BankHome/Ad';
 import SquareButton from '@/components/layout/SquareButton';
@@ -73,7 +73,7 @@ const adData = [
   },
 ];
 
-export default function BankHome() {
+export default function BankHomePage() {
   var settings = {
     dots: true,
     infinite: true,
@@ -109,7 +109,9 @@ export default function BankHome() {
           <SquareButton>조회</SquareButton>
         </Link>
         <SquareButton>입출금</SquareButton>
-        <SquareButton>이체</SquareButton>
+        <Link to="/bank/transfer">
+          <SquareButton>이체</SquareButton>
+        </Link>
         <SquareButton>대출</SquareButton>
       </div>
     </>

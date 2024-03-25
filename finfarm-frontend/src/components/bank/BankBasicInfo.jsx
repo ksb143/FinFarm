@@ -12,7 +12,7 @@ export default function BankBasicinfo({ isButton }) {
         닉네임의 통장
       </div>
       <div className="flex flex-1 items-center justify-between">
-        <div className="flex gap-10">
+        <div className="flex gap-10 ps-3">
           <span>계좌잔액</span>
           <span className="text-lime-800">{23000}원</span>
         </div>
