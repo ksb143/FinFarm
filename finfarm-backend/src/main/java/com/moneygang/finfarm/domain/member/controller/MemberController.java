@@ -4,10 +4,7 @@ import com.moneygang.finfarm.domain.banking.dto.response.BankingLoanTakeResponse
 import com.moneygang.finfarm.domain.member.dto.request.MemberJoinRequest;
 import com.moneygang.finfarm.domain.member.dto.request.MemberLoginRequest;
 import com.moneygang.finfarm.domain.member.dto.request.MemberReissueRequest;
-import com.moneygang.finfarm.domain.member.dto.response.MemberAutoLoginResponse;
-import com.moneygang.finfarm.domain.member.dto.response.MemberJoinResponse;
-import com.moneygang.finfarm.domain.member.dto.response.MemberLoginResponse;
-import com.moneygang.finfarm.domain.member.dto.response.MemberReissueResponse;
+import com.moneygang.finfarm.domain.member.dto.response.*;
 import com.moneygang.finfarm.domain.member.entity.Member;
 import com.moneygang.finfarm.domain.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -86,5 +83,10 @@ public class MemberController {
     @PostMapping("/reissue")
     public ResponseEntity<MemberReissueResponse> reissue(@RequestBody MemberReissueRequest request, @CookieValue(name = "refreshToken", defaultValue = "token") String refreshToken) {
         return memberService.reissue(request.getMemberEmail(), refreshToken);
+    }
+
+    @DeleteMapping("/quit")
+    public ResponseEntity<MemberQuitResponse> quit() {
+        return memberService.quit();
     }
 }

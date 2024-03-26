@@ -4,10 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.moneygang.finfarm.domain.member.dto.request.MemberJoinRequest;
-import com.moneygang.finfarm.domain.member.dto.response.MemberAutoLoginResponse;
-import com.moneygang.finfarm.domain.member.dto.response.MemberJoinResponse;
-import com.moneygang.finfarm.domain.member.dto.response.MemberLoginResponse;
-import com.moneygang.finfarm.domain.member.dto.response.MemberReissueResponse;
+import com.moneygang.finfarm.domain.member.dto.response.*;
 import com.moneygang.finfarm.domain.member.entity.Member;
 import com.moneygang.finfarm.domain.member.repository.MemberRepository;
 import com.moneygang.finfarm.global.base.CommonUtil;
@@ -239,5 +236,13 @@ public class MemberService {
         return ResponseEntity.ok()
                 .header("Set-Cookie", refreshTokenCookie.toString())
                 .body(MemberReissueResponse.create(newAccessToken));
+    }
+
+    public ResponseEntity<MemberQuitResponse> quit() {
+        log.info("member quit");
+
+        Member member = commonUtil.getMember();
+
+        //
     }
 }
