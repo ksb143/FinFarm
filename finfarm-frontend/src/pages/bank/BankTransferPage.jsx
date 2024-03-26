@@ -1,8 +1,50 @@
+import { useState, useEffect } from 'react';
+
 import BankBasicinfo from '@/components/bank/BankBasicInfo';
 import TransferDetail from '@/components/bank/BankTransfer/TransferDetail';
+import TransferCheck from '@/components/bank/BankTransfer/TransferCheck';
 import danger from '@/assets/images/danger.png';
 
+import { recentTransferDetails } from '@/api/bank';
+
 export default function BankTransferPage() {
+  const [transferResult, setTransferResult] = useState(null);
+  const [transferInfo, setTransferInfo] = useState(false);
+  const [recentTransfers, setRecentTransfers] = useState([]);
+  const [password, setPassword] = useState('');
+  const [amount, setAmount] = useState('');
+  const [recipient, setRecipient] = useState('');
+
+  // 이체 여부 확인 함수
+  const handleTransferResult = (response) => {
+    setRecentTransfers(response);
+  };
+
+  // 이체 실행 버튼 함수
+  const handleTransferInfo = () => {
+    setTransferInfo(true);
+  };
+
+  // 최근 이체 내역 업데이트 함수
+  const fetchRecentTransfers = async () => {
+    try {
+      const recentTransferData = await recentTransferDetails();
+      setTransferResult(recentTransferData);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // 선택 금액 입력 필드에 설정
+  const handleAmountSelect = (selectedAmount) => {
+    setAmount(selectedAmount);
+  };
+
+  // 최근 이체 내역 설정
+  useEffect(() => {
+    fetchRecentTransfers();
+  }, []);
+
   return (
     <div className="flex gap-3">
       <div className="flex w-8/12 flex-col gap-3">
@@ -30,6 +72,7 @@ export default function BankTransferPage() {
               className="grow"
               placeholder="계좌 비밀번호 4자리"
               maxLength={4}
+              value={password}
               onChange={(e) => {
                 const value = e.target.value;
                 const regex = /^\d*$/;
@@ -45,13 +88,22 @@ export default function BankTransferPage() {
           <h3 className="text-xl">입금 정보</h3>
           <div className="flex flex-col gap-7 rounded-xl border-2 border-solid border-gray-300 bg-gray-50 p-5">
             <div className="flex w-full justify-between">
-              <span className="w-1/6 border-r-2 border-solid border-gray-300 text-center">
+              <span
+                onClick={() => handleAmountSelect(10000)}
+                className="w-1/6 border-r-2 border-solid border-gray-300 text-center"
+              >
                 1만원
               </span>
-              <span className="w-1/6 border-r-2 border-solid border-gray-300 text-center">
+              <span
+                onClick={() => handleAmountSelect(50000)}
+                className="w-1/6 border-r-2 border-solid border-gray-300 text-center"
+              >
                 5만원
               </span>
-              <span className="w-1/6 border-r-2 border-solid border-gray-300 text-center">
+              <span
+                onClick={() => handleAmountSelect(100000)}
+                className="w-1/6 border-r-2 border-solid border-gray-300 text-center"
+              >
                 10만원
               </span>
               <span className="w-1/6 border-r-2 border-solid border-gray-300 text-center">
@@ -63,7 +115,20 @@ export default function BankTransferPage() {
               <span className="w-1/6 text-center">전액</span>
             </div>
             <label className="input input-bordered flex items-center gap-2 border-2 border-solid border-gray-300">
-              <input type="text" className="grow" placeholder="입금금액" />
+              <input
+                value={amount}
+                type="text"
+                className="grow"
+                placeholder="입금금액"
+                onChange={(e) => {
+                  const value = e.target.value;
+                  const regex = /^\d*$/;
+                  if (!regex.test(value)) {
+                    // 입력된 키가 숫자가 아닌 경우
+                    e.target.value = ''; // 입력 방지
+                  }
+                }}
+              />
               <span>원</span>
             </label>
           </div>
@@ -81,7 +146,14 @@ export default function BankTransferPage() {
               className="tab-content rounded-box border-r-2 border-solid border-gray-300 bg-gray-50 p-6"
             >
               <div className="grid grid-cols-3 gap-3">
-                <TransferDetail />
+                {recentTransfers.map((recentTransfer, idx) => (
+                  <TransferDetail
+                    key={idx}
+                    recentTransfers={recentTransfer.nickname}
+                    profileImg={recentTransfer.requestTime}
+                    transferDate={recentTransfer.imgeUrl}
+                  />
+                ))}
               </div>
             </div>
 
@@ -129,9 +201,22 @@ export default function BankTransferPage() {
             </p>
           </div>
         </div>
-        <button className="rounded-lg bg-lime-500 py-5 font-hopang text-2xl text-white">
+        <button
+          onClick={handleTransferInfo}
+          className="rounded-lg bg-lime-500 py-5 font-hopang text-2xl text-white"
+        >
           이체실행
         </button>
+        {transferInfo && (
+          <TransferCheck
+            password={3241}
+            recipient="러브다이브"
+            sender="숨참고"
+            amount={30000}
+            balance={30000}
+            onTransferResult={handleTransferResult}
+          ></TransferCheck>
+        )}
       </div>
     </div>
   );
