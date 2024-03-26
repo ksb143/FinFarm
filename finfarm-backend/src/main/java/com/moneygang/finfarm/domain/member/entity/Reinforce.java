@@ -1,7 +1,9 @@
 package com.moneygang.finfarm.domain.member.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
+@Getter
 @Entity(name = "reinforce_TB")
 public class Reinforce {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
