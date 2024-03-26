@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-
 import { loginUser } from '@/api/user';
 
 const RedirectPage = () => {
@@ -13,15 +12,11 @@ const RedirectPage = () => {
     }
   }, []);
   const sendCodeToBackend = async (code) => {
-    console.log(code);
     try {
       const response = await loginUser(code);
       console.log('Success:', response);
     } catch (error) {
-      console.error(
-        'Error:',
-        error.response ? error.response.data : error.message,
-      );
+      console.error('Error:', error);
     }
   };
 
