@@ -18,12 +18,8 @@ function App() {
           <Route path="home" element={<MainHomePage />} />
           <Route path="entrance/*" element={<Entrance />} />
           <Route path="bank/*" element={<Bank />} />
-<<<<<<< HEAD
-          <Route path="oauth/callback/kakao" element={<RedirectPage />} />
-=======
           <Route path="myfarm/*" element={<MyFarm />} />
-          <Route path="oauth/callback/kakao" element={<RedirectPage/>} />
->>>>>>> f685b6e16798c80bab65eb8c9000328614f6a646
+          <Route path="oauth/callback/kakao" element={<RedirectPage />} />
         </Routes>
       </div>
     </Router>
