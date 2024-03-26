@@ -7,6 +7,7 @@ import com.moneygang.finfarm.domain.member.dto.request.MemberJoinRequest;
 import com.moneygang.finfarm.domain.member.dto.response.MemberAutoLoginResponse;
 import com.moneygang.finfarm.domain.member.dto.response.MemberJoinResponse;
 import com.moneygang.finfarm.domain.member.dto.response.MemberLoginResponse;
+import com.moneygang.finfarm.domain.member.dto.response.MemberReissueResponse;
 import com.moneygang.finfarm.domain.member.entity.Member;
 import com.moneygang.finfarm.domain.member.repository.MemberRepository;
 import com.moneygang.finfarm.global.base.CommonUtil;
@@ -14,6 +15,7 @@ import com.moneygang.finfarm.global.base.JwtTokenProvider;
 import com.moneygang.finfarm.global.exception.GlobalException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -32,9 +34,10 @@ import java.util.*;
 @RequiredArgsConstructor
 public class MemberService {
 
+    private final CommonUtil commonUtil;
     private final JwtTokenProvider tokenProvider;
     private final MemberRepository memberRepository;
-    private final CommonUtil commonUtil;
+    private final RedisTemplate<String, String> redisTemplate;
 
     public ResponseEntity<List<Member>> selcetAll() {
         List<Member> findAll = memberRepository.findAll();
@@ -44,6 +47,7 @@ public class MemberService {
 
     public ResponseEntity<MemberJoinResponse> join(MemberJoinRequest request) {
         log.info("member join");
+
         //유저 이메일 중복 확인
         Optional<Member> optionalMember = memberRepository.findByMemberEmail(request.getMemberEmail());
         if(optionalMember.isPresent())
@@ -68,6 +72,7 @@ public class MemberService {
 
     public ResponseEntity<MemberAutoLoginResponse> autoLogin() {
         log.info("member autoLogin");
+
         // authentication 에서 member 객체 조회
         Member member = commonUtil.getMember();
 
@@ -204,4 +209,32 @@ public class MemberService {
         return userInfo;
     }
 
+    public ResponseEntity<MemberReissueResponse> reissue(String userEmail, String refreshToken) {
+        log.info("member reissue");
+
+        //refreshToken 유효성 검사
+        String savedToken = (String) redisTemplate.opsForValue().get("token_" + userEmail);
+        if (refreshToken.isEmpty() || !tokenProvider.validateToken(refreshToken) || !refreshToken.equals(savedToken)) {
+            log.info("토큰 재발급 실패");
+            throw new GlobalException(HttpStatus.BAD_REQUEST, "refresh token 이 일치하지 않거나 존재하지 않습니다.");
+        }
+
+        String newAccessToken = tokenProvider.createAccessToken(userEmail);
+        String newRefreshToken = tokenProvider.createRefreshToken(userEmail);
+
+        // refresh token 을 쿠키에 저장
+        ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", newRefreshToken)
+                .httpOnly(true) // HttpOnly 속성 설정으로 JavaScript에서 접근하지 못하도록 함
+                .secure(true) // HTTPS를 통해서만 쿠키가 전송되도록 함
+                .path("/") // 쿠키의 경로 설정
+                // .domain("yourdomain.com") // 쿠키의 도메인 설정 (필요한 경우)
+                .maxAge(7 * 24 * 60 * 60) // 쿠키의 만료 시간 설정 (7일)
+                .build();
+
+        // 쿠키를 response header 에 담아서 저장
+        log.info("토큰 재발급 성공");
+        return ResponseEntity.ok()
+                .header("Set-Cookie", refreshTokenCookie.toString())
+                .body(MemberReissueResponse.create(newAccessToken));
+    }
 }
