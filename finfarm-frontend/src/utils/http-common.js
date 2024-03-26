@@ -2,9 +2,23 @@ import axios from 'axios';
 
 const { VITE_REACT_API_URL } = import.meta.env;
 
+// 회원
+function userAxios() {
+  const instance = axios.create({
+    baseURL: VITE_REACT_API_URL,
+    withCredentials: true,
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
+    },
+  });
+  return instance;
+}
+
+// 로컬
 function localAxios() {
   const instance = axios.create({
     baseURL: VITE_REACT_API_URL,
+    withCredentials: true,
   });
 
   instance.defaults.headers.common['Authorization'] = '';
@@ -66,4 +80,4 @@ function localAxios() {
 
   return instance;
 }
-export { localAxios };
+export { userAxios, localAxios };

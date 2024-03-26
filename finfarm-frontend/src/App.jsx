@@ -7,18 +7,17 @@ import RedirectPage from '@/pages/entrance/RedirectPage';
 import Bank from '@/router/Bank';
 import Entrance from '@/router/Entrance';
 
-
 function App() {
   return (
     <Router>
       <div className="min-h-screen bg-gray-50 px-32">
         <Navbar></Navbar>
         <Routes>
-          <Route path="/" element={<EntrancePage/>} />
+          <Route path="/" element={<EntrancePage />} />
           <Route path="home" element={<MainHomePage />} />
           <Route path="Entrance/*" element={<Entrance />} />
           <Route path="bank/*" element={<Bank />} />
-          <Route path="oauth/callback/kakao" element={<RedirectPage/>} />
+          <Route path="oauth/callback/kakao" element={<RedirectPage />} />
         </Routes>
       </div>
     </Router>
