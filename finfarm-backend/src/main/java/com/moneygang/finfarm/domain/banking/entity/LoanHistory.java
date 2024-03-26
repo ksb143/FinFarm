@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity(name = "loan_history_TB")
 @Getter
@@ -69,7 +68,12 @@ public class LoanHistory {
         loan.getLoanHistoryList().add(this);
     }
 
-    public void setRepay() {
+    public void repay() {
         this.isRepay = true;
+    }
+
+    // 대출 연체
+    public void overDue() {
+        this.member.loanOverDue();
     }
 }

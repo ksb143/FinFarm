@@ -52,6 +52,9 @@ public class Member {
     @Column(name = "member_farm_level")
     private Integer farmLevel;
 
+    @Column(name = "member_loan_overdue")
+    private boolean memberLoanOverdue;
+
     @JsonIgnore
     @OneToMany(mappedBy = "member")
     private List<FarmField> farmFieldList;
@@ -79,5 +82,9 @@ public class Member {
 
     public void changeAccountPassword(String changeAccountPassword) {
         this.memberAccountPassword = changeAccountPassword;
+    }
+
+    public void loanOverDue() {
+        this.memberLoanOverdue = true;
     }
 }

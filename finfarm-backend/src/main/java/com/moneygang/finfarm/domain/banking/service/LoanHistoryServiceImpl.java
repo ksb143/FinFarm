@@ -1,7 +1,9 @@
 package com.moneygang.finfarm.domain.banking.service;
 
+import com.moneygang.finfarm.domain.banking.dto.request.BankingLoanAuditRequest;
 import com.moneygang.finfarm.domain.banking.dto.request.BankingLoanRepayRequest;
 import com.moneygang.finfarm.domain.banking.dto.request.BankingLoanTakeRequest;
+import com.moneygang.finfarm.domain.banking.dto.response.BankingLoanAuditResponse;
 import com.moneygang.finfarm.domain.banking.dto.response.BankingLoanRepayResponse;
 import com.moneygang.finfarm.domain.banking.dto.response.BankingLoanTakeResponse;
 import com.moneygang.finfarm.domain.banking.entity.Account;
@@ -21,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -89,13 +92,27 @@ public class LoanHistoryServiceImpl implements LoanHistoryService {
     }
 
     @Override
-    public void loanAudit() {
+    public ResponseEntity<BankingLoanAuditResponse> loanAudit(BankingLoanAuditRequest request) {
         Member member = commonUtil.getMember();
 
-        /**
-         * (API 참고) Member에 isCurrentlyLoan, haveOverDue, haveBankruptcy 여부를 추가할지, 계산할지
-         */
+        boolean haveOverDue = member.isMemberLoanOverdue();; // 연체 내역이 있는지
+        boolean isCurrentlyLoan = false; // 현재 해당 대출 상품을 이용하고 있는지
+        boolean canLoan = false;
 
+        long loanPk = request.getLoanPk();
+        List<LoanHistory> loanHistoryList = member.getLoanHistoryList();
+        for(LoanHistory history: loanHistoryList) {
+            // 해당 대출에 대한 내역이 있고, 상환을 하지 않은 경우
+            if(history.getLoan().getLoanPk()==loanPk && !history.getIsRepay()) {
+                isCurrentlyLoan = true;
+                break;
+            }
+        }
+
+        canLoan = (!haveOverDue && !isCurrentlyLoan);
+        BankingLoanAuditResponse response = BankingLoanAuditResponse.create(canLoan, isCurrentlyLoan, haveOverDue);
+
+        return ResponseEntity.ok(response);
     }
 
     @Override
@@ -125,7 +142,7 @@ public class LoanHistoryServiceImpl implements LoanHistoryService {
                 .build();
 
         accountRepository.save(accountLoanRepay);
-        loanHistory.setRepay();
+        loanHistory.repay();
 
         LocalDate startDate = loanHistory.getLoanHistoryStartDate();
         LocalDate endDate = loanHistory.getLoanHistoryEndDate();
