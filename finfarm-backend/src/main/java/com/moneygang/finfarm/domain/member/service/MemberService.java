@@ -61,6 +61,7 @@ public class MemberService {
                 .memberAccountPassword(request.getMemberAccountPassword())
                 .memberImageUrl(request.getMemberImageUrl())
                 .memberSolveQuiz(false)
+                .memberLoanOverdue(false)
                 .memberCurPoint((long) 0.0)
                 .memberCreateDate(LocalDate.now())
                 .farmLevel(1)

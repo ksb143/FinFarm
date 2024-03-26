@@ -12,23 +12,23 @@ public class BankingLoanHistory {
     private Long pk;
     private String name;
     private Double interest;
+    private Integer period;
     private Long amount;
     private Long repayAmount;
-    private Integer period;
     private LocalDate startDate;
     private LocalDate endDate;
     private Boolean isRepay;
 
-    public static BankingLoanHistory create(Long pk, String name, Double interest,
-                                            Long amount, Long repayAmount, Integer period,
+    public static BankingLoanHistory create(Long pk, String name, Double interest, Integer period,
+                                            Long amount, Long repayAmount,
                                             LocalDate startDate, LocalDate endDate, Boolean isRepay) {
         return BankingLoanHistory.builder()
                 .pk(pk)
                 .name(name)
                 .interest(interest)
+                .period(period)
                 .amount(amount)
                 .repayAmount(repayAmount)
-                .period(period)
                 .startDate(startDate)
                 .endDate(endDate)
                 .isRepay(isRepay)

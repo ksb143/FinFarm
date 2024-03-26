@@ -35,7 +35,7 @@ public class LoanHistory {
     private Boolean isRepay;
 
     @Column(name = "loan_history_repay_amount")
-    private Long repayAmount;
+    private Long loanHistoryRepayAmount;
 
     @Builder
     public LoanHistory(Long amount, Member member, Loan loan) {
@@ -43,7 +43,7 @@ public class LoanHistory {
         this.loanHistoryStartDate = LocalDate.now();
         this.loanHistoryEndDate = LocalDate.now().plusDays(loan.getLoanPeriod());
         this.isRepay = false;
-        this.repayAmount = Math.round(this.loanHistoryAmount * (1+loan.getLoanInterest())); // 상환금: 대출금*(1+이자율)
+        this.loanHistoryRepayAmount = Math.round(this.loanHistoryAmount * (1+loan.getLoanInterest())); // 상환금: 대출금*(1+이자율)
         setMember(member);
         setLoan(loan);
     }

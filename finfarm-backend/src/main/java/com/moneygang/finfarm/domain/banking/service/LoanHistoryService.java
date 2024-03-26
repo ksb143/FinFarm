@@ -5,12 +5,13 @@ import com.moneygang.finfarm.domain.banking.dto.request.BankingLoanRepayRequest;
 import com.moneygang.finfarm.domain.banking.dto.request.BankingLoanTakeRequest;
 import com.moneygang.finfarm.domain.banking.dto.response.BankingLoanAuditResponse;
 import com.moneygang.finfarm.domain.banking.dto.response.BankingLoanRepayResponse;
+import com.moneygang.finfarm.domain.banking.dto.response.BankingLoanResponse;
 import com.moneygang.finfarm.domain.banking.dto.response.BankingLoanTakeResponse;
 import org.springframework.http.ResponseEntity;
 
 public interface LoanHistoryService {
 
-    public void getLoanHistory();
+    public ResponseEntity<BankingLoanResponse> getLoanHistory();
 
     public ResponseEntity<BankingLoanTakeResponse> loan(BankingLoanTakeRequest request);
 

@@ -1,10 +1,12 @@
 package com.moneygang.finfarm.domain.banking.service;
 
+import com.moneygang.finfarm.domain.banking.dto.general.BankingLoanHistory;
 import com.moneygang.finfarm.domain.banking.dto.request.BankingLoanAuditRequest;
 import com.moneygang.finfarm.domain.banking.dto.request.BankingLoanRepayRequest;
 import com.moneygang.finfarm.domain.banking.dto.request.BankingLoanTakeRequest;
 import com.moneygang.finfarm.domain.banking.dto.response.BankingLoanAuditResponse;
 import com.moneygang.finfarm.domain.banking.dto.response.BankingLoanRepayResponse;
+import com.moneygang.finfarm.domain.banking.dto.response.BankingLoanResponse;
 import com.moneygang.finfarm.domain.banking.dto.response.BankingLoanTakeResponse;
 import com.moneygang.finfarm.domain.banking.entity.Account;
 import com.moneygang.finfarm.domain.banking.entity.Loan;
@@ -23,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,8 +44,42 @@ public class LoanHistoryServiceImpl implements LoanHistoryService {
     private final CommonUtil commonUtil;
 
     @Override
-    public void getLoanHistory() {
+    public ResponseEntity<BankingLoanResponse> getLoanHistory() {
+        Member member = commonUtil.getMember();
 
+        List<LoanHistory> loanHistoryList = member.getLoanHistoryList();
+
+        List<BankingLoanHistory> currentLoans = new ArrayList<>();
+        List<BankingLoanHistory> loanHistories = new ArrayList<>();
+        long totalTakeAmount = 0L;
+        long totalRepayAmount = 0L;
+
+        for(LoanHistory history: loanHistoryList) {
+
+            Loan loan = history.getLoan();
+            Long pk = loan.getLoanPk();
+            String name = loan.getLoanName();
+            Double interest = loan.getLoanInterest();
+            Integer period = loan.getLoanPeriod();
+            Long amount = history.getLoanHistoryAmount();
+            Long repayAmount = history.getLoanHistoryRepayAmount();
+            LocalDate startDate = history.getLoanHistoryStartDate();
+            LocalDate endDate = history.getLoanHistoryEndDate();
+            Boolean isRepay = history.getIsRepay();
+
+            BankingLoanHistory loanHistory = BankingLoanHistory.create(pk, name, interest, period,
+                    amount, repayAmount, startDate, endDate, isRepay);
+
+            if(isRepay) totalRepayAmount += repayAmount; // 상환한 대출 내역 -> 총 상환 금액에 추가
+            else currentLoans.add(loanHistory); // 상환하지 않은 대출 내역 -> 현재 대출 현황에 추가
+
+            totalTakeAmount += amount; // 총 대출 금액 추가
+            loanHistories.add(loanHistory); // 대출 내역에 추가
+        }
+
+        BankingLoanResponse response = BankingLoanResponse.create(currentLoans, loanHistories, totalTakeAmount, totalRepayAmount);
+
+        return ResponseEntity.ok(response);
     }
 
     @Override

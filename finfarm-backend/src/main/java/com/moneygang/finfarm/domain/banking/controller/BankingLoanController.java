@@ -5,6 +5,7 @@ import com.moneygang.finfarm.domain.banking.dto.request.BankingLoanRepayRequest;
 import com.moneygang.finfarm.domain.banking.dto.request.BankingLoanTakeRequest;
 import com.moneygang.finfarm.domain.banking.dto.response.BankingLoanAuditResponse;
 import com.moneygang.finfarm.domain.banking.dto.response.BankingLoanRepayResponse;
+import com.moneygang.finfarm.domain.banking.dto.response.BankingLoanResponse;
 import com.moneygang.finfarm.domain.banking.dto.response.BankingLoanTakeResponse;
 import com.moneygang.finfarm.domain.banking.service.LoanHistoryService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,9 +24,14 @@ public class BankingLoanController {
 
     private final LoanHistoryService loanHistoryService;
 
+    @Operation(summary = "대출 내역 조회", description = "아직 상환하지 않은 대출 현황과 모든 대출 내역을 조회합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
+                    content = @Content(schema = @Schema(implementation = BankingLoanResponse.class))),
+    })
     @GetMapping
-    public void getLoanHistory() {
-
+    public ResponseEntity<BankingLoanResponse> getLoanHistory() {
+        return loanHistoryService.getLoanHistory();
     }
 
     @Operation(summary = "대출 받기", description = "대출 심사 후 원하는 금액을 대출받습니다.")
@@ -45,11 +51,7 @@ public class BankingLoanController {
     @Operation(summary = "대출 심사", description = "(1) 해당 대출 상품을 이용하고 있는지, (2) 대출 연체 내역이 있는지 확인하며 대출 심사 진행")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
-                    content = @Content(schema = @Schema(implementation = BankingLoanTakeResponse.class))),
-            @ApiResponse(responseCode = "400", description = """
-                    (message : "Password Not Match", code : 400)
-
-                    (message : "Loan Not Found", code : 400)""", content = @Content)
+                    content = @Content(schema = @Schema(implementation = BankingLoanAuditResponse.class))),
     })
     @GetMapping("/audit")
     public ResponseEntity<BankingLoanAuditResponse> loanAudit(@RequestBody BankingLoanAuditRequest request) {
