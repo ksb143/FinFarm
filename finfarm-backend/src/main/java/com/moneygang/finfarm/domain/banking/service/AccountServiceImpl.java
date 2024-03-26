@@ -1,25 +1,25 @@
 package com.moneygang.finfarm.domain.banking.service;
 
 
+import com.moneygang.finfarm.domain.banking.dto.general.BankingAccountDetail;
 import com.moneygang.finfarm.domain.banking.dto.general.BankingAccountRemitMember;
+import com.moneygang.finfarm.domain.banking.dto.request.*;
 import com.moneygang.finfarm.domain.banking.dto.response.*;
 import com.moneygang.finfarm.domain.banking.entity.Account;
 import com.moneygang.finfarm.domain.banking.repository.AccountRepository;
 import com.moneygang.finfarm.domain.member.entity.Member;
 import com.moneygang.finfarm.domain.member.repository.MemberRepository;
+import com.moneygang.finfarm.global.base.CommonUtil;
 import com.moneygang.finfarm.global.exception.GlobalException;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -31,26 +31,73 @@ public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
     private final MemberRepository memberRepository;
+    private final CommonUtil commonUtil;
+
+    /**
+     * 계좌 내역 조회 서비스
+     */
+    @Override
+    public ResponseEntity<BankingAccountResponse> getAccountHistory(BankingAccountRequest request) {
+        Member member = commonUtil.getMember();
+
+        List<Account> accountList = member.getAccountList();
+
+        Long accountBalance = getAccountBalance(member.getMemberPk());
+        LocalDate openDate = member.getMemberCreateDate();
+        List<BankingAccountDetail> bankingAccountDetailList = new ArrayList<>();
+
+        accountLoop:
+        for(Account account: accountList) {
+            // 필터링1: 거래 타입(입금, 출금 두 가지로 입력 형식 들어옴)
+            if(request.getAccountType().equals("입금")) {
+                if(account.getAccountAmount()<0) continue accountLoop;
+            } else {
+                if(account.getAccountAmount()>0) continue accountLoop;
+            }
+
+            // 필터링2: 적요 내용
+            if(!request.getAccountNickname().equals("")) {
+                if(!request.getAccountNickname().equals(account.getAccountNickname())) continue accountLoop;
+            }
+
+            // 필터링3: startDate ~ endDate
+            LocalDateTime accountDate = account.getAccountDate();
+            if(accountDate.isBefore(request.getStartDate().atStartOfDay()) || accountDate.isAfter(request.getEndDate().atStartOfDay())) continue accountLoop;
+
+            Long amount = account.getAccountAmount();
+            LocalDateTime date = account.getAccountDate();
+            String type = account.getAccountType();
+            String nickname = account.getAccountNickname();
+            BankingAccountDetail accountDetail = BankingAccountDetail.create(amount, date, type, nickname);
+
+            bankingAccountDetailList.add(accountDetail);
+        }
+
+        // 정렬1: 최신 순 / 오래된 순
+        String sortCriteria = request.getSortCriteria();
+        if(sortCriteria.equals("최근")) {
+            // 날짜 내림차순으로 정렬 (현재부터)
+            bankingAccountDetailList.sort(Comparator.comparing(BankingAccountDetail::getAccountDate).reversed());
+        } else if(sortCriteria.equals("과거")) {
+            // 날짜 오름차순으로 정렬 (과거부터)
+            bankingAccountDetailList.sort(Comparator.comparing(BankingAccountDetail::getAccountDate));
+        }
+
+        BankingAccountResponse response = BankingAccountResponse.create(accountBalance, openDate, bankingAccountDetailList);
+        return ResponseEntity.ok(response);
+    }
 
     /**
      * 입금 서비스
-     * @param memberPk
-     * @param amount
-     * @return
      */
     @Override
     @Transactional
-    public ResponseEntity<BankingAccountDepositResponse> deposit(long memberPk, long amount) {
-        Optional<Member> optionalMember = memberRepository.findById(memberPk);
+    public ResponseEntity<BankingAccountDepositResponse> deposit(BankingAccountDepositRequest request) {
+        Member member = commonUtil.getMember();
 
-        // 예외1: 해당 사용자가 없을 때
-        if(optionalMember.isEmpty()) {
-            throw new GlobalException(HttpStatus.NOT_FOUND, "Member Not Found");
-        }
+        long amount = request.getAmount();
 
-        Member member = optionalMember.get();
-
-        // 예외2: 입금 요청 금액보다 보유 포인트가 적은 경우
+        // 예외1: 입금 요청 금액보다 보유 포인트가 적은 경우 (400)
         if(amount > member.getMemberCurPoint()) {
             throw new GlobalException(HttpStatus.BAD_REQUEST, "Insufficient Current Point");
         }
@@ -76,32 +123,24 @@ public class AccountServiceImpl implements AccountService {
 
     /**
      * 출금 서비스
-     * @param memberPk
-     * @param accountPassword
-     * @param amount
-     * @return
      */
     @Override
     @Transactional
-    public ResponseEntity<BankingAccountWithdrawResponse> withdraw(long memberPk, int accountPassword, long amount) {
-        Optional<Member> optionalMember = memberRepository.findById(memberPk);
+    public ResponseEntity<BankingAccountWithdrawResponse> withdraw(BankingAccountWithdrawRequest request) {
+        Member member = commonUtil.getMember();
 
-        // 예외1: 해당 사용자가 없을 때 (404)
-        if(optionalMember.isEmpty()) {
-            throw new GlobalException(HttpStatus.NOT_FOUND, "Member Not Found");
-        }
-
-        Member member = optionalMember.get();
+        long amount = request.getAmount();
+        int accountPassword = request.getAccountPassword();
         long accountBalance = getAccountBalance(member.getMemberPk());
 
-        // 예외2: 출금 요청 금액보다 보유 계좌 잔고가 적은 경우 (400)
+        // 예외1: 출금 요청 금액보다 보유 계좌 잔고가 적은 경우 (400)
         if(amount > accountBalance) {
             throw new GlobalException(HttpStatus.BAD_REQUEST, "Insufficient Account Balance");
         }
 
-        // 예외3: 입력 비밀번호가 유저의 비밀번호와 다른 경우 (401)
+        // 예외2: 입력 비밀번호가 유저의 비밀번호와 다른 경우 (400)
         if(!String.valueOf(accountPassword).equals(member.getMemberAccountPassword())) {
-            throw new GlobalException(HttpStatus.UNAUTHORIZED, "Password Not Match");
+            throw new GlobalException(HttpStatus.BAD_REQUEST, "Password Not Match");
         }
 
         Account withdraw = Account.builder()
@@ -124,19 +163,11 @@ public class AccountServiceImpl implements AccountService {
 
     /**
      * 최근 송금한 (6명) 사용자 조회 서비스
-     * @param memberPk
-     * @return
      */
     @Override
-    public ResponseEntity<BankingAccountRemitRecentResponse> recentRemitMembers(long memberPk) {
-        Optional<Member> optionalMember = memberRepository.findById(memberPk);
+    public ResponseEntity<BankingAccountRemitRecentResponse> recentRemitMembers() {
+        Member member = commonUtil.getMember();
 
-        // 예외1: 해당 사용자가 없을 때 (404)
-        if(optionalMember.isEmpty()) {
-            throw new GlobalException(HttpStatus.NOT_FOUND, "Member Not Found");
-        }
-
-        Member member = optionalMember.get();
         List<Account> remits = member.getAccountList()
                 .stream()
                 .filter(a -> a.getAccountType().equals("송금")) // 송금 내역 필터링
@@ -153,8 +184,9 @@ public class AccountServiceImpl implements AccountService {
             String otherMemberNickname = remit.getAccountNickname();
             Optional<Member> optionalOtherMember = memberRepository.findByMemberNickname(otherMemberNickname);
 
+            // 예외1: 최근 송금한 사용자가 없을 때? (400)
             if(optionalOtherMember.isEmpty()) {
-                throw new GlobalException(HttpStatus.NOT_FOUND, "Member Not Found");
+                throw new GlobalException(HttpStatus.BAD_REQUEST, "Member Not Found");
             }
 
             if(!remitMemberNicknames.contains(otherMemberNickname)) {
@@ -176,20 +208,19 @@ public class AccountServiceImpl implements AccountService {
 
     /**
      * 닉네임으로 사용자 조회 서비스
-     * @param nickname
-     * @return
      */
     @Override
-    public ResponseEntity<BankingSearchMemberResponse> searchMember(String nickname) {
-
+    public ResponseEntity<BankingMemberSearchResponse> searchMember(BankingMemberSearchRequest request) {
+        String nickname = request.getNickname();
         Optional<Member> optionalSearchMembers = memberRepository.findByMemberNickname(nickname);
 
+        // 예외1: 해당 닉네임의 사용자가 없을 경우 (400)
         if(optionalSearchMembers.isEmpty()) {
-            throw new GlobalException(HttpStatus.NOT_FOUND, "Member Not Found");
+            throw new GlobalException(HttpStatus.BAD_REQUEST, "Searched Member Not Found");
         }
 
         Member searchMember = optionalSearchMembers.get();
-        BankingSearchMemberResponse response = BankingSearchMemberResponse.create(
+        BankingMemberSearchResponse response = BankingMemberSearchResponse.create(
                 searchMember.getMemberPk(),
                 searchMember.getMemberNickname(),
                 searchMember.getMemberImageUrl());
@@ -199,27 +230,23 @@ public class AccountServiceImpl implements AccountService {
 
     /**
      * 송금 서비스
-     * @param sendMemberPk
-     * @param receiveMemberPk
-     * @param accountPassword
-     * @param amount
-     * @return
      */
     @Override
     @Transactional
-    public ResponseEntity<BankingAccountRemitResponse> remit(long sendMemberPk, long receiveMemberPk, int accountPassword, long amount) {
+    public ResponseEntity<BankingAccountRemitResponse> remit(BankingAccountRemitRequest request) {
 
-        Optional<Member> optionalSendMember = memberRepository.findById(sendMemberPk);
-        Optional<Member> optionalReceiveMember = memberRepository.findById(receiveMemberPk);
+        Member sendMember = commonUtil.getMember();
+        Optional<Member> optionalReceiveMember = memberRepository.findById(request.getOtherUserPk());
 
-        // 예외1: 사용자가 없을 때 (404)
-        if(optionalSendMember.isEmpty()||optionalReceiveMember.isEmpty()) {
-            throw new GlobalException(HttpStatus.NOT_FOUND, "Member Not Found");
+        // 예외1: 송금할 사용자가 없을 때 (400)
+        if(optionalReceiveMember.isEmpty()) {
+            throw new GlobalException(HttpStatus.NOT_FOUND, "Received Member Not Found");
         }
 
-        Member sendMember = optionalSendMember.get();
         Member receiveMember = optionalReceiveMember.get();
 
+        long amount = request.getAmount();
+        long accountPassword = request.getAccountPassword();
         long accountBalance = getAccountBalance(sendMember.getMemberPk());
 
         // 예외2: 송금 요청 금액보다 보유 계좌 잔고가 적은 경우 (400)
@@ -227,9 +254,9 @@ public class AccountServiceImpl implements AccountService {
             throw new GlobalException(HttpStatus.BAD_REQUEST, "Insufficient Account Balance");
         }
 
-        // 예외3: 입력 비밀번호가 유저의 비밀번호와 다른 경우 (401)
+        // 예외3: 입력 비밀번호가 유저의 비밀번호와 다른 경우 (400)
         if(!String.valueOf(accountPassword).equals(sendMember.getMemberAccountPassword())) {
-            throw new GlobalException(HttpStatus.UNAUTHORIZED, "Password Not Match");
+            throw new GlobalException(HttpStatus.BAD_REQUEST, "Password Not Match");
         }
 
         Account sendRemit = Account.builder()
@@ -249,7 +276,7 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.save(sendRemit);
         accountRepository.save(receiveRemit);
 
-        accountBalance = getAccountBalance(sendMemberPk);
+        accountBalance = getAccountBalance(sendMember.getMemberPk());
         LocalDateTime requestTime = sendRemit.getAccountDate();
 
         BankingAccountRemitResponse response = BankingAccountRemitResponse.create(accountBalance, requestTime);
@@ -259,27 +286,22 @@ public class AccountServiceImpl implements AccountService {
 
     /**
      * 계좌 비밀번호 변경 서비스
-     * @param memberPk
-     * @param checkPassword
-     * @param changePassword
      */
     @Override
     @Transactional
-    public ResponseEntity<BankingPasswordChangeResponse> changePassword(long memberPk, int originPassword, int checkPassword, int changePassword) {
+    public ResponseEntity<BankingPasswordChangeResponse> changePassword(BankingPasswordChangeRequest request) {
 
-        Optional<Member> optionalMember = memberRepository.findById(memberPk);
+        Member member = commonUtil.getMember();
 
-        // 예외1: 해당 사용자가 없을 때
-        if(optionalMember.isEmpty()) {
-            throw new GlobalException(HttpStatus.NOT_FOUND, "Member Not Found");
-        }
+        Integer changePassword = request.getChangePassword();
+        Integer checkPassword = request.getCheckPassword();
+        Integer originPassword = request.getOriginPassword();
 
-        Member member = optionalMember.get();
         String accountPassword = member.getMemberAccountPassword();
         String changePasswordToStr = String.valueOf(changePassword);
         String checkPasswordToStr = String.valueOf(checkPassword);
 
-        // 예외2: 확인 비밀번호가 유저의 비밀번호와 다른 경우 (401)
+        // 예외1: 확인 비밀번호가 유저의 비밀번호와 다른 경우 (400)
         if(!String.valueOf(originPassword).equals(accountPassword)) {
             throw new GlobalException(HttpStatus.BAD_REQUEST, "Password Not Match");
         }
@@ -289,19 +311,19 @@ public class AccountServiceImpl implements AccountService {
         Matcher matcher1 = regex.matcher(changePasswordToStr);
         Matcher matcher2 = regex.matcher(checkPasswordToStr);
 
-        // 예외3: 변경할 비밀번호 형식이 안맞을 떄
+        // 예외2: 변경할 비밀번호 형식이 안맞을 때 (400)
         if(!matcher1.matches()||!matcher2.matches()) {
-            throw new GlobalException(HttpStatus.UNAUTHORIZED, "Not Match Input Format");
+            throw new GlobalException(HttpStatus.BAD_REQUEST, "Not Match Input Format");
         }
 
-        // 예외4: 변경 비밀번호와 변경 확인 비밀번호가 다를 때
+        // 예외3: 변경 비밀번호와 변경 확인 비밀번호가 다를 때 (400)
         if(!changePasswordToStr.equals(checkPasswordToStr)) {
-            throw new GlobalException(HttpStatus.PAYMENT_REQUIRED, "Check Password Not Match");
+            throw new GlobalException(HttpStatus.BAD_REQUEST, "Check Password Not Match");
         }
 
-        // 예외5: 변경할 비밀번호가 기존 비밀번호랑 같을 때
+        // 예외4: 변경할 비밀번호가 기존 비밀번호랑 같을 때 (400)
         if(changePasswordToStr.equals(accountPassword)) {
-            throw new GlobalException(HttpStatus.FORBIDDEN, "Same Password");
+            throw new GlobalException(HttpStatus.BAD_REQUEST, "Same Change Password");
         }
 
         member.changeAccountPassword(changePasswordToStr);
@@ -319,7 +341,7 @@ public class AccountServiceImpl implements AccountService {
 
         // 예외: 해당 사용자가 없을 때
         if(optionalMember.isEmpty()) {
-            throw new GlobalException(HttpStatus.NOT_FOUND, "Member Not Found");
+            throw new GlobalException(HttpStatus.BAD_REQUEST, "Member Not Found");
         }
 
         Member member = optionalMember.get();

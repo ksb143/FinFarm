@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public class BankingLoanRepayRequest {
 
-    private Long loanPk;
+    private Long loanHistoryPk;
     private Long amount;
     private Integer accountPassword;
 }

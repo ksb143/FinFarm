@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity(name = "loan_history_TB")
 @Getter
@@ -15,8 +14,8 @@ public class LoanHistory {
     @Column(name = "loan_history_pk")
     private Long loanHistoryPk;
 
-    @Column(name = "loan_history_price")
-    private Long loanHistoryPrice;
+    @Column(name = "loan_history_amount")
+    private Long loanHistoryAmount;
 
     @Column(name = "loan_history_start_date")
     private LocalDate loanHistoryStartDate;
@@ -35,12 +34,16 @@ public class LoanHistory {
     @Column(name = "loan_history_is_repay")
     private Boolean isRepay;
 
+    @Column(name = "loan_history_repay_amount")
+    private Long loanHistoryRepayAmount;
+
     @Builder
     public LoanHistory(Long amount, Member member, Loan loan) {
-        this.loanHistoryPrice = amount;
+        this.loanHistoryAmount = amount;
         this.loanHistoryStartDate = LocalDate.now();
         this.loanHistoryEndDate = LocalDate.now().plusDays(loan.getLoanPeriod());
         this.isRepay = false;
+        this.loanHistoryRepayAmount = Math.round(this.loanHistoryAmount * (1+loan.getLoanInterest())); // 상환금: 대출금*(1+이자율)
         setMember(member);
         setLoan(loan);
     }
@@ -65,7 +68,12 @@ public class LoanHistory {
         loan.getLoanHistoryList().add(this);
     }
 
-    public void setRepay() {
+    public void repay() {
         this.isRepay = true;
+    }
+
+    // 대출 연체
+    public void overDue() {
+        this.member.loanOverDue();
     }
 }
