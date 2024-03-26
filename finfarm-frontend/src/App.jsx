@@ -6,6 +6,7 @@ import EntrancePage from '@/pages/entrance/EntrancePage';
 import RedirectPage from '@/pages/entrance/RedirectPage';
 import Bank from '@/router/Bank';
 import Entrance from '@/router/Entrance';
+import MyFarm from '@/router/MyFarm';
 
 function App() {
   return (
@@ -15,9 +16,14 @@ function App() {
         <Routes>
           <Route path="/" element={<EntrancePage />} />
           <Route path="home" element={<MainHomePage />} />
-          <Route path="Entrance/*" element={<Entrance />} />
+          <Route path="entrance/*" element={<Entrance />} />
           <Route path="bank/*" element={<Bank />} />
+<<<<<<< HEAD
           <Route path="oauth/callback/kakao" element={<RedirectPage />} />
+=======
+          <Route path="myfarm/*" element={<MyFarm />} />
+          <Route path="oauth/callback/kakao" element={<RedirectPage/>} />
+>>>>>>> f685b6e16798c80bab65eb8c9000328614f6a646
         </Routes>
       </div>
     </Router>
