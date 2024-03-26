@@ -161,8 +161,8 @@ public class MemberService {
                 log.info("refresh_token : " + refresh_Token);
             } else {
                 log.info("HTTP 요청 실패: " + response.statusCode());
+                throw new GlobalException(HttpStatus.BAD_REQUEST, "잘못된 인가 코드입니다.");
             }
-
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
