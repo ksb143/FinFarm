@@ -55,7 +55,6 @@ public class LoanHistoryServiceImpl implements LoanHistoryService {
         long totalRepayAmount = 0L;
 
         for(LoanHistory history: loanHistoryList) {
-
             Loan loan = history.getLoan();
             Long pk = loan.getLoanPk();
             String name = loan.getLoanName();
@@ -83,6 +82,7 @@ public class LoanHistoryServiceImpl implements LoanHistoryService {
     }
 
     @Override
+    @Transactional
     public ResponseEntity<BankingLoanTakeResponse> loan(BankingLoanTakeRequest request) {
         Member member = commonUtil.getMember();
         Optional<Loan> optionalLoan = loanRepository.findById(request.getLoanPk());
@@ -153,6 +153,7 @@ public class LoanHistoryServiceImpl implements LoanHistoryService {
     }
 
     @Override
+    @Transactional
     public ResponseEntity<BankingLoanRepayResponse> loanRepay(BankingLoanRepayRequest request) {
         Member member = commonUtil.getMember();
         Long loanHistoryPk = request.getLoanHistoryPk();

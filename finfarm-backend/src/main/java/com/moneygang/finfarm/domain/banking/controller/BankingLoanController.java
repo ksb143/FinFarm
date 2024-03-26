@@ -34,6 +34,7 @@ public class BankingLoanController {
         return loanHistoryService.getLoanHistory();
     }
 
+
     @Operation(summary = "대출 받기", description = "대출 심사 후 원하는 금액을 대출받습니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
@@ -48,6 +49,7 @@ public class BankingLoanController {
         return loanHistoryService.loan(request);
     }
 
+
     @Operation(summary = "대출 심사", description = "(1) 해당 대출 상품을 이용하고 있는지, (2) 대출 연체 내역이 있는지 확인하며 대출 심사 진행")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
@@ -57,6 +59,7 @@ public class BankingLoanController {
     public ResponseEntity<BankingLoanAuditResponse> loanAudit(@RequestBody BankingLoanAuditRequest request) {
         return loanHistoryService.loanAudit(request);
     }
+
 
     @Operation(summary = "대출 상환", description = "대출받은 금액을 이자를 붙여 상환합니다.")
     @ApiResponses({

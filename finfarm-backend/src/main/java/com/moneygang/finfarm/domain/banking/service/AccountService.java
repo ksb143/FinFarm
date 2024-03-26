@@ -6,6 +6,9 @@ import org.springframework.http.ResponseEntity;
 
 public interface AccountService {
 
+    // 계좌 내역 조회
+    public void getAccountHistory(BankingAccountRequest request);
+
     // 계좌 입금
     public ResponseEntity<BankingAccountDepositResponse> deposit(BankingAccountDepositRequest request);
 

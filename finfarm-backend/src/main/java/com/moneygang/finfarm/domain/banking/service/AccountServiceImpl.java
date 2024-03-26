@@ -35,6 +35,16 @@ public class AccountServiceImpl implements AccountService {
     private final CommonUtil commonUtil;
 
     /**
+     * 계좌 내역 조회 서비스
+     */
+    @Override
+    public void getAccountHistory(BankingAccountRequest request) {
+        Member member = commonUtil.getMember();
+
+        List<Account> accountList = member.getAccountList();
+    }
+
+    /**
      * 입금 서비스
      */
     @Override
