@@ -110,7 +110,7 @@ public class AccountServiceImpl implements AccountService {
                 .build();
 
         accountRepository.save(deposit);
-        member.updateCurPoint(amount);
+        member.updateCurPoint((-1)*amount); // 입금: curPoint -> accountBalance
 
         Long curPoint = member.getMemberCurPoint();
         Long accountBalance = getAccountBalance(member.getMemberPk());
