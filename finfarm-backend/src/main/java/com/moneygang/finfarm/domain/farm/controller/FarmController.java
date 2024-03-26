@@ -51,4 +51,9 @@ public class FarmController {
     public ResponseEntity<?> itemDump(@RequestBody DeleteItemRequest request){
         return farmService.itemDump(request);
     }
+
+    @GetMapping("/farm-level")
+    public ResponseEntity<?> upgradeFarmLevel(){
+        return farmService.upgradeFarmLevel();
+    }
 }

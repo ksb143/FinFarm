@@ -129,4 +129,9 @@ public class FarmServiceImpl implements FarmService{
         );
         return ResponseEntity.ok(response);
     }
+
+    @Override
+    public ResponseEntity<?> upgradeFarmLevel() {
+        return null;
+    }
 }

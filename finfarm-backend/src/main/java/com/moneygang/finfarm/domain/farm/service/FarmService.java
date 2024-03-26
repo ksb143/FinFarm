@@ -6,4 +6,5 @@ import org.springframework.http.ResponseEntity;
 public interface FarmService {
     ResponseEntity<?> myFarmView();
     ResponseEntity<?> itemDump(DeleteItemRequest request);
+    ResponseEntity<?> upgradeFarmLevel();
 }
