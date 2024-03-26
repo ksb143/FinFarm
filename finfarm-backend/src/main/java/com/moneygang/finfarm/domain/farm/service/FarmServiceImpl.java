@@ -38,7 +38,7 @@ public class FarmServiceImpl implements FarmService{
         int nextFarmEffectInt;
         double nextReinforceProbability;
         int nextReinforceCost;
-        if(reinforceList.get(0).getReinforceLevel() == 10){
+        if(member.getFarmLevel() == 10){
             curFarmEffectInt = 55;
             nextFarmEffectInt = 55;
             nextReinforceProbability = 0;
