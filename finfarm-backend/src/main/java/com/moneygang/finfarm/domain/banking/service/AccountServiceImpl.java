@@ -306,7 +306,7 @@ public class AccountServiceImpl implements AccountService {
             throw new GlobalException(HttpStatus.BAD_REQUEST, "Password Not Match");
         }
 
-        String pattern = "^\\\\d{4}$"; // 4자리 숫자 형태의 정규 표현식
+        String pattern = "\\d{4}"; // 4자리 숫자 형태의 정규 표현식
         Pattern regex = Pattern.compile(pattern);
         Matcher matcher1 = regex.matcher(changePasswordToStr);
         Matcher matcher2 = regex.matcher(checkPasswordToStr);
