@@ -14,8 +14,8 @@ const KakaoLoginButton = () => {
   };
   const buttonStyle = {
     background: `url(${KakaoImg}) center/cover`, // 배경 이미지 설정
-    width: '600px', // 원하는 너비
-    height: '70px', // 원하는 높이
+    width: '600px', 
+    height: '70px', 
   };
 
   return (
