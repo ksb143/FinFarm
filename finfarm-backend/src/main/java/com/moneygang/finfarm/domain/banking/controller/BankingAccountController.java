@@ -20,6 +20,17 @@ public class BankingAccountController {
     private final AccountService accountService;
 
 
+    @Operation(summary = "계좌 내역 조회", description = "필터링, 정렬 조건에 따라 계좌 내역을 조회합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
+                    content = @Content(schema = @Schema(implementation = BankingAccountResponse.class))),
+    })
+    @GetMapping
+    public ResponseEntity<BankingAccountResponse> getAccountHistory(@RequestBody BankingAccountRequest request) {
+        return accountService.getAccountHistory(request);
+    }
+
+
     @Operation(summary = "계좌 입금", description = "계좌에 원하는 금액을 입금합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",

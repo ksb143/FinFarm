@@ -1,6 +1,7 @@
 package com.moneygang.finfarm.domain.banking.service;
 
 
+import com.moneygang.finfarm.domain.banking.dto.general.BankingAccountDetail;
 import com.moneygang.finfarm.domain.banking.dto.general.BankingAccountRemitMember;
 import com.moneygang.finfarm.domain.banking.dto.request.*;
 import com.moneygang.finfarm.domain.banking.dto.response.*;
@@ -16,11 +17,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -38,10 +37,54 @@ public class AccountServiceImpl implements AccountService {
      * 계좌 내역 조회 서비스
      */
     @Override
-    public void getAccountHistory(BankingAccountRequest request) {
+    public ResponseEntity<BankingAccountResponse> getAccountHistory(BankingAccountRequest request) {
         Member member = commonUtil.getMember();
 
         List<Account> accountList = member.getAccountList();
+
+        Long accountBalance = getAccountBalance(member.getMemberPk());
+        LocalDate openDate = member.getMemberCreateDate();
+        List<BankingAccountDetail> bankingAccountDetailList = new ArrayList<>();
+
+        accountLoop:
+        for(Account account: accountList) {
+            // 필터링1: 거래 타입(입금, 출금 두 가지로 입력 형식 들어옴)
+            if(request.getAccountType().equals("입금")) {
+                if(account.getAccountAmount()<0) continue accountLoop;
+            } else {
+                if(account.getAccountAmount()>0) continue accountLoop;
+            }
+
+            // 필터링2: 적요 내용
+            if(!request.getAccountNickname().equals("")) {
+                if(!request.getAccountNickname().equals(account.getAccountNickname())) continue accountLoop;
+            }
+
+            // 필터링3: startDate ~ endDate
+            LocalDateTime accountDate = account.getAccountDate();
+            if(accountDate.isBefore(request.getStartDate().atStartOfDay()) || accountDate.isAfter(request.getEndDate().atStartOfDay())) continue accountLoop;
+
+            Long amount = account.getAccountAmount();
+            LocalDateTime date = account.getAccountDate();
+            String type = account.getAccountType();
+            String nickname = account.getAccountNickname();
+            BankingAccountDetail accountDetail = BankingAccountDetail.create(amount, date, type, nickname);
+
+            bankingAccountDetailList.add(accountDetail);
+        }
+
+        // 정렬1: 최신 순 / 오래된 순
+        String sortCriteria = request.getSortCriteria();
+        if(sortCriteria.equals("최근")) {
+            // 날짜 내림차순으로 정렬 (현재부터)
+            bankingAccountDetailList.sort(Comparator.comparing(BankingAccountDetail::getAccountDate).reversed());
+        } else if(sortCriteria.equals("과거")) {
+            // 날짜 오름차순으로 정렬 (과거부터)
+            bankingAccountDetailList.sort(Comparator.comparing(BankingAccountDetail::getAccountDate));
+        }
+
+        BankingAccountResponse response = BankingAccountResponse.create(accountBalance, openDate, bankingAccountDetailList);
+        return ResponseEntity.ok(response);
     }
 
     /**
