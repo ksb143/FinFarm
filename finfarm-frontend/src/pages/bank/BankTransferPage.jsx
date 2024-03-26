@@ -14,10 +14,11 @@ export default function BankTransferPage() {
   const [password, setPassword] = useState('');
   const [amount, setAmount] = useState('');
   const [recipient, setRecipient] = useState('');
+  const [clickedIndex, setClickedIndex] = useState(null);
 
   // 이체 여부 확인 함수
   const handleTransferResult = (response) => {
-    setRecentTransfers(response);
+    fetchRecentTransfers();
   };
 
   // 이체 실행 버튼 함수
@@ -38,6 +39,12 @@ export default function BankTransferPage() {
   // 선택 금액 입력 필드에 설정
   const handleAmountSelect = (selectedAmount) => {
     setAmount(selectedAmount);
+  };
+
+  // 최근 이체자 수정
+  const handleRecipient = (index) => {
+    setClickedIndex(index);
+    setRecipient(recentTransfer[index].nickname);
   };
 
   // 최근 이체 내역 설정
@@ -152,6 +159,10 @@ export default function BankTransferPage() {
                     recentTransfers={recentTransfer.nickname}
                     profileImg={recentTransfer.requestTime}
                     transferDate={recentTransfer.imgeUrl}
+                    onClick={() => {
+                      handleRecipient(recentTransfer.nickname);
+                    }}
+                    className={clickedIndex === idx ? 'red-border' : ''}
                   />
                 ))}
               </div>
@@ -181,6 +192,7 @@ export default function BankTransferPage() {
                   type="text"
                   className="grow"
                   placeholder="송금하실 분의 닉네임"
+                  value={recipient}
                 />
                 <button className="h-full rounded-r-lg border-2 bg-gray-300 bg-lime-500 px-7 text-white">
                   조회
