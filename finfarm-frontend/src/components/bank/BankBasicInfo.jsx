@@ -6,15 +6,16 @@ BankBasicinfo.propTypes = {
 import Button from '@/components/layout/Button';
 
 export default function BankBasicinfo({ isButton }) {
+  const num = 23000;
   return (
-    <div className="flex items-center justify-between rounded-xl border-2 border-solid border-gray-300 bg-white px-10 py-3">
+    <div className="flex w-full items-center justify-between rounded-xl border-2 border-solid border-gray-300 bg-white px-10 py-3">
       <div className="mr-3 flex-1 border-r-2 border-solid border-gray-300">
         닉네임의 통장
       </div>
       <div className="flex flex-1 items-center justify-between">
         <div className="flex gap-10 ps-3">
           <span>계좌잔액</span>
-          <span className="text-lime-800">{23000}원</span>
+          <span className="text-lime-800">{num.toLocaleString('ko-KR')}원</span>
         </div>
         {isButton ? (
           <div className="flex gap-3">

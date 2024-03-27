@@ -219,16 +219,16 @@ export default function BankTransferPage() {
             </div>
             <label className="input input-bordered flex items-center gap-2 border-2 border-solid border-gray-300">
               <input
-                value={amount || ''}
+                value={amount.toLocaleString('ko-KR')}
                 type="text"
                 className="grow"
                 placeholder="입금금액"
                 onChange={(e) => {
-                  const value = e.target.value;
-                  const regex = /^\d*$/;
-                  if (regex.test(value)) {
-                    // 입력된 값이 숫자인 경우에만 상태를 업데이트합니다.
-                    setAmount(Number(value));
+                  const value = e.target.value.replace(/[^0-9]/g, ''); // 숫자가 아닌 모든 문자를 제거
+                  if (value) {
+                    setAmount(Number(value)); // 값이 있으면 숫자로 변환하여 설정
+                  } else {
+                    setAmount(''); // 값이 없으면 빈 문자열로 설정
                   }
                 }}
               />
