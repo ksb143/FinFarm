@@ -9,11 +9,13 @@ const SignupProcessPage = () => {
   const handleInputNickname = e => {
     const value = e.target.value;
     setNickname(value);
+    localStorage.setItem('memberNickname',value);
   }
 
   const handleInputAccountPW = e => {
     const value = e.target.value;
     setAccountPW(value);
+    localStorage.setItem('memberAccountPassword',value);
   }
 
   const handleSubmit = () => {

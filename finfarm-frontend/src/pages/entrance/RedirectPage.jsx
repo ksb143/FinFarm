@@ -34,13 +34,14 @@ const RedirectPage = () => {
       console.log('백엔드에서 인가코드를 잘 받았고, 응답을 줬습니다.', res.data);
 
       if (res.data.member) { // member: True 인 경우, 로그인 처리
-        console.log(`안녕하세요, ${res.data.memberNickname}님! 환영합니다.`);        
+        console.log(`안녕하세요, ${res.data.memberNickname}님! 환영합니다.`);
         // 받은 모든 정보를 로컬 스토리지에 저장하고, 메인홈으로 이동.
       } else { // member: False 인 경우, 회원가입 진행
         console.log('회원이 아니신 것으로 확인되었습니다. 회원가입 페이지로 이동하여 진행해주세요.');
         // 회원이 아닐 경우에도 백엔드로 이동하도록 수정할 수 있습니다.
         localStorage.clear
         localStorage.setItem('memberEmail', res.data.memberNickname)
+        localStorage.setItem('accessToken', res.data.accessToken)
         window.location.href = `${finfarm_URL}entrance/signup`
       }
     } catch (error) {
