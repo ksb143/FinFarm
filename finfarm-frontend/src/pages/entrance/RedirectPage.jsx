@@ -24,7 +24,7 @@ const RedirectPage = () => {
     };
   
     const dataToSend = {
-      authCode : code, // 여기서 'code'를 'authCode' 키의 값으로 설정
+      accessToken : code, // 여기서 'code'를 'authCode' 키의 값으로 설정
     };
   
     try {
