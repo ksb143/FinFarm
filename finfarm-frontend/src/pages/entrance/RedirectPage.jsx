@@ -1,9 +1,11 @@
 import { useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 const { VITE_REACT_API_URL } = import.meta.env;
 const finfarm_URL = 'https://j10d203.p.ssafy.io/';
 
 const RedirectPage = () => {
+  const navigate = useNavigate();
   useEffect(() => {
     // URL에서 인가 코드를 추출합니다.
     const auth_code0 = new URLSearchParams(window.location.search).get('code');
@@ -43,17 +45,18 @@ const RedirectPage = () => {
         localStorage.setItem('memberNickname', res.data.memberNickname)
         localStorage.setItem('memberSolveQuiz', res.data.memberSolveQuiz)
         console.log('로그인완료. 메인화면으로 곧 이동합니다.')
-        // window.location.href = `${finfarm_URL}home`
+        navigate('/home');
 
       } else { // member: False 인 경우, 회원가입 진행
         console.log('회원이 아니십니다. 회원가입 페이지로 이동하여 진행해주세요.');
         // 회원이 아닐 경우에도 백엔드로 이동하도록 수정할 수 있습니다.
         localStorage.setItem('memberEmail', res.data.memberNickname)
         console.log('회원가입 준비 중. 이메일 저장완료. 회원가입 페이지로 곧 이동합니다.')
-        window.location.href = `${finfarm_URL}entrance/signup`
+        navigate('/entrance/signup');
       }
     } catch (error) {
       console.error('Error:', error.response ? error.response.data : error.message);
+      // Todo.[에러핸들링] 어떤 에러인가에 따라서 사용자에게 더 명확한 피드백을 주는 것이 나아 보임. 특정 에러 별로 각각 다른 페이지로 리다이렉션 필요. 
     }
     
   };
