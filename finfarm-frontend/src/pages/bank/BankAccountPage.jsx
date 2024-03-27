@@ -4,7 +4,7 @@ import BankBasicinfo from '@/components/bank/BankBasicInfo';
 import BankAccountTable from '@/components/bank/BankAccount/BankAccountTable';
 import { useState } from 'react';
 
-export default function BankAccount() {
+export default function BankAccountPage() {
   const today = new Date();
   const [startDate, setStartDate] = useState(today.toISOString().split('T')[0]);
   const [endDate, setEndDate] = useState(today.toISOString().split('T')[0]);
