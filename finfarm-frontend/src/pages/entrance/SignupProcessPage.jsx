@@ -80,6 +80,7 @@ const SignupProcessPage = () => {
       console.log("계좌 비밀번호:", accountPW);
       console.log("프로필 사진:", profileImage);
       sendDataToBackend(localStorage.getItem('memberEmail'),localStorage.getItem('memberNickname'),localStorage.getItem('memberAccountPassword'),localStorage.getItem('memberImageUrl'))
+      console.log('로컬스토리지에 필요한 정보를 모두 저장했습니다.')
     }
   }
 
@@ -96,7 +97,6 @@ const SignupProcessPage = () => {
     try {
       const res = await axios.post(`${VITE_REACT_API_URL}member/sign-up`, JSON.stringify(dataToSend), { withCredentials: true, headers });
       console.log('회원가입에 필요한 정보를 성공적으로 전달했습니다.', res.data)
-      window.location.href = `${finfarm_URL}home`
     } catch (error) {
       console.error('Error:', error.response ? error.response.data : error.message);
     }
@@ -118,7 +118,8 @@ const SignupProcessPage = () => {
       <p>3. 프로필 사진을 설정해주세요.</p>
       <input type="file" accept="image/*" onChange={handleFileUpload} />
       {error && <p className="text-red-500">{error}</p>}
-
+      <br />
+      <br />
       <Button onClick={handleSubmit} disabled={!isFormValid}>회원가입 완료</Button>
     </div>
   );
