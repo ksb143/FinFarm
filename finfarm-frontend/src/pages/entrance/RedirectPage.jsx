@@ -18,14 +18,16 @@ const RedirectPage = () => {
 
   const sendCodeToBackend = async (code) => {
     const headers = {
-      "Content-Type" : "application/x-www-form-urlencoded",
+      "Content-Type" : "application/x-www-form-urlencoded;charset=UTF-8",
     }
     try {
       const response = await axios.post(`${VITE_REACT_API_URL}member/login`, 
         `code=${code}`, { withCredentials: true, headers });
+
       console.log('Success:', response.data);
       // 여기서 추가적인 성공 로직을 처리할 수 있습니다.
     } catch (error) {
+
       console.error('Error:', error.response ? error.response.data : error.message);
     }
   };
