@@ -15,11 +15,16 @@ function App() {
         <Navbar></Navbar>
         <Routes>
           <Route path="/" element={<EntrancePage />} />
-          <Route path="home" element={<MainHomePage />} />
-          <Route path="entrance/*" element={<Entrance />} />
-          <Route path="bank/*" element={<Bank />} />
-          <Route path="myfarm/*" element={<MyFarm />} />
           <Route path="oauth/callback/kakao" element={<RedirectPage />} />
+          {/* 입구의 로그인, 로그아웃, 카카오로그인 */}
+          <Route path="entrance/*" element={<Entrance />} />
+          {/* 메인 홈 페이지 */}
+          <Route path="home" element={<MainHomePage />} />
+           {/* 뱅크 관련  */}
+          <Route path="bank/*" element={<Bank />} />
+          {/* 내농장 관련 */}
+          <Route path="myfarm/*" element={<MyFarm />} />
+
         </Routes>
       </div>
     </Router>
