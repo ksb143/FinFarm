@@ -1,7 +1,9 @@
 import { useState } from "react";
 import axios from 'axios';
+
 const { VITE_REACT_API_URL } = import.meta.env;
 const finfarm_URL = 'https://j10d203.p.ssafy.io/';
+
 
 const SignupProcessPage = () => {
   const [nickname, setNickname] = useState('');
@@ -16,6 +18,7 @@ const SignupProcessPage = () => {
       setError('닉네임은 10자 이내이고 공백을 포함할 수 없습니다.');
       setIsFormValid(false);
     } else {
+      localStorage.setItem('memberNickname', nickname);
       setNickname(value);
       setError('');
       checkFormValidity();
@@ -28,6 +31,7 @@ const SignupProcessPage = () => {
       setError('계좌 비밀번호는 0부터 9까지의 숫자 4자리여야 합니다.');
       setIsFormValid(false);
     } else {
+      localStorage.setItem('memeberAccountPassword', accountPW);
       setAccountPW(value);
       setError(''); // 입력 시 에러 초기화
       checkFormValidity();
@@ -48,6 +52,7 @@ const SignupProcessPage = () => {
       setError('프로필 사진은 최대 10MB까지 지원합니다.');
       setIsFormValid(false);
     } else {
+      
       setProfileImage(file);
       setError('');
       checkFormValidity();
@@ -65,9 +70,6 @@ const SignupProcessPage = () => {
   const handleSubmit = () => {
     if (isFormValid) {
       // 입력된 값들을 로컬 스토리지에 저장합니다.
-      localStorage.setItem('memberNickname', nickname);
-      localStorage.setItem('memeberAccountPassword', accountPW);
-      localStorage.setItem('memberImageUrl', profileImage);
       console.log("닉네임:", nickname);
       console.log("계좌 비밀번호:", accountPW);
       console.log("프로필 사진:", profileImage);
@@ -88,7 +90,7 @@ const SignupProcessPage = () => {
     try {
       const res = await axios.post(`${VITE_REACT_API_URL}member/sign-up`, JSON.stringify(dataToSend), { withCredentials: true, headers });
       console.log('회원가입에 필요한 정보를 성공적으로 전달했습니다.', res.data)
-      window.location.href = `${finfarm_URL}/home`
+      window.location.href = `${finfarm_URL}home`
     } catch (error) {
       console.error('Error:', error.response ? error.response.data : error.message);
     }
