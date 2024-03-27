@@ -1,5 +1,9 @@
 package com.moneygang.finfarm.domain.member.service;
 
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -12,15 +16,18 @@ import com.moneygang.finfarm.domain.member.entity.Member;
 import com.moneygang.finfarm.domain.member.repository.MemberRepository;
 import com.moneygang.finfarm.global.base.CommonUtil;
 import com.moneygang.finfarm.global.base.JwtTokenProvider;
+import com.moneygang.finfarm.global.config.AWSS3Config;
 import com.moneygang.finfarm.global.exception.GlobalException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.net.URI;
@@ -40,6 +47,13 @@ public class MemberServiceImpl implements MemberService{
     private final JwtTokenProvider tokenProvider;
     private final MemberRepository memberRepository;
     private final RedisTemplate<String, String> redisTemplate;
+
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
+    @Value("${cloud.aws.s3.base-url}")
+    private String baseUrl;
+    private final AmazonS3Client amazonS3Client;
+
 
     @Override
     public ResponseEntity<List<Member>> selcetAll() {
@@ -289,7 +303,39 @@ public class MemberServiceImpl implements MemberService{
     public ResponseEntity<MemberProfileResponse> saveProfileImage(MemberProfileRequest request) {
         log.info("member saveProfileImage");
 
-        return null;
+        MultipartFile file = request.getFile();
+        try {
+            // 프로필 사진 파일명
+            String originalFileName = file.getOriginalFilename();
+
+            // 중복 방지를 위한 랜덤 값 String 을 앞에 추가
+            String s3UploadFileName = UUID.randomUUID() + originalFileName;
+
+            // S3에 업로드 된 파일의 url 주소
+            String uploadedFileUrl = baseUrl + s3UploadFileName;
+
+            // S3에 파일과 함께 올릴 메타데이터
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentType(file.getContentType());
+            metadata.setContentLength(file.getSize());
+
+            // S3에 요청 보낼 객체 생성
+            PutObjectRequest putObjectRequest = new PutObjectRequest(
+                    bucket, s3UploadFileName, file.getInputStream(), metadata
+            );
+
+            // S3에 요청 보내서 파일 업로드
+            putObjectRequest.withCannedAcl(CannedAccessControlList.PublicRead);
+            amazonS3Client.putObject(putObjectRequest);
+
+            log.info("s3에 프로필 사진 파일 업로드 성공");
+
+            return ResponseEntity.ok(MemberProfileResponse.create(uploadedFileUrl));
+        } // S3에 파일 업로드 실패 시 에러 출력하고 null 리턴
+        catch (IOException e) {
+            log.error(e.getMessage());
+            throw new GlobalException(HttpStatus.BAD_REQUEST, "프로필 사진 저장 실패");
+        }
     }
 
     @Override

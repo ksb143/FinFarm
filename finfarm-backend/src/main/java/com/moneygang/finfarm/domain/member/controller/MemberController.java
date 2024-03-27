@@ -3,6 +3,7 @@ package com.moneygang.finfarm.domain.member.controller;
 import com.moneygang.finfarm.domain.banking.dto.response.BankingLoanTakeResponse;
 import com.moneygang.finfarm.domain.member.dto.request.MemberJoinRequest;
 import com.moneygang.finfarm.domain.member.dto.request.MemberLoginRequest;
+import com.moneygang.finfarm.domain.member.dto.request.MemberProfileRequest;
 import com.moneygang.finfarm.domain.member.dto.request.MemberReissueRequest;
 import com.moneygang.finfarm.domain.member.dto.response.*;
 import com.moneygang.finfarm.domain.member.entity.Member;
@@ -91,6 +92,16 @@ public class MemberController {
     @DeleteMapping("/quit")
     public ResponseEntity<MemberQuitResponse> quit() {
         return memberService.quit();
+    }
+
+    @Operation(summary = "프로필 사진 저장", description = "이미지를 서버에 저장한 후, 해당 url 을 제공합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)", content = @Content(schema = @Schema(implementation = MemberReissueResponse.class))),
+            @ApiResponse(responseCode = "400", description = "(message : \"Bad Request\", code : 400)", content = @Content)
+    })
+    @PostMapping("/profile")
+    public ResponseEntity<MemberProfileResponse> checkNicknameDuplication(MemberProfileRequest request) {
+        return memberService.saveProfileImage(request);
     }
 
     @Operation(summary = "닉네임 중복 검사", description = "닉네임의 중복 여부를 확인합니다.")
