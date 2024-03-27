@@ -1,7 +1,5 @@
 import { useState } from "react";
 import axios from 'axios';
-import Button from '@/components/layout/Button';
-
 const { VITE_REACT_API_URL } = import.meta.env;
 
 const SignupProcessPage = () => {
@@ -54,10 +52,10 @@ const SignupProcessPage = () => {
 
       <p>2. 계좌 비밀번호를 0~9 사이 숫자 4개로 설정해주세요.</p>
       <input type="number" value={accountPW} onChange={handleInputAccountPW} />
-      
+
       <br />
       <br />
-      <Button onClick={handleSubmit}>회원가입 완료</Button>
+      <button onClick={handleSubmit}>회원가입 완료</button>
     </div>
   );
 }
