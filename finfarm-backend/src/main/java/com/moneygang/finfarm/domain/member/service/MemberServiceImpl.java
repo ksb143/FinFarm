@@ -293,14 +293,21 @@ public class MemberServiceImpl implements MemberService{
     }
 
     @Override
-    public ResponseEntity<MemberDuplicateNicknameResponse> duplicateNickname() {
+    public ResponseEntity<MemberDuplicateNicknameResponse> duplicateNickname(String nickname) {
         log.info("member duplicateNickname");
 
-        return null;
+        //닉네임 조회
+        Optional<Member> optionalMember = memberRepository.findByMemberEmail(nickname);
+        if(optionalMember.isPresent()) {
+            //닉네임 사용 불가능
+            return ResponseEntity.ok(MemberDuplicateNicknameResponse.create(true));
+        }
+        //닉네임 사용 가능
+        return ResponseEntity.ok(MemberDuplicateNicknameResponse.create(false));
     }
 
     @Override
-    public ResponseEntity<MemberDuplicateEmailResponse> duplicateEmail() {
+    public ResponseEntity<MemberDuplicateEmailResponse> duplicateEmail(String email) {
         log.info("member duplicateEmail");
 
         return null;
