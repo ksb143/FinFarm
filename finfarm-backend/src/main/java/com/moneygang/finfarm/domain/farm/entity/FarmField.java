@@ -4,9 +4,11 @@ import com.moneygang.finfarm.domain.member.entity.Member;
 import com.moneygang.finfarm.domain.market.entity.Agriculture;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+@Setter
 @Getter
 @Entity(name = "farm_field_TB")
 public class FarmField {

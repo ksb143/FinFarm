@@ -1,9 +1,11 @@
 package com.moneygang.finfarm.domain.farm.controller;
 
 import com.moneygang.finfarm.domain.farm.dto.request.DeleteItemRequest;
+import com.moneygang.finfarm.domain.farm.dto.request.PlantRequest;
 import com.moneygang.finfarm.domain.farm.dto.response.DeleteItemResponse;
 import com.moneygang.finfarm.domain.farm.dto.response.FarmLevelPurchaseResponse;
 import com.moneygang.finfarm.domain.farm.dto.response.MyFarmResponse;
+import com.moneygang.finfarm.domain.farm.dto.response.PlantResponse;
 import com.moneygang.finfarm.domain.farm.service.FarmService;
 import com.moneygang.finfarm.domain.market.dto.response.AgricultureInfoResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -71,4 +73,22 @@ public class FarmController {
     public ResponseEntity<?> upgradeFarmLevel(){
         return farmService.upgradeFarmLevel();
     }
+
+    @Operation(summary = "씨앗 심기", description = "사용자 밭에 씨앗을 심습니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
+                    content = @Content(schema = @Schema(implementation = PlantResponse.class))),
+            @ApiResponse(responseCode = "404", description = """
+                    (message : "member not found", code : 404)
+                    
+                    (message : "seed not found", code : 404)
+                    
+                    (message : "Warehouse item not found", code : 404)
+                    """, content = @Content),
+            @ApiResponse(responseCode = "402", description = """
+                    (message : "Invalid Field", code : 402)
+                    """, content = @Content)
+    })
+    @PostMapping("/plant")
+    public ResponseEntity<?> plantSeed(@RequestBody PlantRequest request) {return farmService.plantSeed(request);}
 }

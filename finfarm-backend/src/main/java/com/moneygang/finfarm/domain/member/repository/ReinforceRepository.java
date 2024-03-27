@@ -8,4 +8,5 @@ import java.util.Optional;
 
 public interface ReinforceRepository extends JpaRepository<Reinforce, Long> {
     List<Reinforce> findAllByReinforceLevelBetweenOrderByReinforceLevelAsc(Integer curLevel, Integer nextLevel);
+    Reinforce findByReinforceLevel(Integer curLevel);
 }

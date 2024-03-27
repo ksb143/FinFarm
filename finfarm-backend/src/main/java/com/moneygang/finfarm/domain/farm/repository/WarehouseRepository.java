@@ -9,4 +9,5 @@ import java.util.Optional;
 public interface WarehouseRepository extends JpaRepository<Warehouse, Long> {
     List<Warehouse> findAllByMember_MemberPk(Long memberPk);
     Optional<Warehouse> findByMember_MemberPkAndAgriculture_AgriculturePkAndWarehouseCategory(Long memberPk, Long agriculturePk, Integer category);
+    Optional<Warehouse> findByMember_MemberPkAndAgriculture_AgriculturePk(Long memberPk, Long agriculturePk);
 }

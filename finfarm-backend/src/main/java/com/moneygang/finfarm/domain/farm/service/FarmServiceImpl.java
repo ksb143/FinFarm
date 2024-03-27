@@ -2,10 +2,12 @@ package com.moneygang.finfarm.domain.farm.service;
 
 
 import com.moneygang.finfarm.domain.farm.dto.request.DeleteItemRequest;
+import com.moneygang.finfarm.domain.farm.dto.request.PlantRequest;
 import com.moneygang.finfarm.domain.farm.dto.response.DeleteItemResponse;
 import com.moneygang.finfarm.domain.farm.dto.response.FarmLevelPurchaseResponse;
 import com.moneygang.finfarm.domain.farm.dto.response.MyFarmResponse;
 import com.moneygang.finfarm.domain.farm.dto.detail.FarmFieldInfo;
+import com.moneygang.finfarm.domain.farm.dto.response.PlantResponse;
 import com.moneygang.finfarm.domain.farm.entity.FarmField;
 import com.moneygang.finfarm.domain.farm.entity.Warehouse;
 import com.moneygang.finfarm.domain.farm.repository.FarmFieldRepository;
@@ -24,12 +26,14 @@ import com.moneygang.finfarm.domain.member.repository.ReinforceRepository;
 import com.moneygang.finfarm.global.base.CommonUtil;
 import com.moneygang.finfarm.global.dto.MemberWarehouseDTO;
 import com.moneygang.finfarm.global.exception.GlobalException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -179,6 +183,69 @@ public class FarmServiceImpl implements FarmService{
                     success, member, curFarmEffectInt,
                     nextReinforceCost, nextFarmEffectInt, nextReinforceProbability
                 );
+        return ResponseEntity.ok(response);
+    }
+
+    @Transactional
+    @Override
+    public ResponseEntity<?> plantSeed(PlantRequest request) {
+        Member member = commonUtil.getMember();
+        //씨앗 이름 검사
+        Seed seed = seedRepository.findBySeedName(request.getSeedName())
+                .orElseThrow(() -> new GlobalException(HttpStatus.NOT_FOUND, "seed not found"));
+
+        //사용자 씨앗에 해당하는 창고 아이템 조회
+        Warehouse warehouseItem = warehouseRepository.findByMember_MemberPkAndAgriculture_AgriculturePkAndWarehouseCategory(
+                        member.getMemberPk(), seed.getAgriculture().getAgriculturePk(), 1)
+                .orElseThrow(() -> new GlobalException(HttpStatus.NOT_FOUND, "Warehouse item not found"));
+
+        //창고 아이템의 수량을 1 감소
+        if ((warehouseItem.getWarehouseAmount() - 1) <= 0) {
+            warehouseRepository.delete(warehouseItem);
+        } else {
+            warehouseItem.setWarehouseAmount(warehouseItem.getWarehouseAmount() - 1);
+            warehouseRepository.save(warehouseItem);
+        }
+
+        //심으려는 위치에 씨앗이 있는지 확인
+        boolean isFarmFieldInUse = farmFieldRepository.existsByMember_MemberPkAndFarmFieldIndex(
+                member.getMemberPk(), request.getFarmFieldIndex()
+        );
+        if(isFarmFieldInUse)
+            throw new GlobalException(HttpStatus.CONFLICT, "Invalid Field");
+
+        //해당 위치에 씨앗 심기 (효율성에 따른 시간 계산)
+        Reinforce reinforce = reinforceRepository.findByReinforceLevel(member.getFarmLevel());
+        double timeEfficiency = reinforce.getReinforceProductionEfficiency();
+        long seedPeriod = seed.getSeedPeriod();
+
+        // 최종 수확 시간 계산
+        double harvestTime = seedPeriod * timeEfficiency;
+        long finalHarvestTime = Math.round(harvestTime);
+
+        FarmField newFarmField = new FarmField();
+        newFarmField.setFarmFieldIndex(request.getFarmFieldIndex());
+        newFarmField.setFarmFieldEndTime(LocalDateTime.now().plusMinutes(finalHarvestTime));
+        newFarmField.setMember(member);
+        newFarmField.setAgriculture(seed.getAgriculture());
+
+        farmFieldRepository.save(newFarmField);
+
+        List<FarmField> farmFieldList =
+                farmFieldRepository.findAllByMember_MemberPk(member.getMemberPk());
+
+        List<FarmFieldInfo> farmFieldInfoList = new ArrayList<>();
+        for (FarmField farmField : farmFieldList){
+            farmFieldInfoList.add(
+                    FarmFieldInfo.create(farmField, farmField.getAgriculture())
+            );
+        }
+        MemberWarehouseDTO memberWarehouseDTO = commonUtil.getMemberItem();
+        PlantResponse response = PlantResponse.create(
+                memberWarehouseDTO.getMember(), farmFieldInfoList,
+                memberWarehouseDTO.getMemberItems()
+        );
+
         return ResponseEntity.ok(response);
     }
 }
