@@ -50,7 +50,7 @@ const RedirectPage = () => {
         // 회원이 아닐 경우에도 백엔드로 이동하도록 수정할 수 있습니다.
         localStorage.setItem('memberEmail', res.data.memberNickname)
         console.log('회원가입 준비 중. 이메일 저장완료. 회원가입 페이지로 곧 이동합니다.')
-        // window.location.href = `${finfarm_URL}entrance/signup`
+        window.location.href = `${finfarm_URL}entrance/signup`
       }
     } catch (error) {
       console.error('Error:', error.response ? error.response.data : error.message);
