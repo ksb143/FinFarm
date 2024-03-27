@@ -102,4 +102,14 @@ public class MemberController {
     public ResponseEntity<MemberDuplicateNicknameResponse> checkNicknameDuplication(@PathVariable("nickname") String nickname) {
         return memberService.duplicateNickname(nickname);
     }
+
+    @Operation(summary = "이메일 중복 검사", description = "이메일의 중복 여부를 확인합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)", content = @Content(schema = @Schema(implementation = MemberReissueResponse.class))),
+            @ApiResponse(responseCode = "400", description = "(message : \"Bad Request\", code : 400)", content = @Content)
+    })
+    @GetMapping("/email/is-exist/{email}")
+    public ResponseEntity<MemberDuplicateEmailResponse> checkEmailDuplication(@PathVariable("email") String email) {
+        return memberService.duplicateEmail(email);
+    }
 }

@@ -297,7 +297,7 @@ public class MemberServiceImpl implements MemberService{
         log.info("member duplicateNickname");
 
         //닉네임 조회
-        Optional<Member> optionalMember = memberRepository.findByMemberEmail(nickname);
+        Optional<Member> optionalMember = memberRepository.findByMemberNickname(nickname);
         if(optionalMember.isPresent()) {
             //닉네임 사용 불가능
             return ResponseEntity.ok(MemberDuplicateNicknameResponse.create(true));
@@ -310,7 +310,14 @@ public class MemberServiceImpl implements MemberService{
     public ResponseEntity<MemberDuplicateEmailResponse> duplicateEmail(String email) {
         log.info("member duplicateEmail");
 
-        return null;
+        //이메일 조회
+        Optional<Member> optionalMember = memberRepository.findByMemberEmail(email);
+        if(optionalMember.isPresent()) {
+            //이메일 사용 불가능
+            return ResponseEntity.ok(MemberDuplicateEmailResponse.create(true));
+        }
+        //이메일 사용 가능
+        return ResponseEntity.ok(MemberDuplicateEmailResponse.create(false));
     }
 
 }

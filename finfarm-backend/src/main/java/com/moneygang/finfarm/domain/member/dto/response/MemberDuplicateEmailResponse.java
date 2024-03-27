@@ -8,8 +8,8 @@ import lombok.Getter;
 public class MemberDuplicateEmailResponse {
     private boolean isExist;
 
-    public static MemberDuplicateNicknameResponse create(boolean isExist) {
-        return MemberDuplicateNicknameResponse.builder()
+    public static MemberDuplicateEmailResponse create(boolean isExist) {
+        return MemberDuplicateEmailResponse.builder()
                 .isExist(isExist)
                 .build();
     }
