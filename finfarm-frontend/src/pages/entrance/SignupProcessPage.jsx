@@ -51,11 +51,10 @@ const SignupProcessPage = () => {
 
       <p>1. 닉네임을 설정해주세요.</p>
       <input type="text" value={nickname} onChange={handleInputNickname} />
-      {error && <p className="text-red-500">{error}</p>}
 
       <p>2. 계좌 비밀번호를 0~9 사이 숫자 4개로 설정해주세요.</p>
       <input type="number" value={accountPW} onChange={handleInputAccountPW} />
-      {error && <p className="text-red-500">{error}</p>}
+      
       <br />
       <br />
       <Button onClick={handleSubmit}>회원가입 완료</Button>
