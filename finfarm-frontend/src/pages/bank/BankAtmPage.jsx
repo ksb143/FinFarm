@@ -13,6 +13,8 @@ export default function BankAtmPage() {
 
   const charge = 1000;
 
+  // 입출금 성공 시 모달창 띄워야 함!!!!!!!!!!!!!!!
+
   // 입금 확인
   const handleDepositCheck = () => {
     if (accountName && depositAmount) {
