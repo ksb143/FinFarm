@@ -54,3 +54,17 @@ server:
 jwt:
   token:
     secret: ENC(zAx8irlZGQz2zIac8x/2TgbtI4TJt8fEStvz3SR7MVh6bbpVdzSznRXe8BcYuJUp)
+---
+cloud:
+  aws:
+    s3:
+      bucket: test
+      base-url: test
+    credentials:
+      access-key: test
+      secret-key: test
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false
