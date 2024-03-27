@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.net.URI;
@@ -29,6 +30,7 @@ import java.util.*;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class MemberService {
 
     private final CommonUtil commonUtil;
@@ -41,7 +43,7 @@ public class MemberService {
 
         return ResponseEntity.ok(findAll);
     }
-
+    @Transactional
     public ResponseEntity<MemberJoinResponse> join(MemberJoinRequest request) {
         log.info("member join");
 
@@ -238,11 +240,16 @@ public class MemberService {
                 .body(MemberReissueResponse.create(newAccessToken));
     }
 
+    @Transactional
     public ResponseEntity<MemberQuitResponse> quit() {
         log.info("member quit");
 
+        // authentication 에서 member 객체 조회
         Member member = commonUtil.getMember();
 
-        //
+        // member 삭제
+        memberRepository.deleteById(member.getMemberPk());
+
+        return ResponseEntity.ok(MemberQuitResponse.create("회원 탈퇴 성공"));
     }
 }

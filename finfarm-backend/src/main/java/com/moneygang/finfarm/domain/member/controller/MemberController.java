@@ -85,6 +85,13 @@ public class MemberController {
         return memberService.reissue(request.getMemberEmail(), refreshToken);
     }
 
+    @Operation(summary = "회원 탈퇴", description = "access token 에 해당하는 유저 이메일로 회원 탈퇴합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
+                    content = @Content(schema = @Schema(implementation = MemberReissueResponse.class))),
+            @ApiResponse(responseCode = "400", description = "(message : \"\", code : 400)", content = @Content),
+            @ApiResponse(responseCode = "404", description = "(message : \"user not found\", code : 400)", content = @Content)
+    })
     @DeleteMapping("/quit")
     public ResponseEntity<MemberQuitResponse> quit() {
         return memberService.quit();
