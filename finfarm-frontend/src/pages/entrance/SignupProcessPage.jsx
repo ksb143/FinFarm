@@ -7,8 +7,6 @@ const { VITE_REACT_API_URL } = import.meta.env;
 const SignupProcessPage = () => {
   const [nickname, setNickname] = useState('');
   const [accountPW, setAccountPW] = useState('');
-  const [profileImage, setProfileImage] = useState(null);
-  const [error, setError] = useState('');
 
   const handleInputNickname = e => {
     const value = e.target.value;
@@ -20,21 +18,16 @@ const SignupProcessPage = () => {
     setAccountPW(value);
   }
 
-  const handleFileUpload = e => {
-    const file = e.target.files[0];
-    setProfileImage(file);
-  }
-
   const handleSubmit = () => {
+    console.log('회원가입 버튼이 눌러졌습니다.')
     // 입력된 값들을 로컬 스토리지에 저장합니다.
     console.log("닉네임:", nickname);
     console.log("계좌 비밀번호:", accountPW);
-    console.log("프로필 사진:", profileImage);
-    sendDataToBackend(localStorage.getItem('memberEmail'),localStorage.getItem('memberNickname'),localStorage.getItem('memberAccountPassword'),localStorage.getItem('memberImageUrl'))
+    sendDataToBackend(localStorage.getItem('memberEmail'),localStorage.getItem('memberNickname'),localStorage.getItem('memberAccountPassword'))
     console.log('로컬스토리지에 필요한 정보를 모두 저장했습니다.')
   }
 
-  const sendDataToBackend = async(member_email, member_nickname, memeber_accountpassword, member_imageurl) => {
+  const sendDataToBackend = async(member_email, member_nickname, memeber_accountpassword) => {
     const headers = {
       "Content-Type": "application/json",
     };
@@ -42,7 +35,7 @@ const SignupProcessPage = () => {
       memberEmail : member_email,
       memberNickname : member_nickname,
       memberAccountPassword : memeber_accountpassword,
-      memberImageUrl : member_imageurl,
+      memberImageUrl : "member_imageurl",
     };
     try {
       const res = await axios.post(`${VITE_REACT_API_URL}member/sign-up`, JSON.stringify(dataToSend), { withCredentials: true, headers });
@@ -62,10 +55,6 @@ const SignupProcessPage = () => {
 
       <p>2. 계좌 비밀번호를 0~9 사이 숫자 4개로 설정해주세요.</p>
       <input type="number" value={accountPW} onChange={handleInputAccountPW} />
-      {error && <p className="text-red-500">{error}</p>}
-
-      <p>3. 프로필 사진을 설정해주세요.</p>
-      <input type="file" accept="image/*" onChange={handleFileUpload} />
       {error && <p className="text-red-500">{error}</p>}
       <br />
       <br />
