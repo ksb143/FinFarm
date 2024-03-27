@@ -66,6 +66,9 @@ public class LoanHistoryServiceImpl implements LoanHistoryService {
             LocalDate endDate = history.getLoanHistoryEndDate();
             Boolean isRepay = history.getIsRepay();
 
+            LocalDate now = LocalDate.now();
+            Integer dDay = now.compareTo()
+
             BankingLoanHistory loanHistory = BankingLoanHistory.create(pk, name, interest, period,
                     amount, repayAmount, startDate, endDate, isRepay);
 
