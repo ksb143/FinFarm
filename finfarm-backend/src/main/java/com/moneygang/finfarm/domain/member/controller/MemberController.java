@@ -7,12 +7,12 @@ import com.moneygang.finfarm.domain.member.dto.request.MemberReissueRequest;
 import com.moneygang.finfarm.domain.member.dto.response.*;
 import com.moneygang.finfarm.domain.member.entity.Member;
 import com.moneygang.finfarm.domain.member.service.MemberService;
+import com.moneygang.finfarm.domain.member.service.MemberServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -41,11 +41,7 @@ public class MemberController {
     })
     @PostMapping("/login")
     public ResponseEntity<MemberLoginResponse> kakaologin(@RequestBody MemberLoginRequest request) {
-        String accessToken = memberService.getKakaoAccessToken(request.getAccessToken());
-        log.info("accessToken: " + accessToken);
-        HashMap<String, Object> userInfo = memberService.getUserKakaoInfo(accessToken);
-
-        return memberService.login((String) userInfo.get("email"));
+        return memberService.login(request);
     }
 
     @Operation(summary = "회원 가입", description = "회원 정보(이메일, 닉네임, 계좌번호, 이미지 주소)를 받아 회원가입을 진행합니다.")
@@ -89,8 +85,8 @@ public class MemberController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
                     content = @Content(schema = @Schema(implementation = MemberReissueResponse.class))),
-            @ApiResponse(responseCode = "400", description = "(message : \"\", code : 400)", content = @Content),
-            @ApiResponse(responseCode = "404", description = "(message : \"user not found\", code : 400)", content = @Content)
+            @ApiResponse(responseCode = "400", description = "(message : \"회원 탈퇴 실패\", code : 400)", content = @Content),
+            @ApiResponse(responseCode = "404", description = "(message : \"user not found\", code : 404)", content = @Content)
     })
     @DeleteMapping("/quit")
     public ResponseEntity<MemberQuitResponse> quit() {

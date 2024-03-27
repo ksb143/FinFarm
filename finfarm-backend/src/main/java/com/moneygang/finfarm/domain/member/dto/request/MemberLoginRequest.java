@@ -4,5 +4,5 @@ import lombok.Getter;
 
 @Getter
 public class MemberLoginRequest {
-    private String accessToken;
+    private String authCode;
 }
