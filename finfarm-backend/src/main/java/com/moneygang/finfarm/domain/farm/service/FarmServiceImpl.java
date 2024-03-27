@@ -132,6 +132,17 @@ public class FarmServiceImpl implements FarmService{
 
     @Override
     public ResponseEntity<?> upgradeFarmLevel() {
+        //내 레벨 확인
+
+        //10 레벨이 아닐 때
+
+        //내 레벨 다음 확률 들고오기
+
+        //확률 강화 실행
+
+        //결과 값 반환
+
+
         return null;
     }
 }
