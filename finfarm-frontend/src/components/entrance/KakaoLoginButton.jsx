@@ -1,18 +1,14 @@
-import React from 'react';
-// import axios from 'axios';
+import startKakaoLogin from "@/api/startKakaoLogin";
+import KakaoImg from '@/assets/images/kakao_login_large_wide.png'
 
-const CLIENT_ID = '434c09e04423ad80d97eb8f45f3bc229';
-const REDIRECT_URI = 'https://j10d203.p.ssafy.io/oauth/callback/kakao';
-
-const KakaoLoginButton = () => {
-  const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code`;
-
-  const handleLogin = () => {
-    window.location.href = KAKAO_AUTH_URL;
-    console.log('카카오 로그인으로 접근 성공');
+const KakaoLoginButton = ()=>{
+  const buttonStyle = {
+    background: `url(${KakaoImg}) center/cover`,
+    width: '300px', 
+    height: '40px', 
   };
-
-  return <button onClick={handleLogin}>Kakao로 로그인하기</button>;
+  console.log('카카오로그인 버튼이 눌러졌음')
+  return <button style={buttonStyle} onClick={startKakaoLogin}></button>;
 };
 
 export default KakaoLoginButton;
