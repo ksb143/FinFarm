@@ -63,6 +63,7 @@ public class MemberService {
                 .memberCurPoint((long) 0.0)
                 .memberCreateDate(LocalDate.now())
                 .farmLevel(1)
+                .memberLoanOverdue(false)
                 .build();
 
         memberRepository.save(member);
