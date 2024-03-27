@@ -108,7 +108,9 @@ export default function BankHomePage() {
         <Link to="/bank/account">
           <SquareButton>조회</SquareButton>
         </Link>
-        <SquareButton>입출금</SquareButton>
+        <Link to="/bank/atm">
+          <SquareButton>입출금</SquareButton>
+        </Link>
         <Link to="/bank/transfer">
           <SquareButton>이체</SquareButton>
         </Link>
