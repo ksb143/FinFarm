@@ -2,9 +2,7 @@ import React from 'react';
 import { useLocation } from 'react-router-dom'; // useLocation 훅 추가
 
 export default function MainHomePage() {
-    const location = useLocation(); // 현재 위치의 state에 접근
-    const name = location.state?.name; // 넘어온 사용자 이름을 받음
-
+    const name = localStorage.getItem(memberNickname)
     return(
         <div>
             <h1>this is home page</h1>

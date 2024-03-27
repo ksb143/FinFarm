@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
 const { VITE_REACT_API_URL } = import.meta.env;
 const finfarm_URL = 'https://j10d203.p.ssafy.io/';
 
@@ -42,7 +41,7 @@ const RedirectPage = () => {
         // 회원이 아닐 경우에도 백엔드로 이동하도록 수정할 수 있습니다.
         localStorage.clear
         localStorage.setItem('memberEmail', res.data.memberNickname)
-        window.location.href = 'https://j10d203.p.ssafy.io/entrance/signup'
+        window.location.href = `${finfarm_URL}entrance/signup`
       }
     } catch (error) {
       console.error('Error:', error.response ? error.response.data : error.message);
