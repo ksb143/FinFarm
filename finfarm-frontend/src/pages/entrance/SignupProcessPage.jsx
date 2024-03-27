@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from 'axios';
 const { VITE_REACT_API_URL } = import.meta.env;
+const finfarm_URL = 'https://j10d203.p.ssafy.io/';
 
 const SignupProcessPage = () => {
   const [nickname, setNickname] = useState('');
@@ -24,7 +25,7 @@ const SignupProcessPage = () => {
   const handleInputAccountPW = e => {
     const value = e.target.value;
     if (!/^\d{4}$/.test(value)) {
-      setError('계좌 비밀번호는 0부터 9까지의 숫자 중 중복 포함 4자리여야 합니다.');
+      setError('계좌 비밀번호는 0부터 9까지의 숫자 4자리여야 합니다.');
       setIsFormValid(false);
     } else {
       setAccountPW(value);
@@ -32,6 +33,7 @@ const SignupProcessPage = () => {
       checkFormValidity();
     }
   }
+  
 
   const handleFileUpload = e => {
     const file = e.target.files[0];
@@ -68,7 +70,7 @@ const SignupProcessPage = () => {
       console.log("닉네임:", nickname);
       console.log("계좌 비밀번호:", accountPW);
       console.log("프로필 사진:", profileImage);
-      sendDataToBackend(localStorage.getItem(memberEmail),localStorage.getItem(memberNickname),localStorage.getItem(memberAccountPassword),localStorage.getItem(memberImageUrl))
+      sendDataToBackend(localStorage.getItem('memberEmail'),localStorage.getItem('memberNickname'),localStorage.getItem('memberAccountPassword'),localStorage.getItem('memberImageUrl'))
     }
   }
 
@@ -85,7 +87,7 @@ const SignupProcessPage = () => {
     try {
       const res = await axios.post(`${VITE_REACT_API_URL}member/sign-up`, JSON.stringify(dataToSend), { withCredentials: true, headers });
       console.log('회원가입에 필요한 정보를 성공적으로 전달했습니다.', res.data)
-      window.location.href = `${finfarm_URL}`
+      window.location.href = `${finfarm_URL}/home`
     } catch (error) {
       console.error('Error:', error.response ? error.response.data : error.message);
     }
@@ -101,7 +103,7 @@ const SignupProcessPage = () => {
       {error && <p className="text-red-500">{error}</p>}
 
       <p>2. 계좌 비밀번호를 0~9 사이 숫자 4개로 설정해주세요.</p>
-      <input type="password" value={accountPW} onChange={handleInputAccountPW} />
+      <input type="text" value={accountPW} onChange={handleInputAccountPW} />
       {error && <p className="text-red-500">{error}</p>}
 
       <p>3. 프로필 사진을 설정해주세요.</p>
