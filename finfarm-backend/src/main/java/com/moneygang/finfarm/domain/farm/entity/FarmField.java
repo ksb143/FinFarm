@@ -3,9 +3,11 @@ package com.moneygang.finfarm.domain.farm.entity;
 import com.moneygang.finfarm.domain.member.entity.Member;
 import com.moneygang.finfarm.domain.market.entity.Agriculture;
 import jakarta.persistence.*;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+@Getter
 @Entity(name = "farm_field_TB")
 public class FarmField {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

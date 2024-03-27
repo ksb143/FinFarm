@@ -16,6 +16,7 @@ import com.moneygang.finfarm.domain.market.repository.SeedRepository;
 import com.moneygang.finfarm.domain.member.entity.Member;
 import com.moneygang.finfarm.domain.member.repository.MemberRepository;
 import com.moneygang.finfarm.global.base.CommonUtil;
+import com.moneygang.finfarm.global.dto.MemberWarehouseDTO;
 import com.moneygang.finfarm.global.exception.GlobalException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -135,9 +136,10 @@ public class MarketServiceImpl implements MarketService {
         }
         warehouseRepository.save(warehouse);
 
+        MemberWarehouseDTO userInfo = commonUtil.getMemberItem();
         return ResponseEntity.ok(SeedPurchaseResponse.create(
-                commonUtil.getMember().getMemberCurPoint(),
-                commonUtil.getMemberItem().getMemberItems()
+                userInfo.getMember().getMemberCurPoint(),
+                userInfo.getMemberItems()
         ));
     }
 
@@ -175,9 +177,10 @@ public class MarketServiceImpl implements MarketService {
             warehouseRepository.save(warehouse);
         }
 
+        MemberWarehouseDTO userInfo = commonUtil.getMemberItem();
         return ResponseEntity.ok(AgricultureSellResponse.create(
-                commonUtil.getMember().getMemberCurPoint(),
-                commonUtil.getMemberItem().getMemberItems()
+                userInfo.getMember().getMemberCurPoint(),
+                userInfo.getMemberItems()
         ));
     }
 
