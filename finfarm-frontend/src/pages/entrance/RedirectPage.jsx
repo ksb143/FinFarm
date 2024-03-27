@@ -6,6 +6,7 @@ const RedirectPage = () => {
   useEffect(() => {
     // URL에서 인가 코드를 추출합니다.
     const auth_code0 = new URLSearchParams(window.location.search).get('code');
+
     if (auth_code0) {
       console.log('인가코드가 존재하므로, 이것을 백엔드로 보냅니다.')
       console.log(auth_code0)
@@ -23,20 +24,26 @@ const RedirectPage = () => {
     };
   
     const dataToSend = {
-      accessToken: code, // 여기서 'code'를 'accessToken' 키의 값으로 설정
+      authCode : code, // 여기서 'code'를 'authCode' 키의 값으로 설정
     };
   
     try {
-      const response = await axios.post(`${VITE_REACT_API_URL}member/login`,
-        JSON.stringify(dataToSend), // 수정된 데이터 객체를 JSON으로 변환
-      { withCredentials: true, headers });
-      console.log('Success:', response.data);
-      
+      const res = await axios.post(`${VITE_REACT_API_URL}member/login`, JSON.stringify(dataToSend), { withCredentials: true, headers });
+    
+      console.log('백엔드에서 인가코드를 잘 받았고, 응답을 줬습니다.', res.data);
+
+      if (res.data.member) {                // member: True 인 경우, 로그인 처리
+        console.log(`안녕하세요, ${res.data.memberNickname}님! 환영합니다.`);
+        // 받은 모든 정보를 로컬 스토리지에 저장하고, 메인홈으로 이동.
+      } else {                              // member: False 인 경우, 회원가입 진행
+        console.log('회원이 아니신 것으로 확인되었습니다. 회원가입을 진행해주세요.');
+        // res.data.
+      }
     } catch (error) {
       console.error('Error:', error.response ? error.response.data : error.message);
     }
+    
   };
-  
 
   return (
     <div>
