@@ -3,7 +3,6 @@ import axios from 'axios';
 import Button from '@/components/layout/Button'
 
 const { VITE_REACT_API_URL } = import.meta.env;
-const finfarm_URL = 'https://j10d203.p.ssafy.io/';
 
 
 const SignupProcessPage = () => {
