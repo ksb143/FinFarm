@@ -2,6 +2,7 @@ const { VITE_REST_API, VITE_REDIRECT_URI } = import.meta.env;
 
 const startKakaoLogin = async() => {
     const config = {
+        response_type: 'code',
         client_id: VITE_REST_API,
         redirect_uri: VITE_REDIRECT_URI,
     };
