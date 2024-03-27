@@ -3,6 +3,7 @@ package com.moneygang.finfarm.domain.farm.service;
 
 import com.moneygang.finfarm.domain.farm.dto.request.DeleteItemRequest;
 import com.moneygang.finfarm.domain.farm.dto.response.DeleteItemResponse;
+import com.moneygang.finfarm.domain.farm.dto.response.FarmLevelPurchaseResponse;
 import com.moneygang.finfarm.domain.farm.dto.response.MyFarmResponse;
 import com.moneygang.finfarm.domain.farm.dto.detail.FarmFieldInfo;
 import com.moneygang.finfarm.domain.farm.entity.FarmField;
@@ -18,6 +19,7 @@ import com.moneygang.finfarm.domain.market.repository.AgricultureRepository;
 import com.moneygang.finfarm.domain.market.repository.SeedRepository;
 import com.moneygang.finfarm.domain.member.entity.Member;
 import com.moneygang.finfarm.domain.member.entity.Reinforce;
+import com.moneygang.finfarm.domain.member.repository.MemberRepository;
 import com.moneygang.finfarm.domain.member.repository.ReinforceRepository;
 import com.moneygang.finfarm.global.base.CommonUtil;
 import com.moneygang.finfarm.global.dto.MemberWarehouseDTO;
@@ -30,6 +32,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 
 @Log4j2
 @Service
@@ -38,6 +42,7 @@ public class FarmServiceImpl implements FarmService{
     private final ReinforceRepository reinforceRepository;
     private final FarmFieldRepository farmFieldRepository;
     private final WarehouseRepository warehouseRepository;
+    private final MemberRepository memberRepository;
     private final AgricultureRepository agricultureRepository;
     private final SeedRepository seedRepository;
     private final CommonUtil commonUtil;
@@ -132,17 +137,51 @@ public class FarmServiceImpl implements FarmService{
 
     @Override
     public ResponseEntity<?> upgradeFarmLevel() {
-        //내 레벨 확인
+        Member member = commonUtil.getMember();
+        if(member.getFarmLevel() == 10)
+            throw new GlobalException(HttpStatus.UNPROCESSABLE_ENTITY, "max level");
 
-        //10 레벨이 아닐 때
+        List<Reinforce> reinforceList =
+                reinforceRepository.findAllByReinforceLevelBetweenOrderByReinforceLevelAsc(
+                        member.getFarmLevel(),member.getFarmLevel()+1
+                );
+        long curPoint = member.getMemberCurPoint();
+        long reinforcePrice = reinforceList.get(1).getReinforcePrice();
+        if(reinforcePrice > curPoint)
+            throw new GlobalException(HttpStatus.PAYMENT_REQUIRED, "Payment Required");
 
-        //내 레벨 다음 확률 들고오기
+        member.setMemberCurPoint(curPoint - reinforcePrice);
 
-        //확률 강화 실행
+        boolean success = false;
+        double probability = reinforceList.get(1).getReinforceSuccessProbability();
 
-        //결과 값 반환
+        log.info("probaility {}", probability);
 
+        if(Math.random() < probability)
+            success = true;
 
-        return null;
+        member.setFarmLevel(member.getFarmLevel()+1);
+
+        memberRepository.save(member);
+
+        int curFarmEffectInt;
+        int nextReinforceCost;
+        int nextFarmEffectInt;
+        double nextReinforceProbability;
+        double[] farmEffect = new double[2];
+        for(int i=0;i<2;i++){
+            farmEffect[i] = (1 - reinforceList.get(i).getReinforceProductionEfficiency()) * 100;
+        }
+        curFarmEffectInt = (int) Math.round(farmEffect[0]);
+        nextFarmEffectInt = (int) Math.round(farmEffect[1]);
+        nextReinforceCost = Math.toIntExact(reinforceList.get(1).getReinforcePrice());
+        nextReinforceProbability = reinforceList.get(1).getReinforceSuccessProbability() * 100;
+
+        FarmLevelPurchaseResponse response =
+                FarmLevelPurchaseResponse.create(
+                    success, member, curFarmEffectInt,
+                    nextReinforceCost, nextFarmEffectInt, nextReinforceProbability
+                );
+        return ResponseEntity.ok(response);
     }
 }

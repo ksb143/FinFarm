@@ -92,6 +92,9 @@ public class MemberService {
 
             //access token 및 refresh token 생성
             String accessToken = tokenProvider.createAccessToken(memberEmail);
+
+            log.info("access Token : {}", accessToken);
+
             String refreshToken = tokenProvider.createRefreshToken(memberEmail);
 
             // refresh token 을 쿠키에 저장
