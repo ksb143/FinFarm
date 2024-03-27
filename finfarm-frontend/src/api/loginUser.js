@@ -1,4 +1,4 @@
-import { userAxios } from '@/utils/http-common';
+import { userAxios } from '@/utils/http-common.js';
 
 async function loginUser(accessToken) {
   try {

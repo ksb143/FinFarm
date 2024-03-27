@@ -1,14 +1,14 @@
-const REST_API = import.meta.env.VITE_REST_API;
-const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI;
+import startKakaoLogin from "@/api/startKakaoLogin";
+import KakaoImg from '@/assets/images/kakao_login_large_wide.png'
 
-const KakaoLoginButton = () => {
-  const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API}&redirect_uri=${REDIRECT_URI}&response_type=code`;
-
-  const handleLogin = () => {
-    window.location.href = KAKAO_AUTH_URL;
+const KakaoLoginButton = ()=>{
+  const buttonStyle = {
+    background: `url(${KakaoImg}) center/cover`,
+    width: '600px', 
+    height: '70px', 
   };
-
-  return <button onClick={handleLogin}>Kakao로 로그인하기</button>;
+  console.log('카카오로그인 버튼이 눌러졌음')
+  return <button style={buttonStyle} onClick={startKakaoLogin}></button>;
 };
 
 export default KakaoLoginButton;
