@@ -3,6 +3,7 @@ import axios from 'axios';
 const { VITE_REACT_API_URL } = import.meta.env;
 
 const RedirectPage = () => {
+  
   useEffect(() => {
     // URL에서 인가 코드를 추출합니다.
     const auth_code0 = new URLSearchParams(window.location.search).get('code');
@@ -18,16 +19,15 @@ const RedirectPage = () => {
 
   const sendCodeToBackend = async (code) => {
     const headers = {
-      "Content-Type" : "application/x-www-form-urlencoded;charset=UTF-8",
+      "Content-Type" : "application/json",
     }
     try {
       const response = await axios.post(`${VITE_REACT_API_URL}member/login`, 
-        `code=${code}`, { withCredentials: true, headers });
+        JSON.stringify({ code }), // 데이터를 JSON 형태로 변환
+      { withCredentials: true, headers });
 
-      console.log('Success:', response.data);
-      // 여기서 추가적인 성공 로직을 처리할 수 있습니다.
+    console.log('Success:', response.data);
     } catch (error) {
-
       console.error('Error:', error.response ? error.response.data : error.message);
     }
   };
