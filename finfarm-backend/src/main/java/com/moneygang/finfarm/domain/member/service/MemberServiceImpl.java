@@ -289,7 +289,10 @@ public class MemberServiceImpl implements MemberService{
     public ResponseEntity<MemberMypageResponse> getMypage() {
         log.info("member getMypage");
 
-        return null;
+        // authentication 에서 member 객체 조회
+        Member member = commonUtil.getMember();
+
+        return ResponseEntity.ok(MemberMypageResponse.create(member.getMemberNickname(), member.getMemberImageUrl()));
     }
 
     @Override
