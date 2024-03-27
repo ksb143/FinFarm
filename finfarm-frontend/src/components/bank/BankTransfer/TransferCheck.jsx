@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 
-import Button from '@/components/layout/Button';
 import { accountTransfer } from '@/api/bank';
 
 TransferCheck.propTypes = {
@@ -11,6 +10,7 @@ TransferCheck.propTypes = {
   amount: PropTypes.number,
   balance: PropTypes.number,
   onTransferResult: PropTypes.func,
+  onTransferCancel: PropTypes.func,
 };
 
 export default function TransferCheck({
@@ -20,6 +20,7 @@ export default function TransferCheck({
   amount,
   balance,
   onTransferResult,
+  onTransferCancel,
 }) {
   const transferContent = {
     recipient,
@@ -33,6 +34,7 @@ export default function TransferCheck({
       onTransferResult(response);
     } catch (error) {
       console.error(error);
+      throw error;
     }
   };
 
@@ -61,8 +63,18 @@ export default function TransferCheck({
           이체를 하시겠습니까?
         </span>
         <div className="flex gap-3">
-          <Button onClick={handleTransfer}>예</Button>
-          <Button>아니오</Button>
+          <button
+            className="btn btn-sm min-w-16 rounded-full bg-lime-500 font-hopang text-white hover:bg-lime-800"
+            onClick={handleTransfer}
+          >
+            예
+          </button>
+          <button
+            className="btn btn-sm min-w-16 rounded-full bg-lime-500 font-hopang text-white hover:bg-lime-800"
+            onClick={onTransferCancel}
+          >
+            아니오
+          </button>
         </div>
       </div>
     </div>

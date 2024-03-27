@@ -4,47 +4,114 @@ import BankBasicinfo from '@/components/bank/BankBasicInfo';
 import TransferDetail from '@/components/bank/BankTransfer/TransferDetail';
 import TransferCheck from '@/components/bank/BankTransfer/TransferCheck';
 import danger from '@/assets/images/danger.png';
+import Modal from '@/components/layout/Modal';
+import CheckModal from '@/components/layout/CheckModal';
 
-import { recentTransferDetails } from '@/api/bank';
+import { recentTransferDetails, checkAnotherUser } from '@/api/bank';
 
 export default function BankTransferPage() {
-  const [transferResult, setTransferResult] = useState(null);
-  const [transferInfo, setTransferInfo] = useState(false);
-  const [recentTransfers, setRecentTransfers] = useState([]);
-  const [password, setPassword] = useState('');
-  const [amount, setAmount] = useState('');
-  const [recipient, setRecipient] = useState('');
-  const [clickedIndex, setClickedIndex] = useState(null);
+  const [transferInfo, setTransferInfo] = useState(false); // 이체 확인 컴포넌트 유무
+  const [recentTransfers, setRecentTransfers] = useState([]); // 최근 이체 내역
+  const [clickedIndex, setClickedIndex] = useState(null); // 최근 이체 내역 인덱스
+  const [password, setPassword] = useState(''); // 계좌 비밀번호
+  const [amount, setAmount] = useState(''); // 금액
+  const [sender, setSender] = useState(''); // 송금인
+  const [isModalVisible, setIsModalVisible] = useState(false); // 모달 보이기 유무
+  const [isNickModalVisible, setIsNickModalVisible] = useState(false); // 닉네임 모달 보이기 유무
+  const [anotherUser, setAnotherUser] = useState({
+    imageUrl: '',
+    nickname: '',
+  }); // anotherUser 상태 추가
+  const [isCheckModalVisible, setIsCheckModalVisible] = useState(false); // 닉네임 체크 모달 보이기 유무
 
   // 이체 여부 확인 함수
   const handleTransferResult = (response) => {
+    console.log(response);
     fetchRecentTransfers();
+    setTransferInfo(false);
+    // 여기에 성공 실패 여부 시 모달 띄우기
+  };
+
+  // 이체 취소 함수
+  const handleTransferCancel = () => {
+    setTransferInfo(false);
   };
 
   // 이체 실행 버튼 함수
   const handleTransferInfo = () => {
-    setTransferInfo(true);
+    if (password && sender && amount) {
+      setTransferInfo(true);
+    } else {
+      alert('계좌비밀번호, 입금금액, 송금자와 관련된 모든 정보를 기입해주세요');
+    }
   };
 
   // 최근 이체 내역 업데이트 함수
   const fetchRecentTransfers = async () => {
     try {
       const recentTransferData = await recentTransferDetails();
-      setTransferResult(recentTransferData);
+      if (!Array.isArray(recentTransferData)) {
+        console.error('recentTransferData is not an array', recentTransferData);
+        setRecentTransfers([]);
+      } else {
+        setRecentTransfers(recentTransferData);
+      }
     } catch (error) {
       console.error(error);
+      setRecentTransfers([]);
     }
   };
 
   // 선택 금액 입력 필드에 설정
   const handleAmountSelect = (selectedAmount) => {
-    setAmount(selectedAmount);
+    setAmount(Number(selectedAmount));
   };
 
   // 최근 이체자 수정
-  const handleRecipient = (index) => {
+  const handleSender = (index) => {
     setClickedIndex(index);
-    setRecipient(recentTransfer[index].nickname);
+    setSender(recentTransfers[index].nickname);
+  };
+
+  // 모달 확정 함수
+  const handleConfirm = () => {
+    console.log('예 버튼 클릭됨!');
+    // 예 버튼 클릭 시 수행할 작업
+    setIsModalVisible(false); // 모달 숨기기
+  };
+
+  // 모달 취소 함수
+  const handleCancel = () => {
+    console.log('아니오 버튼 클릭됨!');
+    // 아니오 버튼 클릭 시 수행할 작업
+    setIsModalVisible(false); // 모달 숨기기
+  };
+
+  // 닉네임 조회
+  const handleSearchNick = async (nickname) => {
+    try {
+      const user = await checkAnotherUser(nickname);
+      setAnotherUser(user);
+      setIsNickModalVisible(true);
+    } catch (error) {
+      console.error('Error in checkAnotherUser:', error);
+      setIsCheckModalVisible(true);
+    }
+  };
+
+  // 닉네임 모달 확정 함수
+  const handleNickConfirm = () => {
+    setIsNickModalVisible(false);
+  };
+
+  // 닉네임 모달 취소 함수
+  const handleNickCancel = () => {
+    setIsNickModalVisible(false);
+  };
+
+  // 닉네임 체크 모달 확인 함수
+  const handleCheckConfirm = () => {
+    setIsCheckModalVisible(false);
   };
 
   // 최근 이체 내역 설정
@@ -54,6 +121,24 @@ export default function BankTransferPage() {
 
   return (
     <div className="flex gap-3">
+      {isModalVisible && (
+        <Modal onConfirm={handleConfirm} onCancel={handleCancel}></Modal>
+      )}
+      {isNickModalVisible && (
+        <Modal
+          onConfirm={handleNickConfirm}
+          onCancel={handleNickCancel}
+          imageUrl={anotherUser.imageUrl}
+          content={anotherUser.nickname}
+        >
+          해당 닉네임이 맞습니까?
+        </Modal>
+      )}
+      {isCheckModalVisible && (
+        <CheckModal onConfirm={handleCheckConfirm} isSuccess={false}>
+          해당 닉네임은 없습니다.
+        </CheckModal>
+      )}
       <div className="flex w-8/12 flex-col gap-3">
         <div className="flex flex-col gap-10 rounded-xl border-2 border-solid border-gray-300 bg-white px-10 py-5">
           <BankBasicinfo isButton={false} />
@@ -79,13 +164,13 @@ export default function BankTransferPage() {
               className="grow"
               placeholder="계좌 비밀번호 4자리"
               maxLength={4}
-              value={password}
+              value={password || ''}
               onChange={(e) => {
                 const value = e.target.value;
                 const regex = /^\d*$/;
-                if (!regex.test(value)) {
-                  // 입력된 키가 숫자가 아닌 경우
-                  e.target.value = ''; // 입력 방지
+                if (regex.test(value)) {
+                  // 입력된 값이 숫자인 경우에만 상태를 업데이트합니다.
+                  setPassword(Number(value));
                 }
               }}
             />
@@ -95,44 +180,55 @@ export default function BankTransferPage() {
           <h3 className="text-xl">입금 정보</h3>
           <div className="flex flex-col gap-7 rounded-xl border-2 border-solid border-gray-300 bg-gray-50 p-5">
             <div className="flex w-full justify-between">
-              <span
+              <button
                 onClick={() => handleAmountSelect(10000)}
                 className="w-1/6 border-r-2 border-solid border-gray-300 text-center"
               >
                 1만원
-              </span>
-              <span
+              </button>
+              <button
                 onClick={() => handleAmountSelect(50000)}
                 className="w-1/6 border-r-2 border-solid border-gray-300 text-center"
               >
                 5만원
-              </span>
-              <span
+              </button>
+              <button
                 onClick={() => handleAmountSelect(100000)}
                 className="w-1/6 border-r-2 border-solid border-gray-300 text-center"
               >
                 10만원
-              </span>
-              <span className="w-1/6 border-r-2 border-solid border-gray-300 text-center">
+              </button>
+              <button
+                onClick={() => handleAmountSelect(500000)}
+                className="w-1/6 border-r-2 border-solid border-gray-300 text-center"
+              >
                 50만원
-              </span>
-              <span className="w-1/6 border-r-2 border-solid border-gray-300 text-center">
+              </button>
+              <button
+                onClick={() => handleAmountSelect(1000000)}
+                className="w-1/6 border-r-2 border-solid border-gray-300 text-center"
+              >
                 100만원
-              </span>
-              <span className="w-1/6 text-center">전액</span>
+              </button>
+              <button
+                onClick={() => handleAmountSelect(100000)}
+                className="w-1/6 text-center"
+              >
+                전액
+              </button>
             </div>
             <label className="input input-bordered flex items-center gap-2 border-2 border-solid border-gray-300">
               <input
-                value={amount}
+                value={amount || ''}
                 type="text"
                 className="grow"
                 placeholder="입금금액"
                 onChange={(e) => {
                   const value = e.target.value;
                   const regex = /^\d*$/;
-                  if (!regex.test(value)) {
-                    // 입력된 키가 숫자가 아닌 경우
-                    e.target.value = ''; // 입력 방지
+                  if (regex.test(value)) {
+                    // 입력된 값이 숫자인 경우에만 상태를 업데이트합니다.
+                    setAmount(Number(value));
                   }
                 }}
               />
@@ -146,7 +242,7 @@ export default function BankTransferPage() {
               role="tab"
               className="tab [--tab-bg:#f9fafb] [--tab-border-color:#d1d5db]"
               aria-label="최근 기록"
-              checked
+              defaultChecked
             />
             <div
               role="tabpanel"
@@ -160,9 +256,11 @@ export default function BankTransferPage() {
                     profileImg={recentTransfer.requestTime}
                     transferDate={recentTransfer.imgeUrl}
                     onClick={() => {
-                      handleRecipient(recentTransfer.nickname);
+                      handleSender(recentTransfer.nickname);
                     }}
-                    className={clickedIndex === idx ? 'red-border' : ''}
+                    className={
+                      clickedIndex === idx ? 'border-double border-red-600' : ''
+                    }
                   />
                 ))}
               </div>
@@ -192,9 +290,15 @@ export default function BankTransferPage() {
                   type="text"
                   className="grow"
                   placeholder="송금하실 분의 닉네임"
-                  value={recipient}
+                  value={sender}
+                  onChange={(e) => setSender(e.target.value)}
                 />
-                <button className="h-full rounded-r-lg border-2 bg-gray-300 bg-lime-500 px-7 text-white">
+                <button
+                  onClick={() => {
+                    handleSearchNick(sender);
+                  }}
+                  className="h-full rounded-r-lg border-2 bg-gray-300 bg-lime-500 px-7 text-white hover:bg-lime-800"
+                >
                   조회
                 </button>
               </label>
@@ -221,12 +325,13 @@ export default function BankTransferPage() {
         </button>
         {transferInfo && (
           <TransferCheck
-            password={3241}
-            recipient="러브다이브"
-            sender="숨참고"
-            amount={30000}
+            password={password}
+            recipient={sender}
+            sender={sender}
+            amount={amount}
             balance={30000}
             onTransferResult={handleTransferResult}
+            onTransferCancel={handleTransferCancel}
           ></TransferCheck>
         )}
       </div>

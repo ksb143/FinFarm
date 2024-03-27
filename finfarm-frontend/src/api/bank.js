@@ -44,4 +44,22 @@ async function accountTransfer(transferContent) {
   }
 }
 
-export { accountCheck, recentTransferDetails, accountTransfer };
+// 송금 유저 조회 함수
+async function checkAnotherUser(anotherUser) {
+  try {
+    const response = await localAxios().get('/banking/account/remit', {
+      nickname: anotherUser,
+    });
+    return response.data;
+  } catch (error) {
+    console.log('실패');
+    throw error;
+  }
+}
+
+export {
+  accountCheck,
+  recentTransferDetails,
+  accountTransfer,
+  checkAnotherUser,
+};

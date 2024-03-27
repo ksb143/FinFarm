@@ -12,9 +12,7 @@ const KakaoLoginButton = () => {
     console.log('카카오 로그인으로 접근 성공');
   };
 
-  return (
-    <button onClick={handleLogin}>Kakao로 로그인하기</button>
-  );
+  return <button onClick={handleLogin}>Kakao로 로그인하기</button>;
 };
 
 export default KakaoLoginButton;
