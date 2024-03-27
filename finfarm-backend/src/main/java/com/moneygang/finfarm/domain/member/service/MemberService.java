@@ -94,6 +94,8 @@ public class MemberService {
             String accessToken = tokenProvider.createAccessToken(memberEmail);
             String refreshToken = tokenProvider.createRefreshToken(memberEmail);
 
+            log.info("access Token : {}", accessToken);
+
             // refresh token 을 쿠키에 저장
             ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", refreshToken)
                     .httpOnly(true) // HttpOnly 속성 설정으로 JavaScript에서 접근하지 못하도록 함
