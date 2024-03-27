@@ -114,7 +114,9 @@ export default function BankHomePage() {
         <Link to="/bank/transfer">
           <SquareButton>이체</SquareButton>
         </Link>
-        <SquareButton>대출</SquareButton>
+        <Link to="/bank/loan/history">
+          <SquareButton>대출</SquareButton>
+        </Link>
       </div>
     </>
   );
