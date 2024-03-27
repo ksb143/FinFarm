@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from 'axios';
+import Button from '@/components/layout/Button'
 
 const { VITE_REACT_API_URL } = import.meta.env;
 const finfarm_URL = 'https://j10d203.p.ssafy.io/';
@@ -18,10 +19,11 @@ const SignupProcessPage = () => {
       setError('닉네임은 10자 이내이고 공백을 포함할 수 없습니다.');
       setIsFormValid(false);
     } else {
-      localStorage.setItem('memberNickname', nickname);
+      
       setNickname(value);
       setError('');
       checkFormValidity();
+      
     }
   }
 
@@ -31,10 +33,11 @@ const SignupProcessPage = () => {
       setError('계좌 비밀번호는 0부터 9까지의 숫자 4자리여야 합니다.');
       setIsFormValid(false);
     } else {
-      localStorage.setItem('memeberAccountPassword', accountPW);
+      
       setAccountPW(value);
       setError(''); // 입력 시 에러 초기화
       checkFormValidity();
+      
     }
   }
   
@@ -61,7 +64,10 @@ const SignupProcessPage = () => {
 
   const checkFormValidity = () => {
     if (nickname !== '' && accountPW !== '' && profileImage !== null && error === '') {
+      localStorage.setItem('memberNickname', nickname);
+      localStorage.setItem('memeberAccountPassword', accountPW);
       setIsFormValid(true);
+
     } else {
       setIsFormValid(false);
     }
@@ -113,7 +119,7 @@ const SignupProcessPage = () => {
       <input type="file" accept="image/*" onChange={handleFileUpload} />
       {error && <p className="text-red-500">{error}</p>}
 
-      <button onClick={handleSubmit} disabled={!isFormValid}>회원가입 완료</button>
+      <Button onClick={handleSubmit} disabled={!isFormValid}>회원가입 완료</Button>
     </div>
   );
 }
