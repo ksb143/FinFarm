@@ -24,15 +24,16 @@ const SignupProcessPage = () => {
 
   const handleInputAccountPW = e => {
     const value = e.target.value;
-    if (!/^\d{4}$/.test(value)) {
+    if (!/^\d{0,4}$/.test(value)) { // 숫자 4자리까지만 입력되도록 수정
       setError('계좌 비밀번호는 0부터 9까지의 숫자 4자리여야 합니다.');
       setIsFormValid(false);
     } else {
       setAccountPW(value);
-      setError('');
+      setError(''); // 입력 시 에러 초기화
       checkFormValidity();
     }
   }
+  
   
 
   const handleFileUpload = e => {
@@ -103,7 +104,7 @@ const SignupProcessPage = () => {
       {error && <p className="text-red-500">{error}</p>}
 
       <p>2. 계좌 비밀번호를 0~9 사이 숫자 4개로 설정해주세요.</p>
-      <input type="text" value={accountPW} onChange={handleInputAccountPW} />
+      <input type="number" value={accountPW} onChange={handleInputAccountPW} />
       {error && <p className="text-red-500">{error}</p>}
 
       <p>3. 프로필 사진을 설정해주세요.</p>
