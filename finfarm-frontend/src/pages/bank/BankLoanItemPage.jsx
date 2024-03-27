@@ -1,3 +1,3 @@
 export default function BankLoanItemPage() {
-  return ()
+  return <div>헬로</div>;
 }
