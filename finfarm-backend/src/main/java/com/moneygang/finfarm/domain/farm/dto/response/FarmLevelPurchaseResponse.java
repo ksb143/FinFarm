@@ -9,7 +9,7 @@ import lombok.Getter;
 @Builder
 public class FarmLevelPurchaseResponse {
     @Schema(description = "강화 성공 여부", example = "false")
-    private Boolean ReinforcementSuccess;
+    private Boolean reinforcementSuccess;
     @Schema(description = "사용자 보유 포인트", example = "3000")
     private Long curPoint;
     @Schema(description = "사용자 현재 레벨", example = "4")
@@ -27,7 +27,7 @@ public class FarmLevelPurchaseResponse {
                                                    int farmEffect, int nextReinforceCost,
                                                    int nextReinforceEffect, double nextReinforceProbability){
         return FarmLevelPurchaseResponse.builder()
-                .ReinforcementSuccess(success)
+                .reinforcementSuccess(success)
                 .curPoint(member.getMemberCurPoint())
                 .farmLevel(member.getFarmLevel())
                 .farmEffect(farmEffect)

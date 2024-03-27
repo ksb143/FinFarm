@@ -139,7 +139,7 @@ public class FarmServiceImpl implements FarmService{
     public ResponseEntity<?> upgradeFarmLevel() {
         Member member = commonUtil.getMember();
         if(member.getFarmLevel() == 10)
-            throw new GlobalException(HttpStatus.UNPROCESSABLE_ENTITY, "max level");
+            throw new GlobalException(HttpStatus.UNPROCESSABLE_ENTITY, "farm Level Max");
 
         List<Reinforce> reinforceList =
                 reinforceRepository.findAllByReinforceLevelBetweenOrderByReinforceLevelAsc(
@@ -155,13 +155,10 @@ public class FarmServiceImpl implements FarmService{
         boolean success = false;
         double probability = reinforceList.get(1).getReinforceSuccessProbability();
 
-        log.info("probaility {}", probability);
-
-        if(Math.random() < probability)
+        if(Math.random() < probability) {
             success = true;
-
-        member.setFarmLevel(member.getFarmLevel()+1);
-
+            member.setFarmLevel(member.getFarmLevel()+1);
+        }
         memberRepository.save(member);
 
         int curFarmEffectInt;
