@@ -92,4 +92,14 @@ public class MemberController {
     public ResponseEntity<MemberQuitResponse> quit() {
         return memberService.quit();
     }
+
+    @Operation(summary = "닉네임 중복 검사", description = "닉네임의 중복 여부를 확인합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)", content = @Content(schema = @Schema(implementation = MemberReissueResponse.class))),
+            @ApiResponse(responseCode = "400", description = "(message : \"Bad Request\", code : 400)", content = @Content)
+    })
+    @GetMapping("/nickname/is-exist/{nickname}")
+    public ResponseEntity<MemberDuplicateNicknameResponse> checkNicknameDuplication(@PathVariable("nickname") String nickname) {
+        return memberService.duplicateNickname(nickname);
+    }
 }

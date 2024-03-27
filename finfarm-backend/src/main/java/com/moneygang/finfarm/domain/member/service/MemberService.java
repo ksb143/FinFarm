@@ -28,9 +28,9 @@ public interface MemberService {
     //프로필 이미지 저장
     ResponseEntity<MemberProfileResponse> saveProfileImage(MemberProfileRequest request);
     //회원 닉네임 중복 조회
-    ResponseEntity<MemberDuplicateNicknameResponse> duplicateNickname();
+    ResponseEntity<MemberDuplicateNicknameResponse> duplicateNickname(String nickname);
     //회원 이메일 중복 조회
-    ResponseEntity<MemberDuplicateEmailResponse> duplicateEmail();
+    ResponseEntity<MemberDuplicateEmailResponse> duplicateEmail(String email);
 
 
 
