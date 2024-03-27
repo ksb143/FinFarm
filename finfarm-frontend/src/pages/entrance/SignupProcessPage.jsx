@@ -21,8 +21,8 @@ const SignupProcessPage = () => {
   const handleSubmit = () => {
     console.log('회원가입 버튼이 눌러졌습니다.')
     // 입력된 값들을 로컬 스토리지에 저장합니다.
-    console.log("닉네임:", nickname);
-    console.log("계좌 비밀번호:", accountPW);
+    console.log("닉네임: ", nickname);
+    console.log("계좌 비밀번호: ", accountPW);
     sendDataToBackend(localStorage.getItem('memberEmail'),localStorage.getItem('memberNickname'),localStorage.getItem('memberAccountPassword'))
     console.log('로컬스토리지에 필요한 정보를 모두 저장했습니다.')
   }
@@ -49,10 +49,10 @@ const SignupProcessPage = () => {
     <div>
       <h1 className="text-4xl">회원가입을 진행합니다.</h1>
 
-      <p>1. 닉네임을 설정해주세요.</p>
+      <p>1.  5자 이하로 닉네임을 설정해주세요.</p>
       <input type="text" value={nickname} onChange={handleInputNickname} />
 
-      <p>2. 계좌 비밀번호를 0~9 사이 숫자 4개로 설정해주세요.</p>
+      <p>2. 계좌 비밀번호를 0~9 사이 숫자 4글자로 설정해주세요.</p>
       <input type="number" value={accountPW} onChange={handleInputAccountPW} />
 
       <br />
