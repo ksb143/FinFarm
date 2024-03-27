@@ -42,7 +42,7 @@ const RedirectPage = () => {
         localStorage.clear
         localStorage.setItem('memberEmail', res.data.memberNickname)
         localStorage.setItem('accessToken', res.data.accessToken)
-        window.location.href = `${finfarm_URL}entrance/signup`
+        // window.location.href = `${finfarm_URL}entrance/signup`
       }
     } catch (error) {
       console.error('Error:', error.response ? error.response.data : error.message);
