@@ -51,11 +51,15 @@ export default function TransferCheck({
       </div>
       <div className="flex w-full">
         <div className="w-2/6">거래 금액</div>
-        <div className="w-4/6 border-b-2 text-center">{amount}</div>
+        <div className="w-4/6 border-b-2 text-center">
+          {amount.toLocaleString('ko-KR')}
+        </div>
       </div>
       <div className="flex w-full">
         <div className="w-2/6">거래 후 잔액</div>
-        <div className="w-4/6 border-b-2 text-center">{balance}</div>
+        <div className="w-4/6 border-b-2 text-center">
+          {balance.toLocaleString('ko-KR')}
+        </div>
       </div>
       <div className="mt-5 flex justify-between">
         <span className="text-sm">
