@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin("*")
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/store")
+@RequestMapping("/market")
 public class MarketController {
     private final MarketService marketService;
 
