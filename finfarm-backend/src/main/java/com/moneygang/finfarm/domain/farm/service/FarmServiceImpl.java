@@ -3,8 +3,10 @@ package com.moneygang.finfarm.domain.farm.service;
 
 import com.moneygang.finfarm.domain.farm.dto.request.DeleteItemRequest;
 import com.moneygang.finfarm.domain.farm.dto.request.PlantRequest;
+import com.moneygang.finfarm.domain.farm.dto.request.HarvestRequest;
 import com.moneygang.finfarm.domain.farm.dto.response.DeleteItemResponse;
 import com.moneygang.finfarm.domain.farm.dto.response.FarmLevelPurchaseResponse;
+import com.moneygang.finfarm.domain.farm.dto.response.HarvestResponse;
 import com.moneygang.finfarm.domain.farm.dto.response.MyFarmResponse;
 import com.moneygang.finfarm.domain.farm.dto.detail.FarmFieldInfo;
 import com.moneygang.finfarm.domain.farm.dto.response.PlantResponse;
@@ -34,10 +36,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
+import java.util.Optional;
 
 @Log4j2
 @Service
@@ -245,6 +248,107 @@ public class FarmServiceImpl implements FarmService{
                 memberWarehouseDTO.getMember(), farmFieldInfoList,
                 memberWarehouseDTO.getMemberItems()
         );
+
+        return ResponseEntity.ok(response);
+    }
+
+    @Override
+    public ResponseEntity<?> agricultureHarvest(HarvestRequest request) {
+        //1. 수확할 수 있는 밭인지?
+        //2. 존재하는 작물인지?
+        //3. 창고에 넣기
+        //3-1. 창고에 해당 이름의 농작물이 존재하는지?
+        //3-1-1. 개수가 999보다 작은 슬롯이 존재하는지?
+        // update 개수(+1)
+        //3-1-2 개수가 999보다 작은 슬롯이 없다면
+        // 창고에 빈칸 있는지 검사
+        //3-2 창고에 해당 이름의 농작물이 없다면?
+        //3-2-1. 창고에 빈칸이 있는지?
+        // 빈칸이 있으면 insert
+        // 빈칸이 없으면 예외(창고가 꽉 찼습니다)
+        //4. FarmFiled delete
+
+        Member member = commonUtil.getMember();
+
+        //farm_field_pk로 해당 밭이 존재하는지 확인합니다.
+        FarmField farmField = farmFieldRepository.findByMember_MemberPkAndFarmFieldIndex(member.getMemberPk(), request.getFarmFieldIndex())
+                .orElseThrow(() -> new GlobalException(HttpStatus.NOT_FOUND, "farmfield not found"));
+
+        //해당 farm_field_pk에 심어져있는 작물이 수확이 가능한 상태인지 확인합니다.
+        //HttpStatus.NOT_FOUND 가 맞나요?
+        LocalDateTime now = LocalDateTime.now();
+        if(now.isBefore(farmField.getFarmFieldEndTime())){
+            throw new GlobalException(HttpStatus.CONFLICT, "impossible time for harvest");
+        }
+
+        //밭에 심어져 있는 작물 이름이 존재하는 작물인지 확인합니다.
+        Agriculture agriculture = agricultureRepository.findByAgricultureName(farmField.getAgriculture().getAgricultureName())
+                .orElseThrow(() -> new GlobalException(HttpStatus.NOT_FOUND, "agriculture not found"));
+
+
+        //창고 슬롯이 몇칸 차있는지 확인하기 위해
+        int warehouseSize = warehouseRepository.findAllByMember_MemberPk(member.getMemberPk()).size();
+
+        //창고에 해당 농작물 슬롯이 있는지 확인합니다.
+        List<Warehouse> warehouseList = warehouseRepository.findByMember_MemberPkAndAgriculture_AgriculturePkAndWarehouseCategoryOrderByWarehouseAmountDesc(member.getMemberPk(), agriculture.getAgriculturePk(), 2);
+
+        Warehouse warehouse;
+        //해당 농작물이 창고에 없다면?
+        if (warehouseList.isEmpty()){
+            //슬롯이 꽉 차있다면?
+            if (warehouseSize == 25){
+                //todo: HttpStatus 확인
+                throw new GlobalException(HttpStatus.CONFLICT, "warehouse is full");
+            }else{
+                //새롭게 추가하기
+                warehouse = new Warehouse(2, 1, member, agriculture);
+                warehouseRepository.save(warehouse);
+            }
+        }
+        //해당 농작물이 창고에 존재한다면?
+        else{
+            boolean added = false;
+            for (Warehouse wh: warehouseList){
+                //슬롯이 999개 이하면 1개 추가합니다.
+                if (wh.getWarehouseAmount() < 999){
+                    warehouse = wh;
+                    warehouse.updateSeedCount(1);
+                    warehouseRepository.save(warehouse);
+                    added = true;
+                    break;
+                }
+            }
+            //현재 수량이 999개라서 못넣었으면 새롭게 추가해야됨
+            if (!added){
+                if (warehouseSize == 25){
+                    //todo: HttpStatus 확인
+                    throw new GlobalException(HttpStatus.CONFLICT, "warehouse is full");
+                }else{
+                    //새롭게 추가하기
+                    warehouse = new Warehouse(2, 1, member, agriculture);
+                    warehouseRepository.save(warehouse);
+                }
+            }
+        }
+
+        // 수확한 작물 밭에서 제거해주기
+        farmFieldRepository.deleteById(farmField.getFarmFieldPk());
+
+        //갱신된 밭 정보 담기
+        List<FarmField> farmFieldList =
+                farmFieldRepository.findAllByMember_MemberPk(member.getMemberPk());
+
+        List<FarmFieldInfo> farmFieldInfoList = new ArrayList<>();
+        for (FarmField farm : farmFieldList){
+            farmFieldInfoList.add(
+                    FarmFieldInfo.create(farmField, farm.getAgriculture())
+            );
+        }
+
+        // 갱신된 창고 정보
+        MemberWarehouseDTO memberWarehouseDTO = commonUtil.getMemberItem();
+
+        HarvestResponse response = HarvestResponse.create(member, farmFieldInfoList, memberWarehouseDTO.getMemberItems());
 
         return ResponseEntity.ok(response);
     }
