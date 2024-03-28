@@ -15,17 +15,17 @@ export default function BankAccountPage() {
   const [selectedRange, setSelectedRange] = useState('');
   const [accountData, setAccountData] = useState(null);
 
-  // 함수
+  // 날짜 지정 데이터
   const setDateRange = (days) => {
     setSelectedRange(days);
     const end = new Date();
     const start = new Date();
     start.setDate(end.getDate() - days);
-
     setEndDate(end.toISOString().split('T')[0]);
     setStartDate(start.toISOString().split('T')[0]);
   };
 
+  // 계좌조회
   const handleAccountData = async (accountContent) => {
     try {
       const data = await accountCheck(accountContent);

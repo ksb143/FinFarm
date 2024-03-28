@@ -5,6 +5,7 @@ import MainHomePage from '@/pages/home/MainHomePage';
 import EntrancePage from '@/pages/entrance/EntrancePage';
 import RedirectPage from '@/pages/entrance/RedirectPage';
 import Bank from '@/router/Bank';
+import Market from '@/router/Market';
 import Entrance from '@/router/Entrance';
 import MyFarm from '@/router/MyFarm';
 
@@ -21,11 +22,12 @@ function App() {
           <Route path="entrance/*" element={<Entrance />} />
           {/* 메인 홈 페이지. 퀴즈를 풀 수 있고, 다양한 갈림길을 확인할 수 있음. */}
           <Route path="home" element={<MainHomePage />} />
-           {/* 뱅크 관련 페이지들. */}
+          {/* 뱅크 관련 페이지들. */}
           <Route path="bank/*" element={<Bank />} />
           {/* 내농장 관련 페이지들. */}
           <Route path="myfarm/*" element={<MyFarm />} />
-
+          {/* 장터 관련 페이지들 */}
+          <Route path="market/*" element={<Market />} />
         </Routes>
       </div>
     </Router>

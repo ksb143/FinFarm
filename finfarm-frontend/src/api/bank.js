@@ -1,9 +1,11 @@
 import { localAxios } from '@/utils/http-common';
 
+const local = localAxios();
+
 // 계좌 비밀번호 변경 함수
 async function changePassword(passwordInfo) {
   try {
-    const response = await localAxios.put('/banking/account/password', {
+    const response = await local.put('/banking/account/password', {
       originPassword: passwordInfo.originPassword,
       changePassword: passwordInfo.changePassword,
       checkPassword: passwordInfo.checkPassword,
@@ -18,7 +20,7 @@ async function changePassword(passwordInfo) {
 // 출금 함수
 async function withdrawCash(withdrawInfo) {
   try {
-    const response = await localAxios.post('/banking/account/withdraw', {
+    const response = await local.post('/banking/account/withdraw', {
       amount: withdrawInfo.amount,
       accountPassword: withdrawInfo.password,
     });
@@ -32,7 +34,7 @@ async function withdrawCash(withdrawInfo) {
 // 입금 함수
 async function depositCash(amount) {
   try {
-    const response = await localAxios.post('/banking/account/deposit', {
+    const response = await local.post('/banking/account/deposit', {
       amount: amount,
     });
     return response.data;
@@ -45,7 +47,7 @@ async function depositCash(amount) {
 // 계좌 내역 조회 함수
 async function accountCheck(accountContent) {
   try {
-    const response = await localAxios.post('/banking/account', {
+    const response = await local.post('/banking/account', {
       startDate: accountContent.startDate,
       endDate: accountContent.endDate,
       accountType: accountContent.transitionType,
@@ -64,7 +66,7 @@ async function accountCheck(accountContent) {
 // 최근 이체 내역 확인 함수
 async function recentTransferDetails() {
   try {
-    const response = await localAxios.get('/banking/account/remit/recent');
+    const response = await local.get('/banking/account/remit/recent');
     return response.data;
   } catch (error) {
     console.log(`최근 이체 내역 확인 실패: ${error}`);
@@ -75,7 +77,7 @@ async function recentTransferDetails() {
 // 송금 함수
 async function accountTransfer(transferContent) {
   try {
-    const response = await localAxios.post('/banking/account/remit', {
+    const response = await local.post('/banking/account/remit', {
       otherMemberPk: transferContent.recipient,
       amount: transferContent.amount,
       accountPassword: transferContent.password,
@@ -92,7 +94,7 @@ async function accountTransfer(transferContent) {
 // 송금 유저 조회 함수
 async function checkAnotherUser(anotherUser) {
   try {
-    const response = await localAxios.get('/banking/account/remit', {
+    const response = await local.get('/banking/account/remit', {
       nickname: anotherUser,
     });
     return response.data;
@@ -105,7 +107,7 @@ async function checkAnotherUser(anotherUser) {
 // 대출 받기
 async function loan(loanInfo) {
   try {
-    const response = await localAxios.post('/banking/loan/take', {
+    const response = await local.post('/banking/loan/take', {
       loanPk: loanInfo.loanPk,
       amount: loanInfo.amount,
       accountPassword: loanInfo.password,
@@ -120,7 +122,7 @@ async function loan(loanInfo) {
 // 대출 상환
 async function loanRepay(repayInfo) {
   try {
-    const response = await localAxios.post('/banking/loan/take', {
+    const response = await local.post('/banking/loan/take', {
       loanHistoryPk: repayInfo.pk,
       repayAmount: repayInfo.repayAmount,
       accountPassword: repayInfo.password,
@@ -135,7 +137,7 @@ async function loanRepay(repayInfo) {
 // 대출 내역 조회
 async function loanHistory() {
   try {
-    const response = await localAxios.get('/banking/loan');
+    const response = await local.get('/banking/loan');
     return response.data;
   } catch (error) {
     console.log(`대출 내역 조회 실패: ${error}`);
@@ -146,7 +148,7 @@ async function loanHistory() {
 // 대출 심사
 async function loanQualificate(loanPk) {
   try {
-    const response = await localAxios.get('/banking/loan/audit', {
+    const response = await local.get('/banking/loan/audit', {
       loanPk: loanPk,
     });
     return response.data;
