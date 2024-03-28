@@ -1,5 +1,6 @@
 import React from 'react';
 import entrance4 from '@/assets/images/entrance4.png';
+import useUserStore from "@/store/userStore";
 
 export default function MainHomePage() {
     // 전역상태관리 import 로직
