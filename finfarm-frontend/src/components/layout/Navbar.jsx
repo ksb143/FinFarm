@@ -7,6 +7,7 @@ import navLogo from '@/assets/images/navLogo2.png';
 import profile_icon from '@/assets/images/profile_icon2.png';
 
 export default function Navbar() {
+  // 전역상태관리 import 로직
   const { 
     accessToken: accessToken,
     nickname: nickname,
@@ -55,7 +56,7 @@ export default function Navbar() {
             aria-label="Profile Menu"
             onClick={toggleDropdown} // 클릭 이벤트 추가
           >
-            <div className="w-44 rounded-full">
+            <div className="w-20 rounded-full">
               <img
                 alt="profile_icon"
                 src={profile_icon}
@@ -64,7 +65,7 @@ export default function Navbar() {
           </button>
           {/* Dropdown이 열려있을 때만 보이도록 설정 */}
           {isDropdownOpen && (
-            <ul className="menu dropdown-content menu-sm z-[1] mt-3 w-52 rounded-box bg-base-100 p-2 shadow">
+            <ul className="menu dropdown-content menu-sm z-[1] mt-3 w-48 rounded-box bg-base-100 p-2 shadow">
               <li>
                 <Link
                   to="/bank"
@@ -87,25 +88,25 @@ export default function Navbar() {
           )}
         </div>
         <div className="flex flex-col items-center">
-          <span className="text-3xl" >{UserNickname}</span>
+          <span className="text-2xl" >{UserNickname}</span>
           
           <button className="btn btn-base min-w-32 text-2xl rounded-full bg-lime-500 font-hopang text-white hover:bg-lime-800" >로그아웃</button>
         </div>
 
         <div className="flex flex-col">
           <div className="flex items-center gap-x-11">
-            <span className="text-2xl">💰 Point :</span>
-            <span className="text-2xl">{CurrentPoint}</span>
+            <span className="text-1xl">💰 Point :</span>
+            <span className="text-1xl">{CurrentPoint}</span>
           </div>
 
           <div className="flex items-center gap-x-8">
-            <span className="text-2xl">📅 Today :</span>
-            <span className="text-2xl">{formattedDate}</span>
+            <span className="text-1xl">📅 Today :</span>
+            <span className="text-1xl">{formattedDate}</span>
           </div>
 
           <div className="flex items-center gap-x-2">
-            <button className="text-2xl">🌈 Weather :</button>
-            <span className="text-2xl">맑음</span>
+            <button className="text-1xl">🌈 Weather :</button>
+            <span className="text-1xl">맑음</span>
           </div>
 
         </div>

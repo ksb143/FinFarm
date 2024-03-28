@@ -28,7 +28,7 @@ export default function MainHomePage() {
             <h1 className='text-2xl'>this is main home page</h1>
             
             <br />
-            <p className='text-5xl'>환영합니다, {nickname}!</p>
+            <p className='text-5xl'>환영합니다, {nickname}님!</p>
             <img src={entrance4}  width='500px' />
         </div>
     );
