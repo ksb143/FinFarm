@@ -74,17 +74,15 @@ const RedirectPage = () => {
       }
     } catch (error) {
       console.error('Error:', error.response ? error.response.data : error.message);
-      // Todo.[에러핸들링] 어떤 에러인가에 따라서 사용자에게 더 명확한 피드백을 주는 것이 나아 보임. 특정 에러 별로 각각 다른 페이지로 리다이렉션 필요. 
+      // Todo.[에러핸들링] 어떤 에러인가에 따라서 사용자에게 더 명확한 피드백을 주는 것이 나아 보임.
+      // 특정 에러 별로 각각 다른 페이지로 리다이렉션 필요. 
     }
     
   };
 
   return (
     <div>
-      {/* 로딩 스피너나 메시지를 표시할 수 있습니다. */}
-      <p>조금만 기다려주세요.</p>
-      <br />
-      <img src={loading} alt="loading" width={200} />
+      <img src={loading} alt="loading" width={400} />
     </div>
   );
 };
