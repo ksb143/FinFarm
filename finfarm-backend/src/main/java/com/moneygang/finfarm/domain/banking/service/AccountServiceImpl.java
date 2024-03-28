@@ -12,6 +12,7 @@ import com.moneygang.finfarm.domain.member.repository.MemberRepository;
 import com.moneygang.finfarm.global.base.CommonUtil;
 import com.moneygang.finfarm.global.exception.GlobalException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -178,13 +180,13 @@ public class AccountServiceImpl implements AccountService {
 
         BankingAccountRemitRecentResponse response = BankingAccountRemitRecentResponse.create();
 
-        int count = 0;
         HashSet<String> remitMemberNicknames = new HashSet<>(); // 서로 다른 사용자 6명을 구분하기 위한 Set 자료구조
         for(Account remit: remits) {
-            if(count==6) break;
 
             String otherMemberNickname = remit.getAccountNickname();
             Optional<Member> optionalOtherMember = memberRepository.findByMemberNickname(otherMemberNickname);
+
+            log.info("member: "+otherMemberNickname);
 
             // 예외1: 최근 송금한 사용자가 없을 때? (400)
             if(optionalOtherMember.isEmpty()) {
@@ -200,9 +202,9 @@ public class AccountServiceImpl implements AccountService {
 
                 BankingAccountRemitMember remitMember = BankingAccountRemitMember.create(otherMemberPk, otherMemberNickname, otherMemberImageUrl);
                 response.addMember(remitMember);
-
-                count++;
             }
+
+            if(remitMemberNicknames.size()==6) break;
         }
 
         return ResponseEntity.ok(response);
@@ -264,14 +266,14 @@ public class AccountServiceImpl implements AccountService {
         Account sendRemit = Account.builder()
                 .amount((-1)*amount)
                 .type("송금")
-                .nickname(sendMember.getMemberNickname())
+                .nickname(receiveMember.getMemberNickname()) // 적요(받은 사람 입력)
                 .member(sendMember)
                 .build();
 
         Account receiveRemit = Account.builder()
                 .amount(amount)
                 .type("송금")
-                .nickname(receiveMember.getMemberNickname())
+                .nickname(sendMember.getMemberNickname()) // 적요(보낸 사람 입력)
                 .member(receiveMember)
                 .build();
 

@@ -11,10 +11,12 @@ import java.util.List;
 @Builder
 public class BankingAccountRemitRecentResponse {
 
-    List<BankingAccountRemitMember> recentRemitMembers = new ArrayList<>();
+    List<BankingAccountRemitMember> recentRemitMembers;
 
     public static BankingAccountRemitRecentResponse create() {
-        return BankingAccountRemitRecentResponse.builder().build();
+        return BankingAccountRemitRecentResponse.builder()
+                        .recentRemitMembers(new ArrayList<>())
+                        .build();
     }
 
     public void addMember(BankingAccountRemitMember member) {
