@@ -55,6 +55,7 @@ export default function BankTransferPage() {
         setRecentTransfers([]);
       } else {
         setRecentTransfers(recentTransferData);
+        console.log(recentTransferData);
       }
     } catch (error) {
       console.error(error);
