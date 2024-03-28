@@ -5,35 +5,62 @@ import useUserStore from "@/store/userStore";
 const { VITE_REACT_API_URL } = import.meta.env;
 
 const SignupProcessPage = () => {
-  const memberEmail = useUserStore(state => state.email);
-  const memberNickname = useUserStore(state => state.nickname);
-  const memberAccountPassword = useUserStore(state => state.accountPassword)
-  const memberImageUrl = useUserStore(state => state.profileImageUrl)
+  // 전역상태관리 수정 로직
+  const { setAccountPassword, setAccessToken, setPointsInthePocket, setProfileImageUrl, setNickname, setIsQuizSolved, setDateOfSignup, setEmail } = useUserStore(state => ({
+    setAccessToken: state.setAccessToken,
+    setPointsInthePocket: state.setPointsInthePocket,
+    setProfileImageUrl: state.setProfileImageUrl,
+    setNickname: state.setNickname,
+    setIsQuizSolved: state.setIsQuizSolved,
+    setDateOfSignup: state.setDateOfSignup,
+    setEmail: state.setEmail,
+  }));
+  // 전역상태관리 import 로직
+  const { 
+    accessToken: accessToken,
+    nickname: nickname,
+    email: email,
+    pointsInthePocket: pointsInthePocket,
+    profileImageUrl: profileImageUrl,
+    isQuizSolved: isQuizSolved,
+    dateOfSignup: dateOfSignup,
+    accountPassword:  accountPassword, 
+  } = useUserStore(state => ({
+    accessToken: state.accessToken,
+    nickname: state.nickname,
+    email: state.email,
+    pointsInthePocket: state.pointsInthePocket,
+    profileImageUrl: state.profileImageUrl,
+    isQuizSolved: state.isQuizSolved,
+    dateOfSignup: state.dateOfSignup,
+    accountPassword: state.accountPassword,
+  }));
+
 
   const navigate = useNavigate();
-  const [nickname, setNickname] = useState('');
-  const [accountPW, setAccountPW] = useState('');
+  const [nickname0, setNickname0] = useState('');
+  const [accountPW0, setAccountPW0] = useState('');
 
   const handleInputNickname = e => {
     const value = e.target.value;
-    setNickname(value);
-    useUserStore.setNickname(value); // useUserStore에 닉네임 저장함.
+    setNickname0(value);
+    setNickname(value); // useUserStore에 닉네임 저장함.
     console.log('zustand에 회원의 닉네임을(를) 저장했습니다.');
   }
 
   const handleInputAccountPW = e => {
     const value = e.target.value;
-    setAccountPW(value);
-    useUserStore.setAccountPassword(value) // useUserStore에 계좌 비번 저장함.
+    setAccountPW0(value);
+    setAccountPassword(value); // useUserStore에 계좌 비번 저장함.
     console.log('zustand에 회원의 계좌 비밀번호을(를) 저장했습니다.');
   }
 
   const handleSubmit = () => {
     console.log('회원가입 버튼이 눌러졌습니다.')
-    console.log("닉네임: ", nickname);
-    console.log("계좌 비밀번호: ", accountPW);
+    console.log("닉네임: ", nickname0);
+    console.log("계좌 비밀번호: ", accountPW0);
 
-    sendDataToBackend(memberEmail,memberNickname,memberAccountPassword,memberImageUrl)
+    sendDataToBackend(email,nickname, accountPassword,profileImageUrl)
   }
 
   const sendDataToBackend = async(email, nickname, acc_pw, img_url) => {

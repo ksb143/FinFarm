@@ -5,6 +5,7 @@ import axios from 'axios';
 const { VITE_REACT_API_URL } = import.meta.env;
 
 const RedirectPage = () => {
+  // 전역상태관리 수정 로직
   const { setAccessToken, setPointsInthePocket, setProfileImageUrl, setNickname, setIsQuizSolved, setDateOfSignup, setEmail } = useUserStore(state => ({
     setAccessToken: state.setAccessToken,
     setPointsInthePocket: state.setPointsInthePocket,
