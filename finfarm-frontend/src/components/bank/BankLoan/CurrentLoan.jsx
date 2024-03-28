@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 
 CurrentLoan.propTypes = {
+  pk: PropTypes.number,
   name: PropTypes.string,
   interest: PropTypes.number,
   startDate: PropTypes.instanceOf(Date),
@@ -11,6 +12,7 @@ CurrentLoan.propTypes = {
 };
 
 export default function CurrentLoan({
+  pk,
   name,
   interest,
   startDate,
@@ -18,6 +20,7 @@ export default function CurrentLoan({
   amount,
   repayAmount,
   dDay,
+  onRepay,
 }) {
   const startLoanDate = startDate
     .toLocaleString('ko-KR', {
@@ -66,7 +69,10 @@ export default function CurrentLoan({
           </span>
         </div>
       </div>
-      <button className="h-20 w-1/4  rounded-lg bg-lime-500 px-3 font-hopang text-xl text-white hover:border-4 hover:border-gray-300 hover:bg-lime-800">
+      <button
+        onClick={() => onRepay(pk, repayAmount, name)}
+        className="h-20 w-1/4  rounded-lg bg-lime-500 px-3 font-hopang text-xl text-white hover:border-4 hover:border-gray-300 hover:bg-lime-800"
+      >
         상환하기
       </button>
     </div>
