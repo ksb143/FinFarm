@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -62,9 +63,13 @@ public class AccountServiceImpl implements AccountService {
                 if(!request.getAccountNickname().equals(account.getAccountNickname())) continue accountLoop;
             }
 
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDate startDate = LocalDate.parse(request.getStartDate(), formatter);
+            LocalDate endDate = LocalDate.parse(request.getEndDate(), formatter);
+
             // 필터링3: startDate ~ endDate
             LocalDateTime accountDate = account.getAccountDate();
-            if(accountDate.isBefore(request.getStartDate().atStartOfDay()) || accountDate.isAfter(request.getEndDate().atStartOfDay())) continue accountLoop;
+            if(accountDate.isBefore(startDate.atStartOfDay()) || accountDate.isAfter(endDate.atStartOfDay())) continue accountLoop;
 
             Long amount = account.getAccountAmount();
             LocalDateTime date = account.getAccountDate();
