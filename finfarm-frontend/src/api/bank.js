@@ -93,11 +93,12 @@ async function accountTransfer(transferContent) {
 
 // 송금 유저 조회 함수
 async function checkAnotherUser(anotherUser) {
+  console.log(anotherUser);
+  console.log('하이하이');
   try {
     const response = await local.get('/banking/account/remit', {
       nickname: anotherUser,
     });
-    console.log(anotherUser);
     return response.data;
   } catch (error) {
     console.log(`송금 유저 조회 실패: ${error.message}`);
