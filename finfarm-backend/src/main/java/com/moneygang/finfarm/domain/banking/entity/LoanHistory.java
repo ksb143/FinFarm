@@ -73,6 +73,7 @@ public class LoanHistory {
     }
 
     // 대출 연체
+    // 해당 유저의 대출 연체 내역이 30일 이후라면, 대출 연체 내역 삭제?
     public void overDue() {
         this.member.loanOverDue();
     }
