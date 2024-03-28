@@ -97,6 +97,7 @@ async function checkAnotherUser(anotherUser) {
     const response = await local.get('/banking/account/remit', {
       nickname: anotherUser,
     });
+    console.log(response);
     return response.data;
   } catch (error) {
     console.log(`송금 유저 조회 실패: ${error}`);
