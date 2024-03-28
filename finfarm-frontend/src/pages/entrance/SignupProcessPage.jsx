@@ -7,6 +7,7 @@ const { VITE_REACT_API_URL } = import.meta.env;
 const SignupProcessPage = () => {
   // 전역상태관리 수정 로직
   const { setAccountPassword, setAccessToken, setPointsInthePocket, setProfileImageUrl, setNickname, setIsQuizSolved, setDateOfSignup, setEmail } = useUserStore(state => ({
+    setAccountPassword: state.setAccountPassword,
     setAccessToken: state.setAccessToken,
     setPointsInthePocket: state.setPointsInthePocket,
     setProfileImageUrl: state.setProfileImageUrl,
