@@ -112,14 +112,21 @@ export default function Navbar() {
                 >
                   {' '}
                   {/* 클릭 이벤트 추가 */}
-                  👩 Mypage
+                  👩 마이페이지
                 </Link>
               </li>
               <li>
                 <Link to="/bank" onClick={toggleDropdown}>
                   {' '}
                   {/* 클릭 이벤트 추가 */}
-                  🏛 Bank
+                  🏛 은행 가기
+                </Link>
+              </li>
+              <li>
+                <Link to="/myfarm" onClick={toggleDropdown}>
+                  {' '}
+                  {/* 클릭 이벤트 추가 */}
+                  🍎 농장 가기
                 </Link>
               </li>
             </ul>
