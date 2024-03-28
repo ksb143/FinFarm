@@ -110,7 +110,7 @@ public class MemberController {
             @ApiResponse(responseCode = "400", description = "(message : \"Bad Request\", code : 400)", content = @Content)
     })
     @PostMapping("/profile")
-    public ResponseEntity<MemberProfileResponse> checkNicknameDuplication(MemberProfileRequest request) {
+    public ResponseEntity<MemberProfileResponse> saveProfileImage(MemberProfileRequest request) {
         return memberService.saveProfileImage(request);
     }
 
