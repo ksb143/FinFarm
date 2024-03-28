@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -67,9 +68,11 @@ public class LoanHistoryServiceImpl implements LoanHistoryService {
             Boolean isRepay = history.getIsRepay();
 
             LocalDate now = LocalDate.now();
-            Integer dDay = now.compareTo()
+            int dDay = Math.toIntExact(ChronoUnit.DAYS.between(endDate, now)); // long형 리턴값을 int형으로
 
-            BankingLoanHistory loanHistory = BankingLoanHistory.create(pk, name, interest, period,
+            if(endDate.isBefore(now)) dDay *= (-1);
+
+            BankingLoanHistory loanHistory = BankingLoanHistory.create(pk, name, interest, period, dDay,
                     amount, repayAmount, startDate, endDate, isRepay);
 
             if(isRepay) totalRepayAmount += repayAmount; // 상환한 대출 내역 -> 총 상환 금액에 추가
