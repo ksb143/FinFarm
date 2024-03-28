@@ -84,6 +84,16 @@ public class MemberController {
         return memberService.quit();
     }
 
+    @Operation(summary = "마이페이지 조회", description = "access token 을 통해 유저 닉네임과 image 주소를 반환합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)", content = @Content(schema = @Schema(implementation = MemberMypageResponse.class))),
+            @ApiResponse(responseCode = "404", description = "(message : \"user not found\", code : 404)", content = @Content)
+    })
+    @GetMapping("/my-page")
+    public ResponseEntity<MemberMypageResponse> getMyPage() {
+        return memberService.getMypage();
+    }
+
     @Operation(summary = "마이페이지 수정", description = "유저 닉네임과 프로필 사진을 변경합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)", content = @Content(schema = @Schema(implementation = MemberUpdateResponse.class))),
