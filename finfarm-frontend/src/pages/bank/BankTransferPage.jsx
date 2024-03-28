@@ -255,7 +255,7 @@ export default function BankTransferPage() {
                     key={idx}
                     recentTransfers={recentTransfer.nickname}
                     profileImg={recentTransfer.imageUrl}
-                    transferDate={recentTransfer.requestTime}
+                    // transferDate={recentTransfer.requestTime}
                     onClick={() => {
                       handleSender(recentTransfer.nickname);
                     }}
