@@ -16,6 +16,8 @@ public class AgricultureDTO {
     private String agricultureName;
     @Schema(description = "농산물 정보", example = "감자입니다.")
     private String agricultureContent;
+    @Schema(description = "농산물 이미지 URL", example = "www.abc.com")
+    private String agricultureImageUrl;
     @Schema(description = "농산물 단위", example = "1kg")
     private String unit;
     @Schema(description = "농산물 가격", example = "2000")
@@ -40,6 +42,7 @@ public class AgricultureDTO {
         return AgricultureDTO.builder()
                 .agricultureName(agriculture.getAgricultureName())
                 .agricultureContent(agriculture.getAgricultureContent())
+                .agricultureImageUrl(agriculture.getAgricultureImageUrl())
                 .unit(agriculture.getAgricultureUnit())
                 .seedPrice(Integer.valueOf(
                         String.valueOf(agriculturePriceList.get(agriculturePriceList.size()-1).getAgriculturePriceValue()/5L)))
