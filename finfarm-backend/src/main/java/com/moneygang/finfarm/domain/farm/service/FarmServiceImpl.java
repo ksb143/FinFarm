@@ -99,31 +99,55 @@ public class FarmServiceImpl implements FarmService{
         return ResponseEntity.ok(response);
     }
 
+    @Transactional
     @Override
     public ResponseEntity<?> itemDump(DeleteItemRequest request) {
         Member member = commonUtil.getMember();
-        boolean updateCheck = false;
-        List<Warehouse> warehouseList = warehouseRepository.findAllByMember_MemberPk(member.getMemberPk());
-        for(Warehouse warehouse : warehouseList){
-            if(warehouse.getAgriculture().getAgricultureName().equals(request.getName()) ||
-                    warehouse.getAgriculture().getSeed().getSeedName().equals(request.getName())){
-                int curWarehouseAmount =  warehouse.getWarehouseAmount();
-                if(curWarehouseAmount < request.getAmount()){
-                    throw new GlobalException(HttpStatus.UNPROCESSABLE_ENTITY, "Exceeds owned quantity");
-                }
-                int updateAmount = curWarehouseAmount - request.getAmount();
-                if(updateAmount <= 0){
-                    warehouseRepository.delete(warehouse);
-                }else{
-                    warehouse.setWarehouseAmount(updateAmount);
-                    warehouseRepository.save(warehouse);
-                }
-                updateCheck = true;
+
+        int category = 2;
+        Seed seed = null;
+        Optional<Agriculture> agriculture = agricultureRepository.findByAgricultureName(request.getName());
+        if(agriculture.isEmpty()){
+            seed = seedRepository.findBySeedName(request.getName())
+                    .orElseThrow(() -> new GlobalException(HttpStatus.NOT_FOUND, "request item not found"));
+            category = 1;
+        }
+
+        List<Warehouse> warehouseList;
+        int sumItemCount;
+        if(category == 1){
+            warehouseList =
+            warehouseRepository.findAllByMember_MemberPkAndAgriculture_AgriculturePkAndWarehouseCategoryOrderByWarehouseAmountAsc(
+                    member.getMemberPk(), seed.getAgriculture().getAgriculturePk(), category
+                    );
+            sumItemCount = warehouseRepository.sumOfWarehouseMyAgricultureCount(
+                    member.getMemberPk(), seed.getAgriculture().getAgriculturePk(), category
+            );
+        }else {
+            warehouseList =
+                    warehouseRepository.findAllByMember_MemberPkAndAgriculture_AgriculturePkAndWarehouseCategoryOrderByWarehouseAmountAsc(
+                            member.getMemberPk(), agriculture.get().getAgriculturePk(), category
+                    );
+            sumItemCount = warehouseRepository.sumOfWarehouseMyAgricultureCount(
+                    member.getMemberPk(), agriculture.get().getAgriculturePk(), category
+            );
+        }
+        if(sumItemCount < request.getAmount()){
+            throw new GlobalException(HttpStatus.UNPROCESSABLE_ENTITY, "Insufficient items to discard");
+        }
+
+        int itemsToDiscard = request.getAmount();
+        for (Warehouse warehouse : warehouseList) {
+            int warehouseAmount = warehouse.getWarehouseAmount();
+            if (itemsToDiscard >= warehouseAmount) {
+                warehouseRepository.delete(warehouse);
+                itemsToDiscard -= warehouseAmount;
+                if (itemsToDiscard == 0) break;
+            } else {
+                warehouse.setWarehouseAmount(warehouseAmount - itemsToDiscard);
+                warehouseRepository.save(warehouse);
                 break;
             }
-        }
-        if(!updateCheck){
-            throw new GlobalException(HttpStatus.NOT_FOUND, "item not found");
         }
 
         List<FarmField> farmFieldList =
@@ -198,16 +222,18 @@ public class FarmServiceImpl implements FarmService{
                 .orElseThrow(() -> new GlobalException(HttpStatus.NOT_FOUND, "seed not found"));
 
         //사용자 씨앗에 해당하는 창고 아이템 조회
-        Warehouse warehouseItem = warehouseRepository.findByMember_MemberPkAndAgriculture_AgriculturePkAndWarehouseCategory(
-                        member.getMemberPk(), seed.getAgriculture().getAgriculturePk(), 1)
-                .orElseThrow(() -> new GlobalException(HttpStatus.NOT_FOUND, "Warehouse item not found"));
+        List<Warehouse> warehouseItem = warehouseRepository.findByMember_MemberPkAndAgriculture_AgriculturePkAndWarehouseCategoryOrderByWarehouseAmountAsc(
+                        member.getMemberPk(), seed.getAgriculture().getAgriculturePk(), 1);
+
+        if(warehouseItem.isEmpty())
+            throw new GlobalException(HttpStatus.NOT_FOUND, "Warehouse item not found");
 
         //창고 아이템의 수량을 1 감소
-        if ((warehouseItem.getWarehouseAmount() - 1) <= 0) {
-            warehouseRepository.delete(warehouseItem);
+        if ((warehouseItem.get(0).getWarehouseAmount() - 1) <= 0) {
+            warehouseRepository.delete(warehouseItem.get(0));
         } else {
-            warehouseItem.setWarehouseAmount(warehouseItem.getWarehouseAmount() - 1);
-            warehouseRepository.save(warehouseItem);
+            warehouseItem.get(0).setWarehouseAmount(warehouseItem.get(0).getWarehouseAmount() - 1);
+            warehouseRepository.save(warehouseItem.get(0));
         }
 
         //심으려는 위치에 씨앗이 있는지 확인
@@ -254,20 +280,6 @@ public class FarmServiceImpl implements FarmService{
 
     @Override
     public ResponseEntity<?> agricultureHarvest(HarvestRequest request) {
-        //1. 수확할 수 있는 밭인지?
-        //2. 존재하는 작물인지?
-        //3. 창고에 넣기
-        //3-1. 창고에 해당 이름의 농작물이 존재하는지?
-        //3-1-1. 개수가 999보다 작은 슬롯이 존재하는지?
-        // update 개수(+1)
-        //3-1-2 개수가 999보다 작은 슬롯이 없다면
-        // 창고에 빈칸 있는지 검사
-        //3-2 창고에 해당 이름의 농작물이 없다면?
-        //3-2-1. 창고에 빈칸이 있는지?
-        // 빈칸이 있으면 insert
-        // 빈칸이 없으면 예외(창고가 꽉 찼습니다)
-        //4. FarmFiled delete
-
         Member member = commonUtil.getMember();
 
         //farm_field_pk로 해당 밭이 존재하는지 확인합니다.
@@ -290,7 +302,7 @@ public class FarmServiceImpl implements FarmService{
         int warehouseSize = warehouseRepository.findAllByMember_MemberPk(member.getMemberPk()).size();
 
         //창고에 해당 농작물 슬롯이 있는지 확인합니다.
-        List<Warehouse> warehouseList = warehouseRepository.findByMember_MemberPkAndAgriculture_AgriculturePkAndWarehouseCategoryOrderByWarehouseAmountDesc(member.getMemberPk(), agriculture.getAgriculturePk(), 2);
+        List<Warehouse> warehouseList = warehouseRepository.findAllByMember_MemberPkAndAgriculture_AgriculturePkAndWarehouseCategoryOrderByWarehouseAmountDesc(member.getMemberPk(), agriculture.getAgriculturePk(), 2);
 
         Warehouse warehouse;
         //해당 농작물이 창고에 없다면?
