@@ -7,30 +7,57 @@ import navLogo from '@/assets/images/navLogo2.png';
 import profile_icon from '@/assets/images/profile_icon2.png';
 
 export default function Navbar() {
-  // 전역상태관리 import 로직
-  const { 
-    accessToken: accessToken,
-    nickname: nickname,
-    email: email,
-    pointsInthePocket: pointsInthePocket,
-    profileImageUrl: profileImageUrl,
-    isQuizSolved: isQuizSolved,
-    dateOfSignup: dateOfSignup 
-  } = useUserStore(state => ({
-    accessToken: state.accessToken,
-    nickname: state.nickname,
-    email: state.email,
-    pointsInthePocket: state.pointsInthePocket,
-    profileImageUrl: state.profileImageUrl,
-    isQuizSolved: state.isQuizSolved,
-    dateOfSignup: state.dateOfSignup
+ // 전역상태관리 import 로직
+ const { 
+  accessToken: accessToken,
+  nickname: nickname,
+  email: email,
+  pointsInthePocket: pointsInthePocket,
+  profileImageUrl: profileImageUrl,
+  isQuizSolved: isQuizSolved,
+  dateOfSignup: dateOfSignup,
+  accountPassword:  accountPassword, 
+} = useUserStore(state => ({
+  accessToken: state.accessToken,
+  nickname: state.nickname,
+  email: state.email,
+  pointsInthePocket: state.pointsInthePocket,
+  profileImageUrl: state.profileImageUrl,
+  isQuizSolved: state.isQuizSolved,
+  dateOfSignup: state.dateOfSignup,
+  accountPassword: state.accountPassword,
+}));
+ // 전역상태관리 초기화 로직
+  const { resetAccountPassword, resetAccessToken, resetPointsInthePocket, resetProfileImageUrl, resetNickname, resetIsQuizSolved, resetDateOfSignup, resetEmail } = useUserStore(state => ({
+    resetAccountPassword: state.resetAccountPassword,
+    resetAccessToken: state.resetAccessToken,
+    resetPointsInthePocket: state.resetPointsInthePocket,
+    resetProfileImageUrl: state.resetProfileImageUrl,
+    resetNickname: state.resetNickname,
+    resetIsQuizSolved: state.resetIsQuizSolved,
+    resetDateOfSignup: state.resetDateOfSignup,
+    resetEmail: state.resetEmail,
   }));
 
   const navigate = useNavigate();
+  
   const today = new Date();
+  
   const formattedDate = `${today.getFullYear()}년 ${today.getMonth() + 1}월 ${today.getDate()}일`;
-  const CurrentPoint = `${pointsInthePocket} 포인트`;
-  const UserNickname = `${nickname} 님`;  
+  
+  const CurrentPoint = ()=>{
+    if (localStorage.getItem('accessToken')){
+    `${pointsInthePocket} 포인트`;
+    }
+  
+  };
+  
+  const UserNickname = ()=>{
+    if (localStorage.getItem('accessToken')){
+      `${nickname} 님`
+    }
+    
+  } ;  
   
   const GoToMainHome = () => {
     if (localStorage.getItem('accessToken')){
@@ -50,6 +77,8 @@ export default function Navbar() {
   
   const handleLogout=()=>{
     localStorage.removeItem('accessToken'); // accessToken 삭제
+    resetAccessToken()
+    
     navigate('/entrance'); // 로그인 페이지나 웰컴 페이지로 이동
   };
 
