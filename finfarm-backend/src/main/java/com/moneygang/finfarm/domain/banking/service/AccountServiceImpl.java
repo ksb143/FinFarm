@@ -143,8 +143,10 @@ public class AccountServiceImpl implements AccountService {
             throw new GlobalException(HttpStatus.BAD_REQUEST, "Password Not Match");
         }
 
+        long withdrawAmount = amount+1000; // 출금 수수료 1000원 부가
+
         Account withdraw = Account.builder()
-                .amount((-1)*amount)
+                .amount((-1)*withdrawAmount)
                 .type("출금")
                 .nickname(member.getMemberNickname())
                 .member(member)
