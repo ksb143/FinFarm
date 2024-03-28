@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 const { VITE_REACT_API_URL } = import.meta.env;
-const finfarm_URL = 'https://j10d203.p.ssafy.io/';
 
 const RedirectPage = () => {
   const navigate = useNavigate();
@@ -27,7 +26,7 @@ const RedirectPage = () => {
     };
   
     const dataToSend = {
-      accessToken : code, // 여기서 'code'를 'authCode' 키의 값으로 설정
+      authCode : code, // 여기서 'code'를 'authCode' 키의 값으로 설정
     };
   
     try {
