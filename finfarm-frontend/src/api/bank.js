@@ -67,10 +67,7 @@ async function accountCheck(accountContent) {
 async function recentTransferDetails() {
   try {
     const response = await local.get('/banking/account/remit/recent');
-    console.log(response.data.recentRemitMembers);
-    console.log(Array.isArray(response.data));
-    console.log(Array.isArray(response.data.recentRemitMembers));
-    return response.data;
+    return response.data.recentRemitMembers;
   } catch (error) {
     console.log(`최근 이체 내역 확인 실패: ${error}`);
     throw error;
