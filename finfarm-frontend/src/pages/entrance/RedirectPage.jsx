@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 const { VITE_REACT_API_URL } = import.meta.env;
 
 const RedirectPage = () => {
