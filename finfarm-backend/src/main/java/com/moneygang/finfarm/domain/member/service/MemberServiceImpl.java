@@ -25,6 +25,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -296,10 +297,26 @@ public class MemberServiceImpl implements MemberService{
     }
 
     @Override
+    @Transactional
     public ResponseEntity<MemberUpdateResponse> updateMypage(MemberUpdateRequest request) {
         log.info("member updateMypage");
 
-        return null;
+        // authentication 에서 member 객체 조회
+        Member member = commonUtil.getMember();
+
+        String request_nickname = request.getMemberNickname();
+        String request_url = request.getMemberImageUrl();
+
+        //닉네임 변경
+        if(!request_nickname.isEmpty() && !member.getMemberNickname().equals(request_nickname)) {
+            member.setMemberNickname(request_nickname);
+        }
+        //이미지 변경
+        if(!request_url.isEmpty() && !member.getMemberImageUrl().equals(request_url)) {
+            member.setMemberImageUrl(request_url);
+        }
+
+        return ResponseEntity.ok(MemberUpdateResponse.create("마이페이지 수정 성공"));
     }
 
     @Override
@@ -307,6 +324,7 @@ public class MemberServiceImpl implements MemberService{
         log.info("member saveProfileImage");
 
         MultipartFile file = request.getFile();
+
         try {
             // 프로필 사진 파일명
             String originalFileName = file.getOriginalFilename();
