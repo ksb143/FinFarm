@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import useUserStore from '@/store/userStore';
 import axios from 'axios';
 const { VITE_REACT_API_URL } = import.meta.env;
+import loading from '@/assets/images/loading.gif';
 
 const RedirectPage = () => {
   // 전역상태관리 수정 로직
@@ -83,9 +84,7 @@ const RedirectPage = () => {
       {/* 로딩 스피너나 메시지를 표시할 수 있습니다. */}
       <p>조금만 기다려주세요.</p>
       <br />
-      <p>회원이실 경우, 메인화면으로 이동합니다.</p>
-      <br />
-      <p>회원이 아닐 경우, 회원가입이 진행됩니다.</p>
+      <img src={loading} alt="loading" width={200} />
     </div>
   );
 };
