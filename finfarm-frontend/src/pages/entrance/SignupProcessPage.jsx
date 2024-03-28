@@ -1,9 +1,15 @@
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import useUserStore from "@/store/userStore";
 const { VITE_REACT_API_URL } = import.meta.env;
 
 const SignupProcessPage = () => {
+  const memberEmail = useUserStore(state => state.email);
+  const memberNickname = useUserStore(state => state.nickname);
+  const memberAccountPassword = useUserStore(state => state.accountPassword)
+  const memberImageUrl = useUserStore(state => state.profileImageUrl)
+
   const navigate = useNavigate();
   const [nickname, setNickname] = useState('');
   const [accountPW, setAccountPW] = useState('');
@@ -11,39 +17,39 @@ const SignupProcessPage = () => {
   const handleInputNickname = e => {
     const value = e.target.value;
     setNickname(value);
-    localStorage.setItem('memberNickname',value);
-    console.log('로컬스토리지에 회원의 닉네임을(를) 저장했습니다.');
+    useUserStore.setNickname(value); // useUserStore에 닉네임 저장함.
+    console.log('zustand에 회원의 닉네임을(를) 저장했습니다.');
   }
 
   const handleInputAccountPW = e => {
     const value = e.target.value;
     setAccountPW(value);
-    localStorage.setItem('memberAccountPassword',value);
-    console.log('로컬스토리지에 회원의 계좌 비밀번호을(를) 저장했습니다.');
+    useUserStore.setAccountPassword(value) // useUserStore에 계좌 비번 저장함.
+    console.log('zustand에 회원의 계좌 비밀번호을(를) 저장했습니다.');
   }
 
   const handleSubmit = () => {
     console.log('회원가입 버튼이 눌러졌습니다.')
-    // 입력된 값들을 로컬 스토리지에 저장합니다.
-    
     console.log("닉네임: ", nickname);
     console.log("계좌 비밀번호: ", accountPW);
-    sendDataToBackend(localStorage.getItem('memberEmail'),localStorage.getItem('memberNickname'),localStorage.getItem('memberAccountPassword'))
+
+    sendDataToBackend(memberEmail,memberNickname,memberAccountPassword,memberImageUrl)
   }
 
-  const sendDataToBackend = async(member_email, member_nickname, memeber_accountpassword) => {
+  const sendDataToBackend = async(email, nickname, acc_pw, img_url) => {
     const headers = {
       "Content-Type": "application/json",
     };
     const dataToSend = {
-      memberEmail : member_email,
-      memberNickname : member_nickname,
-      memberAccountPassword : memeber_accountpassword,
-      memberImageUrl : "member_imageurl",
+      memberEmail : email,
+      memberNickname : nickname,
+      memberAccountPassword : acc_pw,
+      memberImageUrl : img_url,
     };
     try {
       const res = await axios.post(`${VITE_REACT_API_URL}member/sign-up`, JSON.stringify(dataToSend), { withCredentials: true, headers });
-      console.log('회원가입에 필요한 정보를 성공적으로 전달했습니다.', res.data)
+      console.log('회원가입에 필요한 정보를 성공적으로 백엔드에 전달했습니다.', res.data)
+      
       console.log('웹사이트 입구로 이동합니다.')
       navigate('/entrance');
 
