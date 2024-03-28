@@ -33,7 +33,11 @@ export default function Navbar() {
   const UserNickname = `${nickname} 님`;  
   
   const GoToMainHome = () => {
-    navigate('/home')
+    if (localStorage.getItem('accessToken')){
+      navigate('/home')}
+    else {
+      navigate('/entrance')
+    }
   };
   
   // Dropdown이 열려있는지 여부를 관리하는 상태 추가
