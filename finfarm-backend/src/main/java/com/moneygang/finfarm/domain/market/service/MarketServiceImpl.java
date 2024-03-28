@@ -120,22 +120,42 @@ public class MarketServiceImpl implements MarketService {
             throw new GlobalException(HttpStatus.PAYMENT_REQUIRED, "Payment Required");
         }
 
+        int warehouseSize =  warehouseRepository.findAllByMember_MemberPk(member.getMemberPk()).size();
+        if(warehouseSize >= 25)
+            throw new GlobalException(HttpStatus.CONFLICT, "warehouse is full");
+
         member.setMemberCurPoint((long) (member.getMemberCurPoint() - purchasePrice));
         memberRepository.save(member);
 
-        Optional<Warehouse> warehouseOptional =
-                warehouseRepository.findByMember_MemberPkAndAgriculture_AgriculturePkAndWarehouseCategory(
+        List<Warehouse> warehouseList =
+                warehouseRepository.findAllByMember_MemberPkAndAgriculture_AgriculturePkAndWarehouseCategoryOrderByWarehouseAmountDesc(
                         member.getMemberPk(), seed.getAgriculture().getAgriculturePk(), 1
                 );
-        Warehouse warehouse;
-        if(warehouseOptional.isPresent()){
-            warehouse = warehouseOptional.get();
-            warehouse.updateSeedCount(request.getSeedCount());
-        }else{
+        Warehouse warehouse = null;
+        if(warehouseList.isEmpty()){
             warehouse = new Warehouse(1, request.getSeedCount(), member, seed.getAgriculture());
+        }else{
+            int seedsToStore = request.getSeedCount(); // 저장할 씨앗의 총 수량
+            for (Warehouse warehouseLoop : warehouseList) {
+                // 현재 창고 슬롯에 저장할 수 있는 수량 계산
+                int availableSpace = 999 - warehouseLoop.getWarehouseAmount();
+                if (availableSpace > 0) {
+                    // 현재 슬롯에 저장할 수 있는 공간이 있는 경우
+                    int storingAmount = Math.min(seedsToStore, availableSpace);
+                    warehouseLoop.setWarehouseAmount(warehouseLoop.getWarehouseAmount() + storingAmount);
+                    warehouseRepository.save(warehouseLoop);
+                    seedsToStore -= storingAmount; // 저장 후 남은 씨앗 수량 업데이트
+                    if (seedsToStore == 0) break; // 모든 씨앗을 저장했으면 반복 종료
+                }
+            }
+            while (seedsToStore > 0) {
+                // 남은 씨앗이 있으면 새로운 슬롯에 저장
+                int storingAmount = Math.min(seedsToStore, 999);
+                Warehouse newWarehouse = new Warehouse(1, storingAmount, member, seed.getAgriculture());
+                warehouseRepository.save(newWarehouse);
+                seedsToStore -= storingAmount; // 저장 후 남은 씨앗 수량 업데이트
+            }
         }
-        warehouseRepository.save(warehouse);
-
         MemberWarehouseDTO userInfo = commonUtil.getMemberItem();
         return ResponseEntity.ok(SeedPurchaseResponse.create(
                 userInfo.getMember().getMemberCurPoint(),
@@ -151,15 +171,33 @@ public class MarketServiceImpl implements MarketService {
         Agriculture agriculture = agricultureRepository.findByAgricultureName(request.getAgricultureName())
                         .orElseThrow(() -> new GlobalException(HttpStatus.NOT_FOUND, "agriculture not found"));
 
-        Warehouse warehouse =
-                warehouseRepository.findByMember_MemberPkAndAgriculture_AgriculturePkAndWarehouseCategory(
+        List<Warehouse> warehouseList =
+                warehouseRepository.findAllByMember_MemberPkAndAgriculture_AgriculturePkAndWarehouseCategoryOrderByWarehouseAmountAsc(
                         member.getMemberPk(), agriculture.getAgriculturePk(), 2
-                ).orElseThrow(() -> new GlobalException(HttpStatus.NOT_FOUND, "No items owned"));
+                );
+        if(warehouseList.isEmpty())
+            throw new GlobalException(HttpStatus.NOT_FOUND, "No items owned");
 
-        if(warehouse.getWarehouseAmount() < request.getAgricultureAmount()){
+        int sumItemCount = warehouseRepository.sumOfWarehouseMyAgricultureCount(
+                member.getMemberPk(), agriculture.getAgriculturePk(), 2
+        );
+        if(sumItemCount < request.getAgricultureAmount()){
             throw new GlobalException(HttpStatus.UNPROCESSABLE_ENTITY, "Insufficient stock for sale");
         }
 
+        int itemsToDiscard = request.getAgricultureAmount();
+        for (Warehouse warehouse : warehouseList) {
+            int warehouseAmount = warehouse.getWarehouseAmount();
+            if (itemsToDiscard >= warehouseAmount) {
+                warehouseRepository.delete(warehouse);
+                itemsToDiscard -= warehouseAmount;
+                if (itemsToDiscard == 0) break;
+            } else {
+                warehouse.setWarehouseAmount(warehouseAmount - itemsToDiscard);
+                warehouseRepository.save(warehouse);
+                break;
+            }
+        }
         List<AgriculturePrice> agriculturePriceList =
         agriculturePriceRepository.findAllByAgriculture_AgriculturePkAndAgriculturePriceDateBetweenOrderByAgriculturePriceDateDesc(
                 agriculture.getAgriculturePk(), LocalDate.now().minusDays(7), LocalDate.now()
@@ -168,14 +206,6 @@ public class MarketServiceImpl implements MarketService {
         long salePrice = (long) agriculturePriceList.get(0).getAgriculturePriceValue() * request.getAgricultureAmount();
         member.updateCurPoint(salePrice);
         memberRepository.save(member);
-
-        int updateAmount = warehouse.getWarehouseAmount() - request.getAgricultureAmount();
-        if(updateAmount <= 0){
-            warehouseRepository.delete(warehouse);
-        }else{
-            warehouse.setWarehouseAmount(updateAmount);
-            warehouseRepository.save(warehouse);
-        }
 
         MemberWarehouseDTO userInfo = commonUtil.getMemberItem();
         return ResponseEntity.ok(AgricultureSellResponse.create(

@@ -32,7 +32,5 @@ public interface MemberService {
     //회원 이메일 중복 조회
     ResponseEntity<MemberDuplicateEmailResponse> duplicateEmail(String email);
 
-
-
     ResponseEntity<List<Member>> selcetAll();
 }
