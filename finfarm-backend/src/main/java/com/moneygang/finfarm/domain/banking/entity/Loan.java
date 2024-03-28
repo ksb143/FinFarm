@@ -23,6 +23,15 @@ public class Loan {
     @Column(name = "loan_period")
     private Integer loanPeriod;
 
+    @Column(name = "loan_target")
+    private String loanTarget;
+
+    @Column(name = "loan_info")
+    private String loanInfo;
+
+    @Column(name = "loan_limit")
+    private Integer loanLimit;
+
     @JsonIgnore
     @OneToMany(mappedBy = "loan")
     private List<LoanHistory> loanHistoryList;

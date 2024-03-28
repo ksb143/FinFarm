@@ -6,6 +6,6 @@ import lombok.Getter;
 public class BankingLoanRepayRequest {
 
     private Long loanHistoryPk;
-    private Long amount;
+    private Long repayAmount;
     private Integer accountPassword;
 }
