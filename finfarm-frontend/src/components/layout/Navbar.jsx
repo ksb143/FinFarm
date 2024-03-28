@@ -8,20 +8,28 @@ import profile_icon from '@/assets/images/profile_icon2.png';
 
 export default function Navbar() {
   const { 
-    accessToken,
-    memberNickname,
-    memberEmail,
-    memberCurPoint,
-    memberImageUrl,
-    memberSolveQuiz,
-    memberCreateDate
-  } = useUserStore();
+    accessToken: accessToken,
+    nickname: nickname,
+    email: email,
+    pointsInthePocket: pointsInthePocket,
+    profileImageUrl: profileImageUrl,
+    isQuizSolved: isQuizSolved,
+    dateOfSignup: dateOfSignup 
+  } = useUserStore(state => ({
+    accessToken: state.accessToken,
+    nickname: state.nickname,
+    email: state.email,
+    pointsInthePocket: state.pointsInthePocket,
+    profileImageUrl: state.profileImageUrl,
+    isQuizSolved: state.isQuizSolved,
+    dateOfSignup: state.dateOfSignup
+  }));
 
   const navigate = useNavigate();
   const today = new Date();
   const formattedDate = `${today.getFullYear()}년 ${today.getMonth() + 1}월 ${today.getDate()}일`;
-  const CurrentPoint = `${localStorage.getItem('memberCurPoint')} 포인트`;
-  const UserNickname = `${localStorage.getItem('memberNickname')} 님`;  
+  const CurrentPoint = `${pointsInthePocket} 포인트`;
+  const UserNickname = `${nickname} 님`;  
   
   const GoToMainHome = () => {
     navigate('/home')
