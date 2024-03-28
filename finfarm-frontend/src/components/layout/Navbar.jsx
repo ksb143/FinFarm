@@ -1,15 +1,21 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react'; // useState 추가
+import { useNavigate } from 'react-router-dom';
 
 import navLogo from '@/assets/images/navLogo.png';
 import profile_icon from '@/assets/images/profile_icon.png';
 
 export default function Navbar() {
+  const navigate = useNavigate();
   const today = new Date();
   const formattedDate = `${today.getFullYear()}년 ${today.getMonth() + 1}월 ${today.getDate()}일`;
   const CurrentPoint = `${localStorage.getItem('memberCurPoint')} 포인트`;
   const UserNickname = `${localStorage.getItem('memberNickname')} 님`;  
-
+  
+  const GoToMainHome = () => {
+    navigate('/home')
+  };
+  
   // Dropdown이 열려있는지 여부를 관리하는 상태 추가
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -21,7 +27,7 @@ export default function Navbar() {
   return (
     <div className="navbar mb-10 flex justify-between bg-gray-50">
       <div className="flex-1">
-        <img src={navLogo} alt="navLogo" className="h-auto w-28" />
+        <img src={navLogo} alt="navLogo" className="h-auto w-28" onClick={GoToMainHome}/>
       </div>
       <div className="flex-none gap-8">
         <div className="dropdown dropdown-end">
