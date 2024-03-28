@@ -26,7 +26,14 @@ export default function BankAccountPage() {
   };
 
   // 계좌조회
-  const handleAccountData = async (accountContent) => {
+  const handleAccountData = async () => {
+    const accountContent = {
+      startDate,
+      endDate,
+      transitionType,
+      recordName,
+      sortOrder,
+    };
     try {
       const data = await accountCheck(accountContent);
       setAccountData(data);
@@ -62,14 +69,6 @@ export default function BankAccountPage() {
     { text: '100건', num: 100, checked: false, id: 'record100' },
   ];
 
-  const accountContent = {
-    startDate,
-    endDate,
-    transitionType,
-    recordName,
-    sortOrder,
-  };
-
   return (
     <div className="mx-24 flex flex-col gap-3 px-4">
       <BankBasicinfo isButton={true} />
@@ -91,7 +90,7 @@ export default function BankAccountPage() {
                 id="endDate"
                 name="endDate"
                 value={endDate}
-                onChange={(e) => setStartDate(e.target.value)}
+                onChange={(e) => setEndDate(e.target.value)}
               ></input>
             </div>
           </div>
@@ -197,7 +196,7 @@ export default function BankAccountPage() {
       <div className="flex justify-end">
         <button
           className="w-2/6 rounded-lg bg-lime-500 py-1 font-hopang text-white hover:bg-lime-800 hover:shadow-lime-800/50 hover:drop-shadow-lg"
-          onClick={() => handleAccountData(accountContent)}
+          onClick={handleAccountData}
         >
           조회
         </button>
