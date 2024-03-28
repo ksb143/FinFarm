@@ -2,10 +2,10 @@ import { create } from "zustand";
 
 const useUserStore = create((set) => ({
     accessToken:'',
-    nickname:'',
+    nickname:'익명의 농부',
     email:'',
-    pointsInthePocket:0,
-    profileImageUrl:'',
+    pointsInthePocket: "?????",
+    profileImageUrl:'imageURL',
     isQuizSolved:false,
     dateOfSignup:'',
     accountPassword:'',

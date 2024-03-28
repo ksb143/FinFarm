@@ -94,17 +94,17 @@ export default function Navbar() {
         </div>
 
         <div className="flex flex-col">
-          <div className="flex items-center gap-x-11">
+          <div className="flex items-center gap-x-9">
             <span className="text-1xl">💰 Point :</span>
             <span className="text-1xl">{CurrentPoint}</span>
           </div>
 
-          <div className="flex items-center gap-x-8">
+          <div className="flex items-center gap-x-7">
             <span className="text-1xl">📅 Today :</span>
             <span className="text-1xl">{formattedDate}</span>
           </div>
 
-          <div className="flex items-center gap-x-2">
+          <div className="flex items-center gap-x-3">
             <button className="text-1xl">🌈 Weather :</button>
             <span className="text-1xl">맑음</span>
           </div>

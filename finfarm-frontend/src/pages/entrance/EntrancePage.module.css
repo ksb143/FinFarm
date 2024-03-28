@@ -1,0 +1,35 @@
+.background {
+    background-image: url('@/assets/images/background_green.png');
+    height: 100vh;
+    background-size: cover;
+    background-position: center;
+  }
+/* 새로운 스타일 */
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 5%;
+  justify-content: center;
+}
+
+.whiteBox {
+
+  background-image: url('@/assets/images/background_green.png'); /* 배경 이미지 설정 */
+  background-size: cover; /* 배경 이미지가 박스 크기에 맞게 조절되도록 */
+  background-position: center; /* 배경 이미지 중앙 정렬 */
+  color: black;
+  padding: 12px;
+  margin: 0 0;
+  border-radius: 20px; /* 모서리를 약간 둥글게 */
+  box-shadow: 0 10px 8px rgba(0, 0, 0, 0.3); /* 약간의 그림자 효과 */
+}
+
+.whiteBox2 {
+
+  background-color: white;
+  padding: 20px;
+  margin: 0 0;
+  border-radius: 12px; /* 모서리를 약간 둥글게 */
+  box-shadow: 0 20px 10px rgba(0, 0, 0, 0.1); /* 약간의 그림자 효과 */
+}
