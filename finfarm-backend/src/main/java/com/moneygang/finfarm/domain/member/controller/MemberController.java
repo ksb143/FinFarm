@@ -97,7 +97,9 @@ public class MemberController {
     @Operation(summary = "마이페이지 수정", description = "유저 닉네임과 프로필 사진을 변경합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)", content = @Content(schema = @Schema(implementation = MemberUpdateResponse.class))),
-            @ApiResponse(responseCode = "404", description = "(message : \"user not found\", code : 404)", content = @Content)
+            @ApiResponse(responseCode = "404", description = "(message : \"user not found\", code : 404)", content = @Content),
+            @ApiResponse(responseCode = "404", description = "(message : \"파일이 존재하지 않습니다.\", code : 404)", content = @Content),
+            @ApiResponse(responseCode = "500", description = "(message : \"AWS Server Error\", code : 500)", content = @Content),
     })
     @PutMapping("/my-page")
     public ResponseEntity<MemberUpdateResponse> updateMyPage(MemberUpdateRequest request) {
@@ -109,8 +111,8 @@ public class MemberController {
             @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)", content = @Content(schema = @Schema(implementation = MemberProfileResponse.class))),
             @ApiResponse(responseCode = "400", description = "(message : \"Bad Request\", code : 400)", content = @Content)
     })
-    @PostMapping("/profile")
-    public ResponseEntity<MemberProfileResponse> saveProfileImage(MemberProfileRequest request) {
+    @PostMapping(value = "/profile", consumes = {"multipart/form-data"})
+    public ResponseEntity<MemberProfileResponse> saveProfileImage(@ModelAttribute MemberProfileRequest request) {
         return memberService.saveProfileImage(request);
     }
 

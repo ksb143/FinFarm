@@ -58,11 +58,10 @@ jwt:
 cloud:
   aws:
     s3:
-      bucket: test
-      base-url: test
+      bucket: ENC(/u9Bjg/tRVX4Du9kBILv9Bf/3lIzVrRA)
     credentials:
-      access-key: test
-      secret-key: test
+      access-key: ENC(NgtzngflwYiSSEieT1fhzTWtGXuN13+8aHIUrKfAlOI=)
+      secret-key: ENC(0T5lYNP+bkl84aCnR+9CPVMYXb/5ecib4U6MKelPle2z1R91Gf+tDnqqenrCRveEZ/mUgX9a4i4=)
     region:
       static: ap-northeast-2
       auto: false
