@@ -2,6 +2,7 @@ package com.moneygang.finfarm.domain.member.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.google.gson.JsonElement;
@@ -313,6 +314,15 @@ public class MemberServiceImpl implements MemberService{
         }
         //이미지 변경
         if(!request_url.isEmpty() && !member.getMemberImageUrl().equals(request_url)) {
+
+            // 기존 이미지 URL이 비어 있지 않다면 S3에서 해당 이미지 삭제
+            if (member.getMemberImageUrl() != null && !member.getMemberImageUrl().isEmpty()) {
+                String existingImageUrl = member.getMemberImageUrl();
+                String key = existingImageUrl.substring(existingImageUrl.lastIndexOf("/") + 1);
+                amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, key));
+
+                log.info("s3 프로필 사진 삭제 성공");
+            }
             member.setMemberImageUrl(request_url);
         }
 
