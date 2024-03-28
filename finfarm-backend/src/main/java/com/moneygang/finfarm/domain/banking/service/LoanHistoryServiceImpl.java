@@ -70,7 +70,12 @@ public class LoanHistoryServiceImpl implements LoanHistoryService {
             LocalDate now = LocalDate.now();
             int dDay = Math.toIntExact(ChronoUnit.DAYS.between(endDate, now)); // long형 리턴값을 int형으로
 
-            if(endDate.isBefore(now)) dDay *= (-1);
+            // 대출 내역에 대해 연체된건지 아닌지 확인
+            if(endDate.isBefore(now)) {
+                dDay *= (-1); // 연체된게 아니면, -N일 형태로 dDay 구성
+            } else if(endDate.isAfter(now)) {
+                history.overDue(); // 연체된것이라면, 해당 유저의 연체 내역 갱신, +N일 형태로 dDay 구성
+            }
 
             BankingLoanHistory loanHistory = BankingLoanHistory.create(pk, name, interest, period, dDay,
                     amount, repayAmount, startDate, endDate, isRepay);
