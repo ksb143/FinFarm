@@ -117,16 +117,17 @@ public class LoanHistoryServiceImpl implements LoanHistoryService {
                 .loan(loan)
                 .build();
 
+        loanHistoryRepository.save(loanHistory);
+
         Long loanHistoryPk = loanHistory.getLoanHistoryPk();
 
         Account accountLoan = Account.builder()
                 .amount(amount)
                 .type("대출")
-                .nickname(String.valueOf(loanHistoryPk))
+                .nickname(String.valueOf(loanHistoryPk)) // 대출 내역의 고유번호
                 .member(member)
                 .build();
 
-        loanHistoryRepository.save(loanHistory);
         accountRepository.save(accountLoan);
 
         LocalDate startDate = loanHistory.getLoanHistoryStartDate();
