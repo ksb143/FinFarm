@@ -47,6 +47,11 @@ export default function Navbar() {
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
+  
+  const handleLogout=()=>{
+    localStorage.removeItem('accessToken'); // accessToken 삭제
+    navigate('/entrance'); // 로그인 페이지나 웰컴 페이지로 이동
+  };
 
   return (
     <div className="navbar mb-10 flex justify-between bg-gray-50">
@@ -94,7 +99,7 @@ export default function Navbar() {
         <div className="flex flex-col items-center">
           <span className="text-2xl" >{UserNickname}</span>
           
-          <button className="btn btn-base min-w-32 text-2xl rounded-full bg-lime-500 font-hopang text-white hover:bg-lime-800" >로그아웃</button>
+          <button onClick={handleLogout} className="btn btn-base min-w-32 text-2xl rounded-full bg-lime-500 font-hopang text-white hover:bg-lime-800" >로그아웃</button>
         </div>
 
         <div className="flex flex-col">
