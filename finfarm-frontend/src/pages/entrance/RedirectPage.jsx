@@ -37,6 +37,7 @@ const RedirectPage = () => {
       console.log('백엔드에서 인가코드를 잘 받았고, 응답을 줬습니다.', res.data);
       
       localStorage.clear
+      localStorage.setItem('accessToken',res.data.accessToken)
       
       if (res.data.member) { // member: True 인 경우, 로그인 처리
         console.log(`안녕하세요, ${res.data.memberNickname}님! 환영합니다.`);
@@ -53,7 +54,7 @@ const RedirectPage = () => {
       } else { // member: False 인 경우, 회원가입 진행
         console.log('회원이 아닙니다. 회원가입 페이지로 이동하여 진행해주세요.');
         // 회원이 아닐 경우에도 백엔드로 이동하도록 수정할 수 있습니다.
-        useUserStore.setEmail(res.data.memberEmail);
+        useUserStore.setEmail(res.data.memberNickname);
         
         console.log('회원가입 준비 중. 이메일 저장완료. 회원가입 페이지로 곧 이동합니다.')
         navigate('/entrance/signup');
