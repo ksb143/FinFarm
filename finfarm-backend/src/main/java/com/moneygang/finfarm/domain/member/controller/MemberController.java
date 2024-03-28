@@ -109,8 +109,8 @@ public class MemberController {
             @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)", content = @Content(schema = @Schema(implementation = MemberProfileResponse.class))),
             @ApiResponse(responseCode = "400", description = "(message : \"Bad Request\", code : 400)", content = @Content)
     })
-    @PostMapping("/profile")
-    public ResponseEntity<MemberProfileResponse> checkNicknameDuplication(MemberProfileRequest request) {
+    @PostMapping(value = "/profile", consumes = {"multipart/form-data"})
+    public ResponseEntity<MemberProfileResponse> saveProfileImage(@ModelAttribute MemberProfileRequest request) {
         return memberService.saveProfileImage(request);
     }
 
