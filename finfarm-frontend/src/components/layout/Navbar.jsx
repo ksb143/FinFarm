@@ -126,7 +126,7 @@ export default function Navbar() {
           )}
         </div>
         <div className="flex flex-col items-center">
-          <span className="text-2xl" >{UserNicknam()}</span>
+          <span className="text-2xl" >{UserNickname()}</span>
           
           <button onClick={handleLogout} className="btn btn-base min-w-32 text-2xl rounded-full bg-lime-500 font-hopang text-white hover:bg-lime-800" >로그아웃</button>
         </div>
