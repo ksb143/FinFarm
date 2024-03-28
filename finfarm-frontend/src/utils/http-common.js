@@ -26,7 +26,6 @@ function localAxios() {
     (config) => {
       // 모든 요청에 대해 Authorization 헤더 설정
       const token = localStorage.getItem('accessToken');
-      console.log(token);
       if (token) {
         config.headers['Authorization'] = `Bearer ${token}`;
       }
@@ -41,6 +40,7 @@ function localAxios() {
 
   instance.interceptors.response.use(
     (response) => {
+      console.log(response);
       return response;
     },
     async (error) => {
