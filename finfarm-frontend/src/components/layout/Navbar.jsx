@@ -47,16 +47,16 @@ export default function Navbar() {
   
   const CurrentPoint = ()=>{
     if (localStorage.getItem('accessToken')){
-    `${pointsInthePocket} 포인트`;
+      return `${pointsInthePocket} 포인트`;
     }
-  
+    return "????? 포인트";
   };
   
   const UserNickname = ()=>{
     if (localStorage.getItem('accessToken')){
-      `${nickname} 님`
+      return  `${nickname} 님`;
     }
-    
+    return "익명의 농부";
   } ;  
   
   const GoToMainHome = () => {
@@ -126,7 +126,7 @@ export default function Navbar() {
           )}
         </div>
         <div className="flex flex-col items-center">
-          <span className="text-2xl" >{UserNickname}</span>
+          <span className="text-2xl" >{UserNicknam()}</span>
           
           <button onClick={handleLogout} className="btn btn-base min-w-32 text-2xl rounded-full bg-lime-500 font-hopang text-white hover:bg-lime-800" >로그아웃</button>
         </div>
@@ -134,7 +134,7 @@ export default function Navbar() {
         <div className="flex flex-col">
           <div className="flex items-center gap-x-9">
             <span className="text-1xl">💰 Point :</span>
-            <span className="text-1xl">{CurrentPoint}</span>
+            <span className="text-1xl">{CurrentPoint()}</span>
           </div>
 
           <div className="flex items-center gap-x-7">
