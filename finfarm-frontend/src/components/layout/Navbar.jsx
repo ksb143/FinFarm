@@ -106,13 +106,13 @@ export default function Navbar() {
             <ul className="menu dropdown-content menu-sm z-[1] mt-3 w-48 rounded-box bg-base-100 p-2 shadow">
               <li>
                 <Link
-                  to="/bank"
+                  to="/mypage"
                   className="justify-between"
                   onClick={toggleDropdown}
                 >
                   {' '}
                   {/* 클릭 이벤트 추가 */}
-                  👩 Profile
+                  👩 Mypage
                 </Link>
               </li>
               <li>

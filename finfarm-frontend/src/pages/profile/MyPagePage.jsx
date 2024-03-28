@@ -6,7 +6,7 @@ export default function MyPagePage() {
     return(
         <div>
             <h1>MY page</h1>
-            <img src={coming_soon} alt="img" />
+            <img src={coming_soon} alt="img" width={500} />
         </div>
     );
 };
