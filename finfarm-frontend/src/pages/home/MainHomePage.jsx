@@ -1,7 +1,7 @@
 import React from 'react';
 
 export default function MainHomePage() {
-    const name = localStorage.getItem("memberEmail")
+    const name = localStorage.getItem("memberNickname")
     return(
         <div>
             <h1>this is home page</h1>
