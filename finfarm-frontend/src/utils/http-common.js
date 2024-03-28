@@ -26,9 +26,9 @@ function localAxios() {
     (config) => {
       // 모든 요청에 대해 Authorization 헤더 설정
       const token = localStorage.getItem('accessToken');
+      console.log(token);
       if (token) {
         config.headers['Authorization'] = `Bearer ${token}`;
-        console.log(token);
       }
       return config;
     },
@@ -37,20 +37,26 @@ function localAxios() {
     },
   );
 
+  const retryCounts = {}; // 토큰 재발급 플래그 변수
+
   instance.interceptors.response.use(
     (response) => {
       return response;
     },
     async (error) => {
       const originalRequest = error.config;
+
+      if (!originalRequest.requestId) {
+        originalRequest.requestId = Date.now().toString(); // 예: 타임스탬프 사용
+      }
+
+      const retryCount = retryCounts[originalRequest.requestId] || 0;
       // UNAUTHORIZED와 토큰 재발급 안했을 경우
-      if (error.response.status === 401 && !originalRequest._retry) {
-        originalRequest._retry = true;
-
+      if (error.response.status === 401 && originalRequest._retryCount < 1) {
+        retryCounts[originalRequest.requestId] = retryCount + 1;
         const memberEmail = localStorage.getItem('memberEmail');
-
-        // 토큰 재발급
         try {
+          // 토큰 재발급
           const response = await instance.post('/members/tokens/reissue', {
             memberEmail,
           });
@@ -61,12 +67,12 @@ function localAxios() {
           originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
           // 기존 요청 다시 실행
           return instance(originalRequest);
-          // 토큰 재발급 불가
-        } catch (error) {
-          return Promise.reject(error);
+        } catch (reissueError) {
+          // 토큰 재발급 실패 처리
+          console.error('토큰 재발급 요청 실패:', reissueError);
+          return Promise.reject(error); // 오류를 그대로 반환하여 처리 종료
         }
       }
-
       return Promise.reject(error);
     },
   );
