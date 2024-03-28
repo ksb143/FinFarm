@@ -68,7 +68,11 @@ public class BankingLoanController {
             @ApiResponse(responseCode = "400", description = """
                     (message : "User Not Found", code : 400)
 
-                    (message : "User Fruit Not Found", code : 400)""", content = @Content)
+                    (message : "User Fruit Not Found", code : 400)
+                    
+                    (message : "Insufficient Account Balance", code : 400)
+                    
+                    (message : "Already Repay", code : 400)""", content = @Content)
     })
     @PostMapping("/repay")
     public ResponseEntity<BankingLoanRepayResponse> loanRepay(@RequestBody BankingLoanRepayRequest request) {

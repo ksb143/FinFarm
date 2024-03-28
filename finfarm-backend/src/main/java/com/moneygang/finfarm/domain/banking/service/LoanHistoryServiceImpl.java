@@ -173,16 +173,27 @@ public class LoanHistoryServiceImpl implements LoanHistoryService {
 
         // 예외1: 해당 대출 상품이 없을 때 (400)
         if(optionalLoanHistory.isEmpty()) {
-            throw new GlobalException(HttpStatus.NOT_FOUND, "Loan History Not Found");
+            throw new GlobalException(HttpStatus.BAD_REQUEST, "Loan History Not Found");
         }
 
         // 예외2: 입력 비밀번호가 계좌 비밀번호랑 다를 때 (400)
         if(!member.getMemberAccountPassword().equals(String.valueOf(request.getAccountPassword()))) {
-            throw new GlobalException(HttpStatus.UNAUTHORIZED, "Password Not Match");
+            throw new GlobalException(HttpStatus.BAD_REQUEST, "Password Not Match");
         }
 
+        long accountBalance = accountService.getAccountBalance(member.getMemberPk());
+
+        // 예외3: 상환할 금액이 계좌에 없는 경우 (부족한 경우) (400)
+        if(request.getRepayAmount() > accountBalance) {
+            throw new GlobalException(HttpStatus.BAD_REQUEST, "Insufficient Account Balance");
+        }
 
         LoanHistory loanHistory = optionalLoanHistory.get();
+
+        // 예외4: 이미 상환한 대출 내역일 경우 (400)
+        if(loanHistory.getIsRepay()) {
+            throw new GlobalException(HttpStatus.BAD_REQUEST, "Already Repay");
+        }
 
         Account accountLoanRepay = Account.builder()
                 .amount((-1)*request.getRepayAmount())
@@ -197,7 +208,7 @@ public class LoanHistoryServiceImpl implements LoanHistoryService {
         LocalDate startDate = loanHistory.getLoanHistoryStartDate();
         LocalDate endDate = loanHistory.getLoanHistoryEndDate();
 
-        long accountBalance = accountService.getAccountBalance(member.getMemberPk());
+        accountBalance = accountService.getAccountBalance(member.getMemberPk());
 
         BankingLoanRepayResponse response = BankingLoanRepayResponse.create(loanHistoryPk, startDate, endDate, accountBalance);
 
