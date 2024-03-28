@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import profile_icon from '@/assets/images/profile_icon.png';
 
 TransferDetail.propTypes = {
   nickName: PropTypes.string,
@@ -15,7 +16,11 @@ export default function TransferDetail(nickName, transferDate, profileImg) {
       </div>
       <div className="avatar">
         <div className="w-16 rounded-full">
-          <img src={profileImg} alt="profile" />
+          {profileImg ? (
+            <img src={profileImg} alt="profile" />
+          ) : (
+            <img src={profile_icon} alt="profile basic" />
+          )}
         </div>
       </div>
     </div>

@@ -254,8 +254,8 @@ export default function BankTransferPage() {
                   <TransferDetail
                     key={idx}
                     recentTransfers={recentTransfer.nickname}
-                    profileImg={recentTransfer.requestTime}
-                    transferDate={recentTransfer.imgeUrl}
+                    profileImg={recentTransfer.imageUrl}
+                    transferDate={recentTransfer.requestTime}
                     onClick={() => {
                       handleSender(recentTransfer.nickname);
                     }}

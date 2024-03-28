@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import profile_icon from '@/assets/images/profile_icon.png';
 
 import { accountTransfer } from '@/api/bank';
 
