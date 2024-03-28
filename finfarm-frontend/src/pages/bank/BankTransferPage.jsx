@@ -255,7 +255,7 @@ export default function BankTransferPage() {
                     key={idx}
                     nickName={recentTransfer.nickname}
                     profileImg={recentTransfer.imageUrl}
-                    // transferDate={recentTransfer.requestTime}
+                    transferDate={recentTransfer.requestTime}
                     onClick={() => {
                       handleSender(recentTransfer.nickname);
                     }}
@@ -263,17 +263,6 @@ export default function BankTransferPage() {
                       clickedIndex === idx ? 'border-double border-red-600' : ''
                     }
                   />
-                  <TransferDetail
-  key={idx}
-  nickName={recentTransfer.nickname}
-  profileImg={recentTransfer.imageUrl}
-  onClick={() => {
-    handleSender(recentTransfer.nickname);
-  }}
-  className={
-    clickedIndex === idx ? 'border-double border-red-600' : ''
-  }
-/>
                 ))}
               </div>
             </div>
@@ -309,7 +298,7 @@ export default function BankTransferPage() {
                   onClick={() => {
                     handleSearchNick(sender);
                   }}
-                  className="h-full rounded-r-lg border-2 bg-gray-300 bg-lime-500 px-7 text-white hover:bg-lime-800"
+                  className="h-full rounded-r-lg border-2 border-gray-300 bg-lime-500 px-7 text-white hover:bg-lime-800"
                 >
                   조회
                 </button>
