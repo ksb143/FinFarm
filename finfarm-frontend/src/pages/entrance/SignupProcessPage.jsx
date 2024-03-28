@@ -90,10 +90,10 @@ const SignupProcessPage = () => {
       <h1 className="text-4xl">회원가입을 진행합니다.</h1>
 
       <p>1.  5자 이하로 닉네임을 설정해주세요.</p>
-      <input type="text" value={nickname} onChange={handleInputNickname} />
+      <input type="text" value={nickname0} onChange={handleInputNickname} />
 
       <p>2. 계좌 비밀번호를 0~9 사이 숫자 4글자로 설정해주세요.</p>
-      <input type="number" value={accountPW} onChange={handleInputAccountPW} />
+      <input type="number" value={accountPW0} onChange={handleInputAccountPW} />
 
       <br />
       <br />
