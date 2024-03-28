@@ -8,5 +8,8 @@ import java.util.Optional;
 
 public interface WarehouseRepository extends JpaRepository<Warehouse, Long> {
     List<Warehouse> findAllByMember_MemberPk(Long memberPk);
+
     Optional<Warehouse> findByMember_MemberPkAndAgriculture_AgriculturePkAndWarehouseCategory(Long memberPk, Long agriculturePk, Integer category);
+
+    List<Warehouse> findByMember_MemberPkAndAgriculture_AgriculturePkAndWarehouseCategoryOrderByWarehouseAmountDesc(Long memberPk, Long agriculturePk, Integer category);
 }

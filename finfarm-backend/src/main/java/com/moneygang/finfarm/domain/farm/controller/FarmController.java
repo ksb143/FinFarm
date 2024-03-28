@@ -1,7 +1,9 @@
 package com.moneygang.finfarm.domain.farm.controller;
 
 import com.moneygang.finfarm.domain.farm.dto.request.DeleteItemRequest;
+import com.moneygang.finfarm.domain.farm.dto.request.HarvestRequest;
 import com.moneygang.finfarm.domain.farm.dto.response.DeleteItemResponse;
+import com.moneygang.finfarm.domain.farm.dto.response.HarvestResponse;
 import com.moneygang.finfarm.domain.farm.dto.response.MyFarmResponse;
 import com.moneygang.finfarm.domain.farm.service.FarmService;
 import com.moneygang.finfarm.domain.market.dto.response.AgricultureInfoResponse;
@@ -56,4 +58,26 @@ public class FarmController {
     public ResponseEntity<?> upgradeFarmLevel(){
         return farmService.upgradeFarmLevel();
     }
+
+    @Operation(summary = "농작물 수확", description = "수확이 가능한 농작물을 수확합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
+                    content = @Content(schema = @Schema(implementation = HarvestResponse.class))),
+            @ApiResponse(responseCode = "404", description = """
+                    (message : "member not found", code : 404)
+                    
+                    (message : "agriculture not found", code : 404)
+                    
+                    (message : "farmfield not found", code : 404)
+               
+                    """, content = @Content),
+            @ApiResponse(responseCode = "409", description = """
+                    (message : "impossible time for harvest", code : 409)
+                    
+                    (message : "warehouse is full", code : 409)
+                    """, content = @Content)
+    })
+    @PostMapping("/harvest")
+    public ResponseEntity<?> harvestAgriculture(@RequestBody HarvestRequest request){return farmService.agricultureHarvest(request);}
+
 }
