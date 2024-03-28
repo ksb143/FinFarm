@@ -7,7 +7,7 @@ TransferDetail.propTypes = {
   profileImg: PropTypes.string,
 };
 
-export default function TransferDetail(nickName, profileImg) {
+export default function TransferDetail({ nickName, profileImg }) {
   return (
     <div className="flex items-center justify-between rounded-lg border-2 border-solid border-gray-300 bg-white p-3">
       <div className="flex flex-col">

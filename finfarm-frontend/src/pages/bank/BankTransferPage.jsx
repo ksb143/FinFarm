@@ -263,6 +263,17 @@ export default function BankTransferPage() {
                       clickedIndex === idx ? 'border-double border-red-600' : ''
                     }
                   />
+                  <TransferDetail
+  key={idx}
+  nickName={recentTransfer.nickname}
+  profileImg={recentTransfer.imageUrl}
+  onClick={() => {
+    handleSender(recentTransfer.nickname);
+  }}
+  className={
+    clickedIndex === idx ? 'border-double border-red-600' : ''
+  }
+/>
                 ))}
               </div>
             </div>
