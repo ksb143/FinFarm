@@ -7,8 +7,8 @@ import profile_icon from '@/assets/images/profile_icon.png';
 export default function Navbar() {
   const today = new Date();
   const formattedDate = `${today.getFullYear()}년 ${today.getMonth() + 1}월 ${today.getDate()}일`;
-  const CurrenctPoint = `${localStorage.getItem('memberCurPoint')} 포인트`
-  const UserNickname = `${localStorage.getItem('memeberNickname')} 님`
+  const CurrentPoint = `${localStorage.getItem('memberCurPoint')} 포인트`;
+  const UserNickname = `${localStorage.getItem('memberNickname')} 님`;  
 
   // Dropdown이 열려있는지 여부를 관리하는 상태 추가
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -69,7 +69,7 @@ export default function Navbar() {
         <div className="flex flex-col">
           <div className="flex items-center gap-x-2">
             <span className="text-xs">💰 지금 가진 돈</span>
-            <span className="text-xs">{CurrenctPoint}</span>
+            <span className="text-xs">{CurrentPoint}</span>
           </div>
 
           <div className="flex items-center gap-x-2">
