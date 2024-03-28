@@ -253,7 +253,7 @@ export default function BankTransferPage() {
                 {recentTransfers.map((recentTransfer, idx) => (
                   <TransferDetail
                     key={idx}
-                    recentTransfers={recentTransfer.nickname}
+                    nickName={recentTransfer.nickname}
                     profileImg={recentTransfer.imageUrl}
                     // transferDate={recentTransfer.requestTime}
                     onClick={() => {
