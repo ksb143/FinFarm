@@ -24,6 +24,9 @@ public class Agriculture {
     @Column(name = "agriculture_content")
     private String agricultureContent;
 
+    @Column(name = "agriculture_image_url")
+    private String agricultureImageUrl;
+
     @JsonIgnore
     @OneToMany(mappedBy = "agriculture")
     private List<FarmField> farmFieldList;
