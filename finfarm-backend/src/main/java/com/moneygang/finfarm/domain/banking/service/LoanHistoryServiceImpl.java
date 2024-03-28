@@ -179,7 +179,7 @@ public class LoanHistoryServiceImpl implements LoanHistoryService {
         LoanHistory loanHistory = optionalLoanHistory.get();
 
         Account accountLoanRepay = Account.builder()
-                .amount((-1)*request.getAmount())
+                .amount((-1)*request.getRepayAmount())
                 .type("상환")
                 .nickname(String.valueOf(loanHistoryPk))
                 .member(member)
