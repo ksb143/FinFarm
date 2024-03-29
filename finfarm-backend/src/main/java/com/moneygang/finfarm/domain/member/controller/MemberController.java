@@ -138,7 +138,7 @@ public class MemberController {
 
     @Operation(summary = "퀴즈 풀 수 있는지 검사", description = "하루에 한 문제만 풀 수 있습니다. 00시가 지나면 다시 풀 수 있습니다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)", content = @Content(schema = @Schema(implementation = MemberDuplicateEmailResponse.class))),
+            @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)", content = @Content(schema = @Schema(implementation = MemberQuizPossibleResponse.class))),
             @ApiResponse(responseCode = "404", description = "(message : \"user not found\", code : 404)", content = @Content)
     })
     @GetMapping("/quiz-possible")
@@ -148,7 +148,7 @@ public class MemberController {
 
     @Operation(summary = "퀴즈 보상 획득", description = "5000 포인트를 지급합니다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)", content = @Content(schema = @Schema(implementation = MemberDuplicateEmailResponse.class))),
+            @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)", content = @Content(schema = @Schema(implementation = MemberGetQuizAwardResponse.class))),
             @ApiResponse(responseCode = "404", description = "(message : \"user not found\", code : 404)", content = @Content)
     })
     @GetMapping("/quiz-award")
