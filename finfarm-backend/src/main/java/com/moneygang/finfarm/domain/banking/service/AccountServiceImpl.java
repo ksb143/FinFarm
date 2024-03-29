@@ -52,9 +52,9 @@ public class AccountServiceImpl implements AccountService {
         accountLoop:
         for(Account account: accountList) {
             // 필터링1: 거래 타입(입금, 출금 두 가지로 입력 형식 들어옴)
-            if(request.getAccountType().equals("입금")) {
+            if(request.getAccountType().equals("deposit")) {
                 if(account.getAccountAmount()<0) continue accountLoop;
-            } else {
+            } else if(request.getAccountType().equals("withdraw")) {
                 if(account.getAccountAmount()>0) continue accountLoop;
             }
 
@@ -82,10 +82,10 @@ public class AccountServiceImpl implements AccountService {
 
         // 정렬1: 최신 순 / 오래된 순
         String sortCriteria = request.getSortCriteria();
-        if(sortCriteria.equals("최근")) {
+        if(sortCriteria.equals("newest")) {
             // 날짜 내림차순으로 정렬 (현재부터)
             bankingAccountDetailList.sort(Comparator.comparing(BankingAccountDetail::getAccountDate).reversed());
-        } else if(sortCriteria.equals("과거")) {
+        } else if(sortCriteria.equals("oldest")) {
             // 날짜 오름차순으로 정렬 (과거부터)
             bankingAccountDetailList.sort(Comparator.comparing(BankingAccountDetail::getAccountDate));
         }
