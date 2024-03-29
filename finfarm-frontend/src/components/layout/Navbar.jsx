@@ -55,10 +55,16 @@ export default function Navbar() {
   const formattedDate = `${today.getFullYear()}년 ${today.getMonth() + 1}월 ${today.getDate()}일`;
 
   const CurrentPoint = () => {
+    if (!localStorage.getItem('accessToken')){
+      return "????? 포인트";
+    }
     return `${pointsInthePocket} 포인트`;
   };
 
   const UserNickname = () => {
+    if (!localStorage.getItem('accessToken')){
+      return "익명의 농부 님";
+    }
     return `${nickname} 님`;
   };
 
