@@ -23,10 +23,7 @@ export default function MainHomePage() {
     dateOfSignup: state.dateOfSignup,
     accountPassword: state.accountPassword,
   }));
-  useEffect(() => {
-    // 페이지가 로드되자마자 새로고침
-    window.location.reload();
-}, []); // 빈 배열을 넣어서 컴포넌트 마운트 시에만 실행되도록 함
+
     return(
         <div>
             <h1 className='text-2xl'>Main home page</h1>
