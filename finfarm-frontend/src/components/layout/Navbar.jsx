@@ -114,7 +114,7 @@ export default function Navbar() {
           </button>
           {/* Dropdown이 열려있을 때만 보이도록 설정 */}
           {isDropdownOpen && (
-            <ul className="menu dropdown-content menu-sm z-[1] mt-3 w-48 rounded-box bg-base-100 p-2 shadow">
+            <ul className="menu dropdown-content menu-xl text-2xl z-[1] mt-3 w-48 rounded-box bg-base-100 p-2 shadow">
               <li>
                 <Link
                   to="/mypage"
@@ -155,19 +155,19 @@ export default function Navbar() {
         </div>
 
         <div className="flex flex-col">
-          <div className="flex items-center gap-x-9">
-            <span className="text-1xl">💰 Point :</span>
-            <span className="text-1xl">{CurrentPoint()}</span>
+          <div className="flex items-center gap-x-11">
+            <span className="text-xl">💰 Point :</span>
+            <span className="text-xl">{CurrentPoint()}</span>
           </div>
 
-          <div className="flex items-center gap-x-7">
-            <span className="text-1xl">📅 Today :</span>
-            <span className="text-1xl">{formattedDate}</span>
+          <div className="flex items-center gap-x-8">
+            <span className="text-xl">📅 Today :</span>
+            <span className="text-xl">{formattedDate}</span>
           </div>
 
           <div className="flex items-center gap-x-3">
-            <button className="text-1xl">🌈 Weather :</button>
-            <span className="text-1xl">맑음</span>
+            <button className="text-xl">🌈 Weather :</button>
+            <span className="text-xl">맑음</span>
           </div>
         </div>
       </div>
