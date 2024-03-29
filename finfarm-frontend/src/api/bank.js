@@ -48,7 +48,7 @@ async function depositCash(amount) {
 async function accountCheck(accountContent) {
   console.log(accountContent);
   try {
-    const response = await local.get('/banking/account', {
+    const response = await local.post('/banking/account', {
       startDate: accountContent.startDate,
       endDate: accountContent.endDate,
       accountType: accountContent.transitionType,
