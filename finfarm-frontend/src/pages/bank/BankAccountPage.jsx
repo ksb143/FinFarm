@@ -1,19 +1,24 @@
-import { accountCheck } from '@/api/bank';
+import { useState } from 'react';
 
+import { accountCheck } from '@/api/bank';
+import useUserStore from '@/store/userStore';
 import BankBasicinfo from '@/components/bank/BankBasicInfo';
 import BankAccountTable from '@/components/bank/BankAccount/BankAccountTable';
-import { useState } from 'react';
 
 export default function BankAccountPage() {
   const today = new Date();
   const [startDate, setStartDate] = useState(today.toISOString().split('T')[0]);
   const [endDate, setEndDate] = useState(today.toISOString().split('T')[0]);
   const [transitionType, setTransitionType] = useState('all');
-  const [recordName, setRecordName] = useState('');
   const [recordsView, setRecordView] = useState(15);
   const [sortOrder, setSortOrder] = useState('newest');
   const [selectedRange, setSelectedRange] = useState('');
   const [accountData, setAccountData] = useState(null);
+
+  // 닉네임
+  const { nickname: nickname } = useUserStore((state) => ({
+    nickname: state.nickname,
+  }));
 
   // 날짜 지정 데이터
   const setDateRange = (days) => {
@@ -31,7 +36,7 @@ export default function BankAccountPage() {
       startDate,
       endDate,
       transitionType,
-      recordName,
+      nickname,
       sortOrder,
     };
     try {
@@ -135,9 +140,8 @@ export default function BankAccountPage() {
             type="text"
             placeholder="조회할 계좌번호를 입력하세요"
             className="w-11/12 rounded-lg border-2 border-solid border-gray-300 bg-white px-5 py-1"
-            onChange={(e) => {
-              setRecordName(e.target.value);
-            }}
+            value={nickname}
+            readOnly
           />
         </div>
         <div className="flex items-center">

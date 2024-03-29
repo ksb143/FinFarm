@@ -88,10 +88,11 @@ export default function Modal({
             value={password || ''}
             onChange={(e) => {
               const value = e.target.value;
-              const regex = /^\d*$/;
+              const regex = /^[0-9]*$/;
               if (regex.test(value)) {
-                // 입력된 값이 숫자인 경우에만 상태를 업데이트합니다.
-                setPassword(Number(value));
+                setPassword(value);
+              } else if (e.nativeEvent.inputType === 'deleteContentBackward') {
+                setPassword(value);
               }
             }}
           />

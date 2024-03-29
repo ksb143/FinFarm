@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import BankBasicinfo from '@/components/bank/BankBasicInfo';
+import useUserStore from '@/store/userStore';
 
 export default function BankAtmPage() {
   // 선택된 버튼을 추적하는 state 추가
@@ -11,15 +12,19 @@ export default function BankAtmPage() {
   const [password, setPassword] = useState(''); // 출금 패스워드
   const [withdrawCheck, setWithdrawCheck] = useState(false); // 출금 확인란
 
-  const charge = 1000;
+  const charge = 1000; // 수수료
+
+  const { nickname: nickname } = useUserStore((state) => ({
+    nickname: state.nickname,
+  })); // 유저 닉네임
 
   // 입출금 성공 시 모달창 띄워야 함!!!!!!!!!!!!!!!
 
   // 입금 확인
   const handleDepositCheck = () => {
-    if (accountName && depositAmount) {
+    if (depositAmount) {
       setDepositCheck(true);
-    } else alert('모든 칸에 입력해주세요');
+    } else alert('보낼 금액을 입력해주세요');
   };
 
   // 입금 실행
@@ -35,9 +40,15 @@ export default function BankAtmPage() {
 
   // 출금 확인
   const handleWithdrawCheck = () => {
-    if (accountName && withdrawAmount && password) {
+    if (withdrawAmount && password) {
       setWithdrawCheck(true);
-    } else alert('모든 칸에 입력해주세요');
+    } else if (!withdrawAmount && !password) {
+      alert('인출 금액과 비밀번호를 입력해주세요');
+    } else if (!withdrawAmount) {
+      alert('인출 금액을 입력해주세요');
+    } else if (!password) {
+      alert('비밀번호를 입력해주세요');
+    }
   };
 
   // 출금 실행
@@ -50,11 +61,6 @@ export default function BankAtmPage() {
   const handleWithdrawCancel = () => {
     setWithdrawCheck(false);
   };
-
-  // 유저 닉네임 가지고 오기
-  useEffect(() => {
-    setAccountName('홍길동');
-  }, []);
 
   // 입출금 변화에 따른 체크란 없애기
   useEffect(() => {
@@ -110,10 +116,7 @@ export default function BankAtmPage() {
             type="text"
             placeholder="입금계좌명"
             className="input input-bordered w-full rounded-xl border-2 border-solid border-gray-300"
-            value={accountName || ''}
-            onChange={(e) => {
-              setAccountName(e.target.value);
-            }}
+            value={nickname || ''}
             readOnly
           />
           <label className="input input-bordered flex w-full items-center gap-2 border-2 border-solid border-gray-300">
@@ -147,10 +150,7 @@ export default function BankAtmPage() {
             type="text"
             placeholder="출금 계좌명"
             className="input input-bordered w-full rounded-xl border-2 border-solid border-gray-300"
-            value={accountName || ''}
-            onChange={(e) => {
-              setAccountName(e.target.value);
-            }}
+            value={nickname || ''}
             readOnly
           />
           <label
@@ -178,10 +178,13 @@ export default function BankAtmPage() {
               value={password || ''}
               onChange={(e) => {
                 const value = e.target.value;
-                const regex = /^\d*$/;
+                const regex = /^[0-9]*$/;
                 if (regex.test(value)) {
-                  // 입력된 값이 숫자인 경우에만 상태를 업데이트합니다.
-                  setPassword(Number(value));
+                  setPassword(value);
+                } else if (
+                  e.nativeEvent.inputType === 'deleteContentBackward'
+                ) {
+                  setPassword(value);
                 }
               }}
             />
