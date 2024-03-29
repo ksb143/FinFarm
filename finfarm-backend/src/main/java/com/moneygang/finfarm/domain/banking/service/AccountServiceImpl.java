@@ -204,8 +204,9 @@ public class AccountServiceImpl implements AccountService {
                 Member otherMember = optionalOtherMember.get();
                 String otherMemberImageUrl = otherMember.getMemberImageUrl();
                 Long otherMemberPk = otherMember.getMemberPk();
+                LocalDateTime requestTime = remit.getAccountDate();
 
-                BankingAccountRemitMember remitMember = BankingAccountRemitMember.create(otherMemberPk, otherMemberNickname, otherMemberImageUrl);
+                BankingAccountRemitMember remitMember = BankingAccountRemitMember.create(otherMemberPk, otherMemberNickname, otherMemberImageUrl, requestTime);
                 response.addMember(remitMember);
             }
 

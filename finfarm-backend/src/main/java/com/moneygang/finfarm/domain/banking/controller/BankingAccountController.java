@@ -77,7 +77,7 @@ public class BankingAccountController {
             @ApiResponse(responseCode = "400", description = """
                     (message : "Searched Member Not Found", code : 400)""", content = @Content)
     })
-    @GetMapping("/remit")
+    @PostMapping("/remit/search")
     public ResponseEntity<BankingMemberSearchResponse> searchMemberForRemit(@RequestBody BankingMemberSearchRequest request) {
         return accountService.searchMember(request);
     }
@@ -118,6 +118,7 @@ public class BankingAccountController {
         return accountService.changePassword(request);
     }
 
+    @Operation(summary = "계좌 잔액 조회", description = "계좌 잔액을 조회합니다.")
     @GetMapping("/balance")
     public ResponseEntity<BankingAccountBalanceResponse> showAccountBalance() {
         return accountService.showAccountBalance();
