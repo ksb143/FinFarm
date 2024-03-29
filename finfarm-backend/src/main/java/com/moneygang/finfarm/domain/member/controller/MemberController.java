@@ -152,8 +152,8 @@ public class MemberController {
             @ApiResponse(responseCode = "404", description = "(message : \"user not found\", code : 404)", content = @Content)
     })
     @GetMapping("/quiz-award")
-    public ResponseEntity<MemberQuizPossibleResponse> getQuizAward(){
-        return memberService.isQuizSolvePossible();
+    public ResponseEntity<MemberGetQuizAwardResponse> getQuizAward(){
+        return memberService.getQuizAward();
     }
 
 }
