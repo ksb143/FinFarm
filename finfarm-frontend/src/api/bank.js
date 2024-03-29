@@ -158,6 +158,18 @@ async function loanQualificate(loanPk) {
   }
 }
 
+// 계좌 잔액 조회
+async function checkBalance() {
+  try {
+    const response = await local.get('/banking/account/balance');
+    const balance = response.data.accountBalance;
+    return balance;
+  } catch (error) {
+    console.log(`계좌 잔액 조회 실패 ${error}`);
+    throw error;
+  }
+}
+
 export {
   changePassword,
   withdrawCash,
@@ -170,4 +182,5 @@ export {
   loanRepay,
   loanHistory,
   loanQualificate,
+  checkBalance,
 };
