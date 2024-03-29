@@ -46,7 +46,6 @@ async function depositCash(amount) {
 
 // 계좌 내역 조회 함수
 async function accountCheck(accountContent) {
-  console.log(accountContent);
   try {
     const response = await local.post('/banking/account', {
       startDate: accountContent.startDate,
@@ -55,7 +54,8 @@ async function accountCheck(accountContent) {
       accountNickname: accountContent.nickname,
       sortCriteria: accountContent.sortOrder,
     });
-
+    console.log(`response ${response}`);
+    console.log(`response.data ${response.data}`);
     const filterData = response.data;
     return filterData;
   } catch (error) {
