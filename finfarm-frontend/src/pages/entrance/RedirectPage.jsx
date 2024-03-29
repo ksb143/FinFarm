@@ -84,7 +84,7 @@ const RedirectPage = () => {
 
   return (
     <div>
-      <img src={loading} alt="loading" width={400} />
+      <img src={loading} alt="loading" width={200} />
     </div>
   );
 };
