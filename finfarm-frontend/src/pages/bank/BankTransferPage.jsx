@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 
+import useUserStore from '@/store/userStore';
+
 import BankBasicinfo from '@/components/bank/BankBasicInfo';
 import TransferDetail from '@/components/bank/BankTransfer/TransferDetail';
 import TransferCheck from '@/components/bank/BankTransfer/TransferCheck';
@@ -15,7 +17,7 @@ export default function BankTransferPage() {
   const [clickedIndex, setClickedIndex] = useState(null); // 최근 이체 내역 인덱스
   const [password, setPassword] = useState(''); // 계좌 비밀번호
   const [amount, setAmount] = useState(''); // 금액
-  const [sender, setSender] = useState(''); // 송금인
+  const [recipient, setRecipient] = useState(''); // 받는 분
   const [isModalVisible, setIsModalVisible] = useState(false); // 모달 보이기 유무
   const [isNickModalVisible, setIsNickModalVisible] = useState(false); // 닉네임 모달 보이기 유무
   const [anotherUser, setAnotherUser] = useState({
@@ -23,6 +25,10 @@ export default function BankTransferPage() {
     nickname: '',
   }); // anotherUser 상태 추가
   const [isCheckModalVisible, setIsCheckModalVisible] = useState(false); // 닉네임 체크 모달 보이기 유무
+
+  const { nickname: nickname } = useUserStore((state) => ({
+    nickname: state.nickname,
+  })); // 유저 닉네임
 
   // 이체 여부 확인 함수
   const handleTransferResult = (response) => {
@@ -39,7 +45,7 @@ export default function BankTransferPage() {
 
   // 이체 실행 버튼 함수
   const handleTransferInfo = () => {
-    if (password && sender && amount) {
+    if (password && recipient && amount) {
       setTransferInfo(true);
     } else {
       alert('계좌비밀번호, 입금금액, 송금자와 관련된 모든 정보를 기입해주세요');
@@ -68,10 +74,10 @@ export default function BankTransferPage() {
     setAmount(Number(selectedAmount));
   };
 
-  // 최근 이체자 수정
-  const handleSender = (index) => {
+  // 최근 이체자 선택
+  const handleRecipient = (index) => {
     setClickedIndex(index);
-    setSender(recentTransfers[index].nickname);
+    setRecipient(recentTransfers[index].nickname);
   };
 
   // 모달 확정 함수
@@ -168,10 +174,13 @@ export default function BankTransferPage() {
               value={password || ''}
               onChange={(e) => {
                 const value = e.target.value;
-                const regex = /^\d*$/;
+                const regex = /^[0-9]*$/;
                 if (regex.test(value)) {
-                  // 입력된 값이 숫자인 경우에만 상태를 업데이트합니다.
-                  setPassword(Number(value));
+                  setPassword(value);
+                } else if (
+                  e.nativeEvent.inputType === 'deleteContentBackward'
+                ) {
+                  setPassword(value);
                 }
               }}
             />
@@ -257,7 +266,7 @@ export default function BankTransferPage() {
                     profileImg={recentTransfer.imageUrl}
                     transferDate={recentTransfer.requestTime}
                     onClick={() => {
-                      handleSender(recentTransfer.nickname);
+                      handleRecipient(idx);
                     }}
                     className={
                       clickedIndex === idx ? 'border-double border-red-600' : ''
@@ -291,12 +300,12 @@ export default function BankTransferPage() {
                   type="text"
                   className="grow"
                   placeholder="송금하실 분의 닉네임"
-                  value={sender}
-                  onChange={(e) => setSender(e.target.value)}
+                  value={recipient}
+                  onChange={(e) => setRecipient(e.target.value)}
                 />
                 <button
                   onClick={() => {
-                    handleSearchNick(sender);
+                    handleSearchNick(recipient);
                   }}
                   className="h-full rounded-r-lg border-2 border-gray-300 bg-lime-500 px-7 text-white hover:bg-lime-800"
                 >
@@ -327,8 +336,8 @@ export default function BankTransferPage() {
         {transferInfo && (
           <TransferCheck
             password={password}
-            recipient={sender}
-            sender={sender}
+            recipient={recipient}
+            sender={nickname}
             amount={amount}
             balance={30000}
             onTransferResult={handleTransferResult}
