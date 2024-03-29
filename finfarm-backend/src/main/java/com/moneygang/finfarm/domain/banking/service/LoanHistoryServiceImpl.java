@@ -121,10 +121,13 @@ public class LoanHistoryServiceImpl implements LoanHistoryService {
 
         Long loanHistoryPk = loanHistory.getLoanHistoryPk();
 
+        long afterAccountBalance = accountService.getAccountBalance(member.getMemberPk())+amount;
+
         Account accountLoan = Account.builder()
                 .amount(amount)
                 .type("대출")
-                .nickname(String.valueOf(loanHistoryPk)) // 대출 내역의 고유번호
+                .nickname(loan.getLoanName()) // 대출 상품 이름
+                .accountBalance(afterAccountBalance)
                 .member(member)
                 .build();
 
@@ -133,9 +136,7 @@ public class LoanHistoryServiceImpl implements LoanHistoryService {
         LocalDate startDate = loanHistory.getLoanHistoryStartDate();
         LocalDate endDate = loanHistory.getLoanHistoryEndDate();
 
-        long accountBalance = accountService.getAccountBalance(member.getMemberPk());
-
-        BankingLoanTakeResponse response = BankingLoanTakeResponse.create(loanHistoryPk, startDate, endDate, accountBalance);
+        BankingLoanTakeResponse response = BankingLoanTakeResponse.create(loanHistoryPk, startDate, endDate, afterAccountBalance);
 
         return ResponseEntity.ok(response);
     }
@@ -195,10 +196,13 @@ public class LoanHistoryServiceImpl implements LoanHistoryService {
             throw new GlobalException(HttpStatus.BAD_REQUEST, "Already Repay");
         }
 
+        long afterAccountBalance = accountBalance - request.getRepayAmount();
+
         Account accountLoanRepay = Account.builder()
                 .amount((-1)*request.getRepayAmount())
                 .type("상환")
                 .nickname(String.valueOf(loanHistoryPk))
+                .accountBalance(afterAccountBalance)
                 .member(member)
                 .build();
 
@@ -208,9 +212,7 @@ public class LoanHistoryServiceImpl implements LoanHistoryService {
         LocalDate startDate = loanHistory.getLoanHistoryStartDate();
         LocalDate endDate = loanHistory.getLoanHistoryEndDate();
 
-        accountBalance = accountService.getAccountBalance(member.getMemberPk());
-
-        BankingLoanRepayResponse response = BankingLoanRepayResponse.create(loanHistoryPk, startDate, endDate, accountBalance);
+        BankingLoanRepayResponse response = BankingLoanRepayResponse.create(loanHistoryPk, startDate, endDate, afterAccountBalance);
 
         return ResponseEntity.ok(response);
     }

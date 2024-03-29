@@ -109,10 +109,13 @@ public class AccountServiceImpl implements AccountService {
             throw new GlobalException(HttpStatus.BAD_REQUEST, "Insufficient Current Point");
         }
 
+        long afterAccountBalance = getAccountBalance(member.getMemberPk()) + amount;
+
         Account deposit = Account.builder()
                 .amount(amount)
                 .type("입금")
                 .nickname(member.getMemberNickname())
+                .accountBalance(afterAccountBalance)
                 .member(member)
                 .build();
 
@@ -120,10 +123,9 @@ public class AccountServiceImpl implements AccountService {
         member.updateCurPoint((-1)*amount); // 입금: curPoint -> accountBalance
 
         Long curPoint = member.getMemberCurPoint();
-        Long accountBalance = getAccountBalance(member.getMemberPk());
         LocalDateTime requestTime = deposit.getAccountDate();
 
-        BankingAccountDepositResponse response = BankingAccountDepositResponse.create(curPoint, accountBalance, requestTime);
+        BankingAccountDepositResponse response = BankingAccountDepositResponse.create(curPoint, afterAccountBalance, requestTime);
 
         return ResponseEntity.ok(response);
     }
@@ -150,22 +152,23 @@ public class AccountServiceImpl implements AccountService {
             throw new GlobalException(HttpStatus.BAD_REQUEST, "Password Not Match");
         }
 
-        long withdrawAmount = amount+1000; // 출금 수수료 1000원 부가
+        long withdrawAmount = (-1)*(amount+1000); // 출금 수수료 1000원 부가
+        Long afterAccountBalance = accountBalance + withdrawAmount;
 
         Account withdraw = Account.builder()
-                .amount((-1)*withdrawAmount)
+                .amount(withdrawAmount)
                 .type("출금")
                 .nickname(member.getMemberNickname())
+                .accountBalance(afterAccountBalance)
                 .member(member)
                 .build();
 
         accountRepository.save(withdraw);
         member.updateCurPoint(amount);
         Long curPoint = member.getMemberCurPoint();
-        accountBalance = getAccountBalance(member.getMemberPk());
         LocalDateTime requestTime = withdraw.getAccountDate();
 
-        BankingAccountWithdrawResponse response = BankingAccountWithdrawResponse.create(curPoint, accountBalance, requestTime);
+        BankingAccountWithdrawResponse response = BankingAccountWithdrawResponse.create(curPoint, afterAccountBalance, requestTime);
 
         return ResponseEntity.ok(response);
     }
@@ -249,7 +252,7 @@ public class AccountServiceImpl implements AccountService {
     public ResponseEntity<BankingAccountRemitResponse> remit(BankingAccountRemitRequest request) {
 
         Member sendMember = commonUtil.getMember();
-        Optional<Member> optionalReceiveMember = memberRepository.findById(request.getOtherUserPk());
+        Optional<Member> optionalReceiveMember = memberRepository.findByMemberNickname(request.getOtherNickname());
 
         // 예외1: 송금할 사용자가 없을 때 (400)
         if(optionalReceiveMember.isEmpty()) {
@@ -260,10 +263,11 @@ public class AccountServiceImpl implements AccountService {
 
         long amount = request.getAmount();
         long accountPassword = request.getAccountPassword();
-        long accountBalance = getAccountBalance(sendMember.getMemberPk());
+        long sendAccountBalance = getAccountBalance(sendMember.getMemberPk());
+        long receiveAccountBalance = getAccountBalance(receiveMember.getMemberPk());
 
         // 예외2: 송금 요청 금액보다 보유 계좌 잔고가 적은 경우 (400)
-        if(amount > accountBalance) {
+        if(amount > sendAccountBalance) {
             throw new GlobalException(HttpStatus.BAD_REQUEST, "Insufficient Account Balance");
         }
 
@@ -272,10 +276,14 @@ public class AccountServiceImpl implements AccountService {
             throw new GlobalException(HttpStatus.BAD_REQUEST, "Password Not Match");
         }
 
+        long afterSendAccountBalance = sendAccountBalance - amount;
+        long afterReceiveAccountBalance = receiveAccountBalance + amount;
+
         Account sendRemit = Account.builder()
                 .amount((-1)*amount)
                 .type("송금")
                 .nickname(receiveMember.getMemberNickname()) // 적요(받은 사람 입력)
+                .accountBalance(afterSendAccountBalance)
                 .member(sendMember)
                 .build();
 
@@ -283,16 +291,16 @@ public class AccountServiceImpl implements AccountService {
                 .amount(amount)
                 .type("송금")
                 .nickname(sendMember.getMemberNickname()) // 적요(보낸 사람 입력)
+                .accountBalance(afterReceiveAccountBalance)
                 .member(receiveMember)
                 .build();
 
         accountRepository.save(sendRemit);
         accountRepository.save(receiveRemit);
 
-        accountBalance = getAccountBalance(sendMember.getMemberPk());
         LocalDateTime requestTime = sendRemit.getAccountDate();
 
-        BankingAccountRemitResponse response = BankingAccountRemitResponse.create(accountBalance, requestTime);
+        BankingAccountRemitResponse response = BankingAccountRemitResponse.create(afterSendAccountBalance, requestTime);
 
         return ResponseEntity.ok(response);
     }
