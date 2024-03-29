@@ -374,11 +374,12 @@ public class MemberServiceImpl implements MemberService{
     }
 
     @Override
+    @Transactional
     public ResponseEntity<MemberGetQuizAwardResponse> getQuizAward() {
         Member member = commonUtil.getMember();
-        member.updateCurPoint(5000L);
+        member.setMemberCurPoint(member.getMemberCurPoint() + 5000L);
         member.setMemberSolveQuizTime(LocalDate.now());
-        memberRepository.save(member);
+
 
         return ResponseEntity.ok(MemberGetQuizAwardResponse.create(member.getMemberCurPoint()));
     }
