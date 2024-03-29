@@ -7,7 +7,8 @@ import navLogo from '@/assets/images/navLogo2.png';
 import profile_icon from '@/assets/images/profile_icon2.png';
 
 export default function Navbar() {
-  const [checkLogin, setCheckLogin] = useState(true);
+  const initialCheckLogin = localStorage.getItem('accessToken') ? true : false;
+  const [checkLogin, setCheckLogin] = useState(initialCheckLogin);
 
   useEffect(() => {
     const accessToken = localStorage.getItem('accessToken');
