@@ -68,8 +68,6 @@ const RedirectPage = () => {
       } else { // member: False 인 경우, 회원가입 진행
         console.log('회원이 아닙니다. 회원가입 페이지로 이동하여 진행해주세요.');
         // 회원이 아닐 경우에도 백엔드로 이동하도록 수정할 수 있습니다.
-        localStorage.setItem('email',res.data.memberNickname)
-        setEmail(res.data.memberNickname); // 실제로 온 것은 이메일임.
         
         console.log('회원가입 준비 중. 이메일 저장완료. 회원가입 페이지로 곧 이동합니다.')
         navigate('/entrance/signup');
