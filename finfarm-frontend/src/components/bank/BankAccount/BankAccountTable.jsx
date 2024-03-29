@@ -7,7 +7,7 @@ BankAccountTable.propTypes = {
 };
 
 export default function BankAccountTable({ data, recordsView }) {
-  const dataList = data.accountDetailDto;
+  const dataList = data.bankingAccountDetailList;
   const [currentPage, setCurrentPage] = useState(1);
   const indexOfLastRecord = currentPage * recordsView;
   const indexOfFirstRecord = indexOfLastRecord - recordsView;

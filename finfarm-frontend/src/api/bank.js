@@ -54,9 +54,8 @@ async function accountCheck(accountContent) {
       accountNickname: accountContent.nickname,
       sortCriteria: accountContent.sortOrder,
     });
-    console.log(response);
     const filterData = response.data;
-    console.log(filterData);
+
     return filterData;
   } catch (error) {
     console.log(`계좌 내역 조회 실패: ${error}`);

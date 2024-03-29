@@ -41,8 +41,8 @@ export default function BankAccountPage() {
     };
     try {
       const data = await accountCheck(accountContent);
-      console.log('데이터다!');
-      console.log(data);
+      console.log(`데이터 타입 확인 ${data}`);
+      console.log(`데이터 타입 확인2 ${data.bankingAccountDetailList}`);
       setAccountData(data);
     } catch (error) {
       console.log('조회 실패:', error);
