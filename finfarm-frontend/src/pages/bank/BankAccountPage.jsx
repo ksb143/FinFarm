@@ -124,13 +124,13 @@ export default function BankAccountPage() {
               onClick={() => setTransitionType('deposit')}
               className={typeButtonStyle('deposit')}
             >
-              출금 내역
+              입금 내역
             </button>
             <button
               onClick={() => setTransitionType('withdraw')}
               className={typeButtonStyle('withdraw')}
             >
-              입금 내역
+              출금 내역
             </button>
           </div>
         </div>
