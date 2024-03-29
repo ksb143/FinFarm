@@ -35,12 +35,12 @@ public class Account {
     private Member member;
 
     @Builder
-    public Account(Long amount, String type, String nickname, Member member) {
+    public Account(Long amount, String type, String nickname, Long accountBalance, Member member) {
         this.accountAmount = amount;
         this.accountType = type;
         this.accountNickname = nickname;
         this.accountDate = LocalDateTime.now();
-//        this.accountBalance -> 계좌 잔액을 어떻게 처리할지
+        this.accountBalance = accountBalance;
         setMember(member);
     }
 

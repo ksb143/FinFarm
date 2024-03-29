@@ -55,7 +55,7 @@ public class BankingLoanController {
             @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
                     content = @Content(schema = @Schema(implementation = BankingLoanAuditResponse.class))),
     })
-    @GetMapping("/audit")
+    @PostMapping("/audit")
     public ResponseEntity<BankingLoanAuditResponse> loanAudit(@RequestBody BankingLoanAuditRequest request) {
         return loanHistoryService.loanAudit(request);
     }
