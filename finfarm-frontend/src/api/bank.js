@@ -94,7 +94,7 @@ async function accountTransfer(transferContent) {
 // 송금 유저 조회 함수
 async function checkAnotherUser(anotherUser) {
   try {
-    const response = await local.get('/banking/account/remit', {
+    const response = await local.post('/banking/account/remit/search', {
       nickname: anotherUser,
     });
     return response.data;
