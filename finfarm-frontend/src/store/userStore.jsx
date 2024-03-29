@@ -5,7 +5,7 @@ const useUserStore = create((set) => ({
     nickname:'익명의 농부',
     email:'',
     pointsInthePocket: "?????",
-    profileImageUrl:'imageURL',
+    profileImageUrl:'',
     isQuizSolved:false,
     dateOfSignup:'',
     accountPassword:'',

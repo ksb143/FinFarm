@@ -50,9 +50,7 @@ const RedirectPage = () => {
       localStorage.clear
       localStorage.setItem('accessToken',res.data.accessToken)
       setAccessToken(res.data.accessToken)
-      localStorage.setItem('email',res.data.memberNickname)
-      setEmail(res.data.memberNickname); // 실제로 온 것은 이메일임.
-
+      
       if (res.data.member) { // member: True 인 경우, 로그인 처리
         console.log(`안녕하세요, ${res.data.memberNickname}님! 환영합니다.`);
         // 받은 모든 정보를 zustand store에 저장하고, 메인홈으로 이동.
@@ -68,7 +66,9 @@ const RedirectPage = () => {
       } else { // member: False 인 경우, 회원가입 진행
         console.log('회원이 아닙니다. 회원가입 페이지로 이동하여 진행해주세요.');
         // 회원이 아닐 경우에도 백엔드로 이동하도록 수정할 수 있습니다.
-        
+        localStorage.setItem('email',res.data.memberNickname)
+        setEmail(res.data.memberNickname); // 실제로 온 것은 이메일임.
+
         console.log('회원가입 준비 중. 이메일 저장완료. 회원가입 페이지로 곧 이동합니다.')
         navigate('/entrance/signup');
       }
