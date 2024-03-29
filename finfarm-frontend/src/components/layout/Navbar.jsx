@@ -7,6 +7,10 @@ import navLogo from '@/assets/images/navLogo2.png';
 import profile_icon from '@/assets/images/profile_icon2.png';
 
 export default function Navbar() {
+  if (!localStorage.getItem('accessToken')){
+    return null;
+  }
+  
  // 전역상태관리 import 로직
  const { 
   accessToken: accessToken,
@@ -83,6 +87,7 @@ export default function Navbar() {
   };
 
   return (
+
     <div className="navbar mb-10 flex justify-between bg-gray-50">
       <div className="flex-2">
         <img src={navLogo} alt="navLogo" className="h-auto w-48" onClick={GoToMainHome}/>
@@ -157,5 +162,6 @@ export default function Navbar() {
         </div>
       </div>
     </div>
+    
   );
 }
