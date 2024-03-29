@@ -10,6 +10,7 @@ export default function BankAccountPage() {
   const [startDate, setStartDate] = useState(today.toISOString().split('T')[0]);
   const [endDate, setEndDate] = useState(today.toISOString().split('T')[0]);
   const [transitionType, setTransitionType] = useState('all');
+  const [searchAccount, setSearchAccount] = useState('');
   const [recordsView, setRecordView] = useState(15);
   const [sortOrder, setSortOrder] = useState('newest');
   const [selectedRange, setSelectedRange] = useState('');
@@ -36,7 +37,7 @@ export default function BankAccountPage() {
       startDate,
       endDate,
       transitionType,
-      nickname,
+      searchAccount,
       sortOrder,
     };
     try {
@@ -135,13 +136,13 @@ export default function BankAccountPage() {
           </div>
         </div>
         <div className="flex items-center">
-          <div className="w-1/12">조회 계좌</div>
+          <div className="w-1/12">적요 내용</div>
           <input
             type="text"
-            placeholder="조회할 계좌번호를 입력하세요"
+            placeholder="조회할 계좌명을 입력하세요"
             className="w-11/12 rounded-lg border-2 border-solid border-gray-300 bg-white px-5 py-1"
-            value={nickname}
-            readOnly
+            value={searchAccount}
+            onChange={(e) => setSearchAccount(e.target.value)}
           />
         </div>
         <div className="flex items-center">

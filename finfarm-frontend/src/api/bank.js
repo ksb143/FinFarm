@@ -51,7 +51,7 @@ async function accountCheck(accountContent) {
       startDate: accountContent.startDate,
       endDate: accountContent.endDate,
       accountType: accountContent.transitionType,
-      accountNickname: accountContent.nickname,
+      accountNickname: accountContent.searchAccount,
       sortCriteria: accountContent.sortOrder,
     });
     const filterData = response.data;
