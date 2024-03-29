@@ -252,7 +252,7 @@ public class AccountServiceImpl implements AccountService {
     public ResponseEntity<BankingAccountRemitResponse> remit(BankingAccountRemitRequest request) {
 
         Member sendMember = commonUtil.getMember();
-        Optional<Member> optionalReceiveMember = memberRepository.findById(request.getOtherUserPk());
+        Optional<Member> optionalReceiveMember = memberRepository.findByMemberNickname(request.getOtherNickname());
 
         // 예외1: 송금할 사용자가 없을 때 (400)
         if(optionalReceiveMember.isEmpty()) {

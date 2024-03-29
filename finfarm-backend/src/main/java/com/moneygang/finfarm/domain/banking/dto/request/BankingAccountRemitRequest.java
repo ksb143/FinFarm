@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public class BankingAccountRemitRequest {
 
-    private Long otherUserPk;
+    private String otherNickname;
     private Long amount;
     private Integer accountPassword;
 }
