@@ -7,14 +7,19 @@ import navLogo from '@/assets/images/navLogo2.png';
 import profile_icon from '@/assets/images/profile_icon2.png';
 
 export default function Navbar() {
-  const initialCheckLogin = localStorage.getItem('accessToken') ? true : false;
-  const [checkLogin, setCheckLogin] = useState(initialCheckLogin);
+  const [accessTokenName, setAccessTokenName] = useState(
+    localStorage.getItem('accessToken'),
+  );
 
   useEffect(() => {
-    const accessToken = localStorage.getItem('accessToken');
-    if (!accessToken || accessToken === '') {
-      setCheckLogin(false);
-    }
+    const handleStorageChange = () => {
+      setAccessTokenName(localStorage.getItem('accessToken'));
+    };
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, []);
 
   // 전역상태관리 import 로직
@@ -96,7 +101,7 @@ export default function Navbar() {
   };
 
   return (
-    checkLogin && (
+    accessTokenName && (
       <div className="navbar mb-10 flex justify-between bg-gray-50">
         <div className="flex-2">
           <img
