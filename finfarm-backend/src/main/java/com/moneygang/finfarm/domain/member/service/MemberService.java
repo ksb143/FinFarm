@@ -33,4 +33,9 @@ public interface MemberService {
     ResponseEntity<MemberDuplicateEmailResponse> duplicateEmail(String email);
 
     ResponseEntity<List<Member>> selcetAll();
+
+    ResponseEntity<MemberQuizPossibleResponse> isQuizSolvePossible();
+
+    ResponseEntity<MemberGetQuizAwardResponse> getQuizAward();
+
 }

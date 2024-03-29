@@ -89,7 +89,7 @@ public class MemberServiceImpl implements MemberService{
         // authentication 에서 member 객체 조회
         Member member = commonUtil.getMember();
 
-        return ResponseEntity.ok(MemberAutoLoginResponse.create(member.getMemberNickname(), member.isMemberSolveQuiz(), member.getMemberCurPoint(), member.getMemberImageUrl()));
+        return ResponseEntity.ok(MemberAutoLoginResponse.create(member.getMemberNickname(), member.isMemberSolveQuiz(), member.getMemberSolveQuizTime(), member.getMemberCurPoint(), member.getMemberImageUrl()));
     }
 
     @Override
@@ -127,10 +127,10 @@ public class MemberServiceImpl implements MemberService{
             // 쿠키를 response header 에 담아서 저장
             return ResponseEntity.ok()
                     .header("Set-Cookie", refreshTokenCookie.toString())
-                    .body(MemberLoginResponse.create(accessToken, member.getMemberNickname(), member.isMemberSolveQuiz(), member.getMemberCurPoint(), member.getMemberImageUrl(), member.getMemberCreateDate(),true));
+                    .body(MemberLoginResponse.create(accessToken, member.getMemberNickname(), member.isMemberSolveQuiz(), member.getMemberSolveQuizTime(),  member.getMemberCurPoint(), member.getMemberImageUrl(), member.getMemberCreateDate(),true));
         }
         //회원이 아닌 경우
-        return ResponseEntity.ok(MemberLoginResponse.create(null, memberEmail, false, 0L, null, null, false));
+        return ResponseEntity.ok(MemberLoginResponse.create(null, memberEmail, false, null, 0L, null, null, false));
     }
 
     public String getKakaoAccessToken(String authorize_code) {
@@ -363,4 +363,23 @@ public class MemberServiceImpl implements MemberService{
         return ResponseEntity.ok(MemberDuplicateEmailResponse.create(false));
     }
 
+    @Override
+    public ResponseEntity<MemberQuizPossibleResponse> isQuizSolvePossible() {
+        Member member = commonUtil.getMember();
+        LocalDate now = LocalDate.now();
+        if (member.getMemberSolveQuizTime().isBefore(now)){
+            return ResponseEntity.ok(MemberQuizPossibleResponse.create(true));
+        }
+        return ResponseEntity.ok(MemberQuizPossibleResponse.create(false));
+    }
+
+    @Override
+    public ResponseEntity<MemberGetQuizAwardResponse> getQuizAward() {
+        Member member = commonUtil.getMember();
+        member.updateCurPoint(5000L);
+        member.setMemberSolveQuizTime(LocalDate.now());
+        memberRepository.save(member);
+
+        return ResponseEntity.ok(MemberGetQuizAwardResponse.create(member.getMemberCurPoint()));
+    }
 }

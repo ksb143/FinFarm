@@ -38,6 +38,10 @@ public class Member {
     @Column(name = "member_solve_quiz")
     private boolean memberSolveQuiz;
 
+    @Builder.Default
+    @Column(name = "member_solve_quiz_time", nullable = true)
+    private LocalDate memberSolveQuizTime = LocalDate.now().minusDays(1);
+
     @Column(name = "member_cur_point")
     private Long memberCurPoint;
 
