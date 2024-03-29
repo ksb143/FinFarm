@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 
+import profile_icon from '@/assets/images/profile_icon.png';
 import success from '@/assets/images/success.png';
 import fail from '@/assets/images/fail.png';
 
@@ -46,13 +47,15 @@ export default function Modal({
           <img src={fail} alt="fail" />
         ))}
       <div className="relative inline-flex items-center justify-center gap-3">
-        {imageUrl && (
-          <div className="avatar">
-            <div className="w-16 rounded-full">
+        <div className="avatar">
+          <div className="w-16 rounded-full">
+            {imageUrl ? (
               <img src={imageUrl} alt="profile" />
-            </div>
+            ) : (
+              <img src={profile_icon} alt="profile" />
+            )}
           </div>
-        )}
+        </div>
         {content !== undefined && content !== null && (
           <div className="relative w-fit whitespace-pre-wrap text-center text-center font-nanum text-base font-normal text-black">
             {content}
