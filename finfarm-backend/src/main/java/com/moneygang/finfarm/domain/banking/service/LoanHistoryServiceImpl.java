@@ -124,7 +124,7 @@ public class LoanHistoryServiceImpl implements LoanHistoryService {
         Account accountLoan = Account.builder()
                 .amount(amount)
                 .type("대출")
-                .nickname(String.valueOf(loanHistoryPk)) // 대출 내역의 고유번호
+                .nickname(loan.getLoanName()) // 대출 상품 이름
                 .member(member)
                 .build();
 
