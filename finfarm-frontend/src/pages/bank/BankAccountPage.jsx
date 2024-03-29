@@ -41,8 +41,6 @@ export default function BankAccountPage() {
     };
     try {
       const data = await accountCheck(accountContent);
-      console.log(`데이터 타입 확인 ${data}`);
-      console.log(`데이터 타입 확인2 ${data.bankingAccountDetailList}`);
       setAccountData(data);
     } catch (error) {
       console.log('조회 실패:', error);
@@ -137,7 +135,7 @@ export default function BankAccountPage() {
           </div>
         </div>
         <div className="flex items-center">
-          <div className="w-1/12">적요 내용</div>
+          <div className="w-1/12">조회 계좌</div>
           <input
             type="text"
             placeholder="조회할 계좌번호를 입력하세요"

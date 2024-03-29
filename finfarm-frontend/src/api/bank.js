@@ -55,7 +55,7 @@ async function accountCheck(accountContent) {
       sortCriteria: accountContent.sortOrder,
     });
     const filterData = response.data;
-
+    console.log(filterData);
     return filterData;
   } catch (error) {
     console.log(`계좌 내역 조회 실패: ${error}`);
@@ -148,7 +148,7 @@ async function loanHistory() {
 // 대출 심사
 async function loanQualificate(loanPk) {
   try {
-    const response = await local.get('/banking/loan/audit', {
+    const response = await local.post('/banking/loan/audit', {
       loanPk: loanPk,
     });
     return response.data;
