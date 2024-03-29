@@ -117,4 +117,9 @@ public class BankingAccountController {
     public ResponseEntity<BankingPasswordChangeResponse> changePassword(@RequestBody BankingPasswordChangeRequest request) {
         return accountService.changePassword(request);
     }
+
+    @GetMapping("/balance")
+    public ResponseEntity<BankingAccountBalanceResponse> showAccountBalance() {
+        return accountService.showAccountBalance();
+    }
 }

@@ -27,6 +27,9 @@ public interface AccountService {
     // 계좌 비밀번호 수정
     public ResponseEntity<BankingPasswordChangeResponse> changePassword(BankingPasswordChangeRequest request);
 
+    // 계좌 잔액 조회 (api용)
+    public ResponseEntity<BankingAccountBalanceResponse> showAccountBalance();
+
     // 계좌 잔액 조회
     public long getAccountBalance(long memberPk);
 }

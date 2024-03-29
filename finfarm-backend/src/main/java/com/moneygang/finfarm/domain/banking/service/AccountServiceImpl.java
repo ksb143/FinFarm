@@ -341,6 +341,18 @@ public class AccountServiceImpl implements AccountService {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * 사용자의 계좌 잔액 조회 서비스
+     */
+    public ResponseEntity<BankingAccountBalanceResponse> showAccountBalance() {
+        Member member = commonUtil.getMember();
+
+        long accountBalance = getAccountBalance(member.getMemberPk());
+        BankingAccountBalanceResponse response = BankingAccountBalanceResponse.create(accountBalance);
+
+        return ResponseEntity.ok(response);
+    }
+
 
     /** 사용자의 계좌 잔액 조회 함수 **/
     @Override
