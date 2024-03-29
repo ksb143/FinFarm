@@ -7,6 +7,7 @@ export default function MyPagePage() {
         <div>
             <h1>MY page 마이페이지 준비중!</h1>
             <img src={coming_soon} alt="img" width={800} />
+            <p>회원탈퇴 버튼</p>
         </div>
     );
 };

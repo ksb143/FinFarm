@@ -7,30 +7,15 @@ export default function MainHomePage() {
   const { 
     accessToken: accessToken,
     nickname: nickname,
-    email: email,
-    pointsInthePocket: pointsInthePocket,
-    profileImageUrl: profileImageUrl,
-    isQuizSolved: isQuizSolved,
-    dateOfSignup: dateOfSignup,
-    accountPassword:  accountPassword, 
   } = useUserStore(state => ({
     accessToken: state.accessToken,
     nickname: state.nickname,
-    email: state.email,
-    pointsInthePocket: state.pointsInthePocket,
-    profileImageUrl: state.profileImageUrl,
-    isQuizSolved: state.isQuizSolved,
-    dateOfSignup: state.dateOfSignup,
-    accountPassword: state.accountPassword,
   }));
 
     return(
         <div>
-            <h1 className='text-2xl'>Main home page</h1>
-            <br />
-            <br />
-            <p className='text-5xl'>환영합니다, {nickname}님!</p>
-            <img src={entrance4}  width='500px' />
+          <img src={entrance4}  width='500px' />
+          <p className='text-5xl'>환영합니다, {nickname}님!</p>
         </div>
     );
 }

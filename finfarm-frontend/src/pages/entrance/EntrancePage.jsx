@@ -12,14 +12,20 @@ export default function EntrancePage() {
       <div>
         <div className={styles.wrapper}>
           {/* 흰색 배경의 div로 텍스트를 감싸기 */}
-          <img src={crown} alt="" width={80} className='mr-[290px]' />
+          <img src={crown} alt="" width={80} className='mr-[570px]' />
           <div className={styles.whiteBox}>
             <div className={styles.whiteBox2}>
-              
-              <h1 className='text-sm' > <pre>FIN_FARM    110****1110</pre></h1>
-              <img src={ic_chip} alt="ic_chip" width={20} />
+
+              <br />
+              <h1 className='text-4xl'> <pre>FIN_FARM 🥕 110****1110</pre></h1>
+              <br />
+              <br />
+              <img src={ic_chip} alt="ic_chip" width={50} />
+              <br />
               <br />
               <KakaoLoginButton />
+              <br />
+
             </div>
           </div>
         </div>

@@ -6,9 +6,9 @@ import KakaoImg4 from '@/assets/images/kakao_login_medium_narrow.png'
 
 const KakaoLoginButton = ()=>{
   const buttonStyle = {
-    background: `url(${KakaoImg4}) center/cover`,
-    width: '180px', 
-    height: '30px', 
+    background: `url(${KakaoImg3}) center/cover`,
+    width: '380px', 
+    height: '40px', 
   };
   console.log('카카오로그인 버튼이 눌러졌음')
   return <button style={buttonStyle} onClick={startKakaoLogin}></button>;
