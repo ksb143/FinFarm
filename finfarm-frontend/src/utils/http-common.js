@@ -40,7 +40,6 @@ function localAxios() {
 
   instance.interceptors.response.use(
     (response) => {
-      console.log(response);
       return response;
     },
     async (error) => {
