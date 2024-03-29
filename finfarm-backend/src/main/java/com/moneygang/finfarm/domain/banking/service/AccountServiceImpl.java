@@ -186,6 +186,12 @@ public class AccountServiceImpl implements AccountService {
         BankingAccountRemitRecentResponse response = BankingAccountRemitRecentResponse.create();
 
         HashSet<String> remitMemberNicknames = new HashSet<>(); // 서로 다른 사용자 6명을 구분하기 위한 Set 자료구조
+
+        // 예외1: 최근 송금한 사용자가 없을 때? (400)
+        if(remits.isEmpty()) {
+            throw new GlobalException(HttpStatus.BAD_REQUEST, "Member Not Found");
+        }
+
         for(Account remit: remits) {
 
             String otherMemberNickname = remit.getAccountNickname();
@@ -193,10 +199,7 @@ public class AccountServiceImpl implements AccountService {
 
             log.info("member: "+otherMemberNickname);
 
-            // 예외1: 최근 송금한 사용자가 없을 때? (400)
-            if(optionalOtherMember.isEmpty()) {
-                throw new GlobalException(HttpStatus.BAD_REQUEST, "Member Not Found");
-            }
+            if(optionalOtherMember.isEmpty()) continue;
 
             if(!remitMemberNicknames.contains(otherMemberNickname)) {
                 remitMemberNicknames.add(otherMemberNickname);
