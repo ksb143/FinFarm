@@ -1,12 +1,21 @@
-import PropTypes from 'prop-types';
+import { useEffect, useState } from 'react';
 
+import { checkBalance } from '@/api/bank';
+
+import PropTypes from 'prop-types';
 BankBasicinfo.propTypes = {
   isButton: PropTypes.bool,
 };
 import Button from '@/components/layout/Button';
 
 export default function BankBasicinfo({ isButton }) {
-  const num = 23000;
+  const [balance, setBalance] = useState(0);
+
+  useEffect(() => {
+    const userBalance = checkBalance();
+    setBalance(userBalance);
+  }, []);
+
   return (
     <div className="flex w-full items-center justify-between rounded-xl border-2 border-solid border-gray-300 bg-white px-10 py-3">
       <div className="mr-3 flex-1 border-r-2 border-solid border-gray-300">
@@ -15,7 +24,9 @@ export default function BankBasicinfo({ isButton }) {
       <div className="flex flex-1 items-center justify-between">
         <div className="flex gap-10 ps-3">
           <span>계좌잔액</span>
-          <span className="text-lime-800">{num.toLocaleString('ko-KR')}원</span>
+          <span className="text-lime-800">
+            {balance.toLocaleString('ko-KR')}원
+          </span>
         </div>
         {isButton ? (
           <div className="flex gap-3">
