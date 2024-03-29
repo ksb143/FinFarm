@@ -25,7 +25,7 @@ public class BankingAccountController {
             @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
                     content = @Content(schema = @Schema(implementation = BankingAccountResponse.class))),
     })
-    @GetMapping
+    @PostMapping
     public ResponseEntity<BankingAccountResponse> getAccountHistory(@RequestBody BankingAccountRequest request) {
         return accountService.getAccountHistory(request);
     }
