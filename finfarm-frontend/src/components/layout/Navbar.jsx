@@ -50,17 +50,11 @@ export default function Navbar() {
   const formattedDate = `${today.getFullYear()}년 ${today.getMonth() + 1}월 ${today.getDate()}일`;
   
   const CurrentPoint = ()=>{
-    if (localStorage.getItem('accessToken')){
       return `${pointsInthePocket} 포인트`;
-    }
-    return "????? 포인트";
   };
   
   const UserNickname = ()=>{
-    if (localStorage.getItem('accessToken')){
       return  `${nickname} 님`;
-    }
-    return "익명의 농부";
   } ;  
   
   const GoToMainHome = () => {

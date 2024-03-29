@@ -23,6 +23,7 @@ export default function MainHomePage() {
     dateOfSignup: state.dateOfSignup,
     accountPassword: state.accountPassword,
   }));
+  window.location.href('https://j10d203.p.ssafy.io/home')
     return(
         <div>
             <h1 className='text-2xl'>this is main home page</h1>
