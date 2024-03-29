@@ -12,7 +12,7 @@ export default function EntrancePage() {
       <div>
         <div className={styles.wrapper}>
           {/* 흰색 배경의 div로 텍스트를 감싸기 */}
-          <img src={crown} alt="" width={80} className='mr-[260px]' />
+          <img src={crown} alt="" width={80} className='mr-[290px]' />
           <div className={styles.whiteBox}>
             <div className={styles.whiteBox2}>
               
