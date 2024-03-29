@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { useState, useEffect } from 'react'; // useState 추가
+import { useState } from 'react'; // useState 추가
 import { useNavigate } from 'react-router-dom';
 import useUserStore from '@/store/userStore';
 
@@ -7,21 +7,6 @@ import navLogo from '@/assets/images/navLogo2.png';
 import profile_icon from '@/assets/images/profile_icon2.png';
 
 export default function Navbar() {
-  const [accessTokenName, setAccessTokenName] = useState(
-    localStorage.getItem('accessToken'),
-  );
-
-  useEffect(() => {
-    const handleStorageChange = () => {
-      setAccessTokenName(localStorage.getItem('accessToken'));
-    };
-    window.addEventListener('storage', handleStorageChange);
-
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-    };
-  }, []);
-
   // 전역상태관리 import 로직
   const {
     accessToken: accessToken,
@@ -101,87 +86,85 @@ export default function Navbar() {
   };
 
   return (
-    accessTokenName && (
-      <div className="navbar mb-10 flex justify-between bg-gray-50">
-        <div className="flex-2">
-          <img
-            src={navLogo}
-            alt="navLogo"
-            className="h-auto w-48"
-            onClick={GoToMainHome}
-          />
+    <div className="navbar mb-10 flex justify-between bg-gray-50">
+      <div className="flex-2">
+        <img
+          src={navLogo}
+          alt="navLogo"
+          className="h-auto w-48"
+          onClick={GoToMainHome}
+        />
+      </div>
+      <div className="flex-none gap-8">
+        <div className="dropdown dropdown-end">
+          <button
+            className="avatar btn btn-circle btn-ghost h-24 w-24"
+            aria-label="Profile Menu"
+            onClick={toggleDropdown} // 클릭 이벤트 추가
+          >
+            <div className="w-20 rounded-full">
+              <img alt="profile_icon" src={profile_icon} />
+            </div>
+          </button>
+          {/* Dropdown이 열려있을 때만 보이도록 설정 */}
+          {isDropdownOpen && (
+            <ul className="menu dropdown-content menu-sm z-[1] mt-3 w-48 rounded-box bg-base-100 p-2 shadow">
+              <li>
+                <Link
+                  to="/mypage"
+                  className="justify-between"
+                  onClick={toggleDropdown}
+                >
+                  {' '}
+                  {/* 클릭 이벤트 추가 */}
+                  👩 마이페이지
+                </Link>
+              </li>
+              <li>
+                <Link to="/bank" onClick={toggleDropdown}>
+                  {' '}
+                  {/* 클릭 이벤트 추가 */}
+                  🏛 은행 가기
+                </Link>
+              </li>
+              <li>
+                <Link to="/myfarm" onClick={toggleDropdown}>
+                  {' '}
+                  {/* 클릭 이벤트 추가 */}
+                  🍎 농장 가기
+                </Link>
+              </li>
+            </ul>
+          )}
         </div>
-        <div className="flex-none gap-8">
-          <div className="dropdown dropdown-end">
-            <button
-              className="avatar btn btn-circle btn-ghost h-24 w-24"
-              aria-label="Profile Menu"
-              onClick={toggleDropdown} // 클릭 이벤트 추가
-            >
-              <div className="w-20 rounded-full">
-                <img alt="profile_icon" src={profile_icon} />
-              </div>
-            </button>
-            {/* Dropdown이 열려있을 때만 보이도록 설정 */}
-            {isDropdownOpen && (
-              <ul className="menu dropdown-content menu-sm z-[1] mt-3 w-48 rounded-box bg-base-100 p-2 shadow">
-                <li>
-                  <Link
-                    to="/mypage"
-                    className="justify-between"
-                    onClick={toggleDropdown}
-                  >
-                    {' '}
-                    {/* 클릭 이벤트 추가 */}
-                    👩 마이페이지
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/bank" onClick={toggleDropdown}>
-                    {' '}
-                    {/* 클릭 이벤트 추가 */}
-                    🏛 은행 가기
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/myfarm" onClick={toggleDropdown}>
-                    {' '}
-                    {/* 클릭 이벤트 추가 */}
-                    🍎 농장 가기
-                  </Link>
-                </li>
-              </ul>
-            )}
-          </div>
-          <div className="flex flex-col items-center">
-            <span className="text-2xl">{UserNickname()}</span>
+        <div className="flex flex-col items-center">
+          <span className="text-2xl">{UserNickname()}</span>
 
-            <button
-              onClick={handleLogout}
-              className="btn-base btn min-w-32 rounded-full bg-lime-500 font-hopang text-2xl text-white hover:bg-lime-800"
-            >
-              로그아웃
-            </button>
+          <button
+            onClick={handleLogout}
+            className="btn-base btn min-w-32 rounded-full bg-lime-500 font-hopang text-2xl text-white hover:bg-lime-800"
+          >
+            로그아웃
+          </button>
+        </div>
+
+        <div className="flex flex-col">
+          <div className="flex items-center gap-x-9">
+            <span className="text-1xl">💰 Point :</span>
+            <span className="text-1xl">{CurrentPoint()}</span>
           </div>
 
-          <div className="flex flex-col">
-            <div className="flex items-center gap-x-9">
-              <span className="text-1xl">💰 Point :</span>
-              <span className="text-1xl">{CurrentPoint()}</span>
-            </div>
+          <div className="flex items-center gap-x-7">
+            <span className="text-1xl">📅 Today :</span>
+            <span className="text-1xl">{formattedDate}</span>
+          </div>
 
-            <div className="flex items-center gap-x-7">
-              <span className="text-1xl">📅 Today :</span>
-              <span className="text-1xl">{formattedDate}</span>
-            </div>
-
-            <div className="flex items-center gap-x-3">
-              <button className="text-1xl">🌈 Weather :</button>
-              <span className="text-1xl">맑음</span>
-            </div>
+          <div className="flex items-center gap-x-3">
+            <button className="text-1xl">🌈 Weather :</button>
+            <span className="text-1xl">맑음</span>
           </div>
         </div>
       </div>
-    )
+    </div>
   );
 }
