@@ -50,7 +50,9 @@ const RedirectPage = () => {
       localStorage.clear
       localStorage.setItem('accessToken',res.data.accessToken)
       setAccessToken(res.data.accessToken)
-      
+      localStorage.setItem('email',res.data.memberNickname)
+      setEmail(res.data.memberNickname); // 실제로 온 것은 이메일임.
+
       if (res.data.member) { // member: True 인 경우, 로그인 처리
         console.log(`안녕하세요, ${res.data.memberNickname}님! 환영합니다.`);
         // 받은 모든 정보를 zustand store에 저장하고, 메인홈으로 이동.
