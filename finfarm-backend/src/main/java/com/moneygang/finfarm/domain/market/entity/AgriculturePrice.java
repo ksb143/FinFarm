@@ -2,10 +2,11 @@ package com.moneygang.finfarm.domain.market.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
-@Getter
+@Getter @Setter
 @Entity(name = "agriculture_price_TB")
 public class AgriculturePrice {
     @Id
