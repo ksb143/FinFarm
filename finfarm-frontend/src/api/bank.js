@@ -10,7 +10,8 @@ async function changePassword(passwordInfo) {
       changePassword: passwordInfo.changePassword,
       checkPassword: passwordInfo.checkPassword,
     });
-    return response.data;
+    console.log(response.data.isSuccess);
+    return response.data.isSuccess;
   } catch (error) {
     console.log(`계좌 비밀번호 변경 실패: ${error}`);
     throw error;
@@ -46,7 +47,6 @@ async function depositCash(amount) {
 
 // 계좌 내역 조회 함수
 async function accountCheck(accountContent) {
-  console.log(accountContent);
   try {
     const response = await local.post('/banking/account', {
       startDate: accountContent.startDate,

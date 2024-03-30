@@ -5,6 +5,7 @@ import BankTransferPage from '@/pages/bank/BankTransferPage';
 import BankAtmPage from '@/pages/bank/BankAtmPage';
 import BankLoanHistoryPage from '@/pages/bank/BankLoanHistoryPage';
 import BankLoanItemPage from '@/pages/bank/BankLoanItemPage';
+import BankPasswordChangePage from '@/pages/bank/BankPasswordChangePage';
 
 export default function Bank() {
   return (
@@ -16,6 +17,7 @@ export default function Bank() {
         <Route path="atm" element={<BankAtmPage />} />
         <Route path="loan/history" element={<BankLoanHistoryPage />} />
         <Route path="loan/item" element={<BankLoanItemPage />} />
+        <Route path="/password/change" element={<BankPasswordChangePage />} />
       </Routes>
     </>
   );
