@@ -15,12 +15,17 @@ export default function BankPasswordChangePage() {
   const [checkModalVisible, setCheckModalVisible] = useState(false); // 체크 모달 유무
   const [isSuccessChange, setIsSuccessChange] = useState(true); // 비번 변경 성공
 
+  // 비밀번호 유효성 검사
   const inputCheck = () => {
     const isNotEntered = !originPassword || !changePassword || !checkPassword;
     const isNotSame = changePassword !== checkPassword;
 
     setNotEntered(isNotEntered);
     setNotSame(isNotSame);
+
+    if (!isNotEntered && !isNotSame) {
+      setModalVisible(true);
+    }
   };
 
   // 비밀번호 변경
@@ -33,15 +38,27 @@ export default function BankPasswordChangePage() {
     try {
       const response = await apiChangePassword(passwordInfo);
       setIsSuccessChange(response);
+      setModalVisible(false);
+      setCheckModalVisible(true);
     } catch (error) {
       console.error(error);
+      setIsSuccessChange(false);
+      setModalVisible(false);
+      setCheckModalVisible(true);
     }
-    setModalVisible(false);
-    setCheckModalVisible(true);
   };
+
   // 비밀번호 변경 취소
   const cancelChangePassword = () => {
     setModalVisible(false);
+  };
+
+  // 비밀번호 변경 확인
+  const closeCheckModal = () => {
+    setCheckModalVisible(false);
+    setOriginPassword('');
+    setChangePassword('');
+    setCheckPassword('');
   };
 
   return (
@@ -56,11 +73,11 @@ export default function BankPasswordChangePage() {
       )}
       {checkModalVisible &&
         (isSuccessChange ? (
-          <CheckModal isSuccess={isSuccessChange}>
+          <CheckModal isSuccess={isSuccessChange} onConfirm={closeCheckModal}>
             비밀번호 변경에 성공했습니다
           </CheckModal>
         ) : (
-          <CheckModal isSuccess={isSuccessChange}>
+          <CheckModal isSuccess={isSuccessChange} onConfirm={closeCheckModal}>
             비밀번호 변경에 실패했습니다
           </CheckModal>
         ))}
@@ -102,10 +119,10 @@ export default function BankPasswordChangePage() {
                 }}
               />
             </label>
-            {notSame && (
+            {originPassword < 4 && (
               <div className="label">
                 <span className="label-text-alt text-red-600">
-                  비밀번호가 일치하지 않습니다
+                  기존 비밀번호 4자리를 입력하지 않았습니다
                 </span>
               </div>
             )}
@@ -148,10 +165,10 @@ export default function BankPasswordChangePage() {
                 }}
               />
             </label>
-            {notSame && (
+            {changePassword < 4 && (
               <div className="label">
                 <span className="label-text-alt text-red-600">
-                  비밀번호가 일치하지 않습니다
+                  신규 기존 비밀번호 4자리를 입력하지 않았습니다
                 </span>
               </div>
             )}

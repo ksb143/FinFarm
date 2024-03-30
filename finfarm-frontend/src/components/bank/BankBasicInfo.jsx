@@ -36,6 +36,9 @@ export default function BankBasicinfo({ isButton }) {
   const goToTransfer = () => {
     navigate('/bank/transfer');
   };
+  const goToPasswordChange = () => {
+    navigate('/bank/password/change');
+  };
 
   return (
     <div className="flex w-full items-center justify-between rounded-xl border-2 border-solid border-gray-300 bg-white px-10 py-3">
@@ -52,7 +55,7 @@ export default function BankBasicinfo({ isButton }) {
         {isButton ? (
           <div className="flex gap-3">
             <Button onClickEvent={goToTransfer}>계좌이체 하기</Button>
-            <Button>비밀번호 변경</Button>
+            <Button onClickEvent={goToPasswordChange}>비밀번호 변경</Button>
           </div>
         ) : null}
       </div>
