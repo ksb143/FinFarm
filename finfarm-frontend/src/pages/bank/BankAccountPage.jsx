@@ -1,7 +1,6 @@
 import { useState } from 'react';
 
 import { accountCheck } from '@/api/bank';
-import useUserStore from '@/store/userStore';
 import BankBasicinfo from '@/components/bank/BankBasicInfo';
 import BankAccountTable from '@/components/bank/BankAccount/BankAccountTable';
 
@@ -15,11 +14,6 @@ export default function BankAccountPage() {
   const [sortOrder, setSortOrder] = useState('newest');
   const [selectedRange, setSelectedRange] = useState('');
   const [accountData, setAccountData] = useState(null);
-
-  // 닉네임
-  const { nickname: nickname } = useUserStore((state) => ({
-    nickname: state.nickname,
-  }));
 
   // 날짜 지정 데이터
   const setDateRange = (days) => {

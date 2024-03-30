@@ -10,7 +10,7 @@ async function changePassword(passwordInfo) {
       changePassword: passwordInfo.changePassword,
       checkPassword: passwordInfo.checkPassword,
     });
-    return response.data;
+    return response.data.isSuccess;
   } catch (error) {
     console.log(`계좌 비밀번호 변경 실패: ${error}`);
     throw error;

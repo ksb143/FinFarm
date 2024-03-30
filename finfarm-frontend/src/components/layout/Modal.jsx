@@ -7,7 +7,10 @@ import fail from '@/assets/images/fail.png';
 
 Modal.propTypes = {
   children: PropTypes.node.isRequired,
-  imageUrl: PropTypes.string,
+  imageUrl: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.oneOf([null, undefined]),
+  ]),
   isSuccess: PropTypes.oneOfType([
     PropTypes.bool,
     PropTypes.oneOf([null, undefined]),
@@ -34,6 +37,14 @@ export default function Modal({
   content,
 }) {
   const [password, setPassword] = useState('');
+
+  let imageSrc;
+  if (imageUrl === '') {
+    imageSrc = profile_icon;
+  } else if (imageUrl) {
+    imageSrc = imageUrl;
+  }
+
   return (
     <div className="fixed left-1/2 top-1/2 z-30 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-10 overflow-hidden rounded-lg border-2 border-solid border-gray-300 bg-white px-28 py-10">
       <div className="relative w-fit whitespace-nowrap text-center font-nanum text-3xl font-extrabold tracking-[0] text-lime-950">
@@ -47,15 +58,13 @@ export default function Modal({
           <img src={fail} alt="fail" />
         ))}
       <div className="relative inline-flex items-center justify-center gap-3">
-        <div className="avatar">
-          <div className="w-16 rounded-full">
-            {imageUrl ? (
-              <img src={imageUrl} alt="profile" />
-            ) : (
-              <img src={profile_icon} alt="profile" />
-            )}
+        {imageSrc && (
+          <div className="avatar">
+            <div className="w-16 rounded-full">
+              <img src={imageSrc} alt="profile" />
+            </div>
           </div>
-        </div>
+        )}
         {content !== undefined && content !== null && (
           <div className="relative w-fit whitespace-pre-wrap text-center text-center font-nanum text-base font-normal text-black">
             {content}
