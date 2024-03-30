@@ -10,6 +10,7 @@ export default function BankPasswordChangePage() {
   const [changePassword, setChangePassword] = useState(''); // 새 비번
   const [checkPassword, setCheckPassword] = useState(''); // 새 비번 체크
   const [notEntered, setNotEntered] = useState(false); // 입력 폼
+  const [isClicked, setIsClicked] = useState(false); // 클릭 여부
   const [notSame, setNotSame] = useState(false); // 일치 여부
   const [modalVisible, setModalVisible] = useState(false); // 모달 유무
   const [checkModalVisible, setCheckModalVisible] = useState(false); // 체크 모달 유무
@@ -19,7 +20,7 @@ export default function BankPasswordChangePage() {
   const inputCheck = () => {
     const isNotEntered = !originPassword || !changePassword || !checkPassword;
     const isNotSame = changePassword !== checkPassword;
-
+    setIsClicked(true);
     setNotEntered(isNotEntered);
     setNotSame(isNotSame);
 
@@ -40,17 +41,20 @@ export default function BankPasswordChangePage() {
       setIsSuccessChange(response);
       setModalVisible(false);
       setCheckModalVisible(true);
+      setIsClicked(false);
     } catch (error) {
       console.error(error);
       setIsSuccessChange(false);
       setModalVisible(false);
       setCheckModalVisible(true);
+      setIsClicked(false);
     }
   };
 
   // 비밀번호 변경 취소
   const cancelChangePassword = () => {
     setModalVisible(false);
+    setIsClicked(false);
   };
 
   // 비밀번호 변경 확인
@@ -119,7 +123,7 @@ export default function BankPasswordChangePage() {
                 }}
               />
             </label>
-            {originPassword < 4 && (
+            {isClicked && originPassword < 4 && (
               <div className="label">
                 <span className="label-text-alt text-red-600">
                   기존 비밀번호 4자리를 입력하지 않았습니다
@@ -165,7 +169,7 @@ export default function BankPasswordChangePage() {
                 }}
               />
             </label>
-            {changePassword < 4 && (
+            {isClicked && changePassword < 4 && (
               <div className="label">
                 <span className="label-text-alt text-red-600">
                   신규 기존 비밀번호 4자리를 입력하지 않았습니다

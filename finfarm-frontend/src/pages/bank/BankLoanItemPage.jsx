@@ -1,19 +1,26 @@
 import { useState } from 'react';
 
+import useUserStore from '@/store/userStore';
 import firstFamerLoan from '@/assets/images/firstFamerLoan.png';
 import { loanQualificate, loan } from '@/api/bank';
 import Modal from '@/components/layout/Modal';
 import CheckModal from '@/components/layout/CheckModal';
 
 export default function BankLoanItemPage() {
+  const { nickname: nickname, dateOfSignup: dateOfSignup } = useUserStore(
+    (state) => ({
+      nickname: state.nickname,
+      dateOfSignup: state.dateOfSignup,
+    }),
+  );
+
   const [afterQualification, setAfterQualification] = useState(false); // 대출 심사 후 페이지
-  const [loanQualificationInfo, SetloanQualificationInfo] = useState({
+  const [loanQualificationInfo, setLoanQualificationInfo] = useState({
     canLoan: true,
     isCurrentlyLoan: true,
     haveOverDue: true,
   }); // 상환 가능 여부
-  const [amount, setAmount] = useState(''); // 금액
-  const [password, setPassword] = useState(''); // 계좌 비밀번호
+  const [amount, setAmount] = useState(''); // 대출 금액
   const [visibleModal, setVisibleModal] = useState(false); // 모달창 유무
   const [visibleCheckModal, setVisibleCheckModal] = useState(false); // 체크 모달창 유무
   const [successLoan, setSuccessLoan] = useState(false); // 대출 성공 여부
@@ -22,7 +29,7 @@ export default function BankLoanItemPage() {
   const handleLoanQualificate = async () => {
     try {
       const qualificationInfo = await loanQualificate(2);
-      SetloanQualificationInfo({
+      setLoanQualificationInfo({
         canLoan: qualificationInfo.canLoan,
         isCurrentlyLoan: qualificationInfo.isCurrentlyLoan,
         haveOverDue: qualificationInfo.haveOverDue,
@@ -49,11 +56,6 @@ export default function BankLoanItemPage() {
     setVisibleCheckModal(true);
   };
 
-  // 대출 취소 함수
-  const handleLoanCancel = async () => {
-    setVisibleModal(false);
-  };
-
   const currentDate = new Date(); // 현재 날짜
   const sevenDaysLater = new Date(
     currentDate.getTime() + 7 * 24 * 60 * 60 * 1000,
@@ -64,16 +66,26 @@ export default function BankLoanItemPage() {
     .replace(/[\s.-]+/g, '-');
   formattedDate = formattedDate.replace(/-$/, ''); // 포맷된 날짜
 
+  // 가입일이 7일 지났는지 확인
+  const signupDate = new Date(dateOfSignup);
+  const sevenDays = 7 * 24 * 60 * 60 * 1000;
+  const daysSinceSignup = currentDate - signupDate;
+  const overSevenDays = daysSinceSignup > sevenDays;
+
   return (
     <div className="mx-24 flex flex-col items-center rounded-xl border-2 border-gray-300 bg-white p-8">
       {visibleModal && (
         <Modal
           isInput={true}
           content={`${amount.toLocaleString('ko-KR')}원의 금액으로,\n주 10% 금리 적용하며\n상환일은 ${formattedDate}입니다.`}
-          onConfirm={handleLoanConfirm}
-          onCancel={handleLoanCancel}
+          onConfirm={() => {
+            handleLoanConfirm(password);
+          }}
+          onCancel={() => {
+            setVisibleModal(false);
+          }}
         >
-          슈크림 님 아래 조건으로 대출신청하겠습니까?
+          {nickname} 님 아래 조건으로 대출신청하겠습니까?
         </Modal>
       )}
       {visibleCheckModal &&
@@ -137,8 +149,7 @@ export default function BankLoanItemPage() {
                     {loanQualificationInfo.isCurrentlyLoan && (
                       <li>현재 해당 상품에 가입 중입니다.</li>
                     )}
-                    {/* 유저 가입일 비교 */}
-                    <li>가입한 지 일주일 지났습니다.</li>
+                    {overSevenDays && <li>가입한 지 일주일 지났습니다.</li>}
                     {loanQualificationInfo.haveOverDue && (
                       <li>연체 전적이 있습니다.</li>
                     )}
