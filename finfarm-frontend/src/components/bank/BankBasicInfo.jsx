@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { checkBalance } from '@/api/bank';
 import useUserStore from '@/store/userStore';
@@ -30,6 +31,15 @@ export default function BankBasicinfo({ isButton }) {
     fetchBalance(); // 비동기 함수 실행
   }, []);
 
+  // 네비게이션
+  const navigate = useNavigate();
+  const goToTransfer = () => {
+    navigate('/bank/transfer');
+  };
+  const goToPasswordChange = () => {
+    navigate('/bank/password/change');
+  };
+
   return (
     <div className="flex w-full items-center justify-between rounded-xl border-2 border-solid border-gray-300 bg-white px-10 py-3">
       <div className="mr-3 flex-1 border-r-2 border-solid border-gray-300">
@@ -44,8 +54,8 @@ export default function BankBasicinfo({ isButton }) {
         </div>
         {isButton ? (
           <div className="flex gap-3">
-            <Button>계좌이체 하기</Button>
-            <Button>비밀번호 변경</Button>
+            <Button onClickEvent={goToTransfer}>계좌이체 하기</Button>
+            <Button onClickEvent={goToPasswordChange}>비밀번호 변경</Button>
           </div>
         ) : null}
       </div>
