@@ -38,7 +38,7 @@ export default function BankTransferPage() {
 
   const { balance, setAccountBalance } = useBankStore({
     balance: state.accountBalance,
-    setAccountBalance: state.updateAccountBalance,
+    setAccountBalance: state.setAccountBalance,
   }); // 유저 계좌 잔액
 
   // 선택 금액 입력 필드에 설정

@@ -18,10 +18,10 @@ export default function BankBasicinfo({ isButton }) {
     nickname: state.nickname,
   }));
 
-  const { balance, setAccountBalance } = useBankStore({
-    balance: state.accountBalance,
-    setAccountBalance: state.updateAccountBalance,
-  });
+  const { accountBalance, setAccountBalance } = useBankStore((state) => ({
+    accountBalance: state.accountBalance,
+    setAccountBalance: state.setAccountBalance,
+  }));
 
   useEffect(() => {
     const fetchBalance = async () => {
@@ -53,7 +53,7 @@ export default function BankBasicinfo({ isButton }) {
         <div className="flex gap-10 ps-3">
           <span>계좌잔액</span>
           <span className="text-lime-800">
-            {balance.toLocaleString('ko-KR')}원
+            {accountBalance.toLocaleString('ko-KR')}원
           </span>
         </div>
         {isButton ? (

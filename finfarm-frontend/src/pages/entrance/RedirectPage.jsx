@@ -63,7 +63,7 @@ const RedirectPage = () => {
         res.data,
       );
 
-      localStorage.clear;
+      localStorage.clear();
       localStorage.setItem('accessToken', res.data.accessToken);
       setAccessToken(res.data.accessToken);
 

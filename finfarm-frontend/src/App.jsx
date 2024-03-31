@@ -29,8 +29,8 @@ function App() {
           <Route path="myfarm/*" element={<MyFarm />} />
           {/* 장터 관련 페이지들 */}
           <Route path="market/*" element={<Market />} />
-          
-          <Route path="mypage" element={<Mypage/>}/>
+          {/* 프로필 관련 페이지들 */}
+          <Route path="mypage" element={<Mypage />} />
         </Routes>
       </div>
     </Router>

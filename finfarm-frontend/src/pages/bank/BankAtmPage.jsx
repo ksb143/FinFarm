@@ -31,10 +31,10 @@ export default function BankAtmPage() {
     }),
   ); // 유저 닉네임 및 현금
 
-  const { balance, setAccountBalance } = useBankStore({
-    balance: state.accountBalance,
-    setAccountBalance: state.updateAccountBalance,
-  }); // 유저 계좌 잔액
+  const { accountBalance, setAccountBalance } = useBankStore((state) => ({
+    accountBalance: state.accountBalance,
+    setAccountBalance: state.setAccountBalance,
+  })); // 유저 계좌 잔액
 
   // 입금 확인
   const handleDepositCheck = () => {
@@ -51,7 +51,7 @@ export default function BankAtmPage() {
   const handleDepositConfirm = async () => {
     try {
       const response = await depositCash(depositAmount);
-      updateAccountBalance(response);
+      setAccountBalance(response);
       setDepositSuccess(true);
     } catch (error) {
       console.error(error);
@@ -76,7 +76,7 @@ export default function BankAtmPage() {
       alert('비밀번호를 입력해주세요');
     } else if (password.length < 4) {
       alert('계좌 비밀번호 4자리를 입력해주세요');
-    } else if (balance < withdrawAmount) {
+    } else if (accountBalance < withdrawAmount) {
       alert('인출 금액이 현재 계좌 금액보다 많습니다');
     } else {
       setWithdrawCheck(true);
