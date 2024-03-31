@@ -86,6 +86,7 @@ export default function BankAtmPage() {
 
   // 출금 실행
   const handleWithdrawConfirm = async () => {
+    console.log(typeof withdrawAmount);
     const withdrawInfo = {
       amount: withdrawAmount,
       password: password,

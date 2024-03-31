@@ -171,16 +171,16 @@ export default function BankLoanHistoryPage() {
             <h1 className="mb-5 text-2xl">대출 현황</h1>
             <div>
               <span className="mr-16">총 상환 금액</span>
-              <span>총 {loanRepayAmount}</span>
+              <span>총 {loanRepayAmount.toLocaleString('ko-KR')}원</span>
             </div>
             <div>
               <span className="mr-16">총 대출 금액</span>
-              <span>총 {loanAmount}</span>
+              <span>총 {loanAmount.toLocaleString('ko-KR')}원</span>
             </div>
           </div>
           <Link to="/bank/loan/item">
             <div className="flex items-center rounded-lg bg-blue-600 px-6 py-4 font-hopang text-white">
-              <img src={loanItem} alt="loan image" />
+              <img src={loanItem} alt="loan_items" />
               더 많은 대출상품 <br />
               알아보기
             </div>

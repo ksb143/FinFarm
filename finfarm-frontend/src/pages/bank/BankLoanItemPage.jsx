@@ -84,7 +84,7 @@ export default function BankLoanItemPage() {
         <Modal
           isInput={true}
           content={`${amount.toLocaleString('ko-KR')}원의 금액으로,\n주 10% 금리 적용하며\n상환일은 ${formattedDate}입니다.`}
-          onConfirm={() => {
+          onConfirm={(password) => {
             handleLoanConfirm(password);
           }}
           onCancel={() => {
