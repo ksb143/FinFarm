@@ -47,12 +47,14 @@ export default function BankLoanItemPage() {
     } else if (password.length < 4) {
       alert('계좌 비밀번호 4자리를 입력해주세요');
     } else {
+      const loanInfo = {
+        loanPk: 2,
+        amount: amount,
+        accountPassword: password,
+      };
+      console.log(loanInfo.accountPassword);
       try {
-        await loan({
-          loanPk: 2,
-          amount: amount,
-          accountPassword: password,
-        });
+        await loan(loanInfo);
         setSuccessLoan(true);
       } catch (error) {
         console.log(error);
