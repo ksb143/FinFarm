@@ -11,7 +11,7 @@ async function sellCrop(sellCropInfo) {
     });
     return response.data;
   } catch (error) {
-    console.log(`농작물 판매 실패: ${error}`);
+    console.log('농작물 판매 실패', error);
     throw error;
   }
 }
@@ -26,7 +26,7 @@ async function getSeedDetails(seedName) {
     });
     return response.data;
   } catch (error) {
-    console.log(`씨앗 상세 조회 실패: ${error}`);
+    console.log('씨앗 상세 조회 실패', error);
     throw error;
   }
 }
@@ -40,7 +40,7 @@ async function buySeed(seedInfo) {
     });
     return response.data;
   } catch (error) {
-    console.log(`씨앗 구매 실패: ${error}`);
+    console.log('씨앗 구매 실패', error);
     throw error;
   }
 }
@@ -51,7 +51,7 @@ async function getMarketInfo() {
     const response = await local.get('/market');
     return response.data;
   } catch (error) {
-    console.log(`장터 정보 조회 실패: ${error}`);
+    console.log('장터 정보 조회 실패', error);
     throw error;
   }
 }
@@ -66,7 +66,7 @@ async function getAgricultureDetails(agricultureName) {
     });
     return response.data;
   } catch (error) {
-    console.log(`농작물 상세 조회 실패: ${error}`);
+    console.log('농작물 상세 조회 실패', error);
     throw error;
   }
 }

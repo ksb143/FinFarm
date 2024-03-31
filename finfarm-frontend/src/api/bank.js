@@ -13,7 +13,7 @@ async function changePassword(passwordInfo) {
     console.log(response.data.isSuccess);
     return response.data.isSuccess;
   } catch (error) {
-    console.log(`계좌 비밀번호 변경 실패: ${error}`);
+    console.log('계좌 비밀번호 변경 실패', error);
     throw error;
   }
 }
@@ -27,7 +27,7 @@ async function withdrawCash(withdrawInfo) {
     });
     return response.data;
   } catch (error) {
-    console.log(`출금 실패: ${error}`);
+    console.log('출금 실패', error);
     throw error;
   }
 }
@@ -40,7 +40,7 @@ async function depositCash(amount) {
     });
     return response.data;
   } catch (error) {
-    console.log(`입금 실패: ${error}`);
+    console.log('입금 실패', error);
     throw error;
   }
 }
@@ -58,7 +58,7 @@ async function accountCheck(accountContent) {
     const filterData = response.data;
     return filterData;
   } catch (error) {
-    console.log(`계좌 내역 조회 실패: ${error}`);
+    console.log('계좌 내역 조회 실패', error);
     throw error;
   }
 }
@@ -69,7 +69,7 @@ async function recentTransferDetails() {
     const response = await local.get('/banking/account/remit/recent');
     return response.data.recentRemitMembers;
   } catch (error) {
-    console.log(`최근 이체 내역 확인 실패: ${error}`);
+    console.log('최근 이체 내역 확인 실패', error);
     throw error;
   }
 }
@@ -86,7 +86,7 @@ async function accountTransfer(transferContent) {
     const remitData = response.data;
     return remitData;
   } catch (error) {
-    console.log(`송금 실패: ${error}`);
+    console.log('송금 실패', error);
     throw error;
   }
 }
@@ -99,7 +99,7 @@ async function checkAnotherUser(anotherUser) {
     });
     return response.data;
   } catch (error) {
-    console.log(`송금 유저 조회 실패: ${error}`);
+    console.log('송금 유저 조회 실패', error);
     throw error;
   }
 }
@@ -114,7 +114,7 @@ async function loan(loanInfo) {
     });
     return response.data;
   } catch (error) {
-    console.log(`대출 실패: ${error}`);
+    console.log('대출 실패', error);
     throw error;
   }
 }
@@ -129,7 +129,7 @@ async function loanRepay(repayInfo) {
     });
     return response.data;
   } catch (error) {
-    console.log(`대출 상환 실패: ${error}`);
+    console.log('대출 상환 실패', error);
     throw error;
   }
 }
@@ -140,7 +140,7 @@ async function loanHistory() {
     const response = await local.get('/banking/loan');
     return response.data;
   } catch (error) {
-    console.log(`대출 내역 조회 실패: ${error}`);
+    console.log('대출 내역 조회 실패', error);
     throw error;
   }
 }
@@ -153,7 +153,7 @@ async function loanQualificate(loanPk) {
     });
     return response.data;
   } catch (error) {
-    console.log(`대출 심사 실패: ${error}`);
+    console.log('대출 심사 실패', error);
     throw error;
   }
 }
@@ -165,7 +165,7 @@ async function checkBalance() {
     const balance = response.data.accountBalance;
     return balance;
   } catch (error) {
-    console.log(`계좌 잔액 조회 실패 ${error}`);
+    console.log('계좌 잔액 조회 실패', error);
     throw error;
   }
 }
