@@ -148,7 +148,7 @@ export default function BankLoanHistoryPage() {
       {visibleModal && (
         <Modal
           isInput={true}
-          content={`${repayInfo.loanName}의 \n 대출 잔액 ${repayInfo.repayAmount.toLocaleString('ko-KR')}원 타입은 아래와 같습니다.`}
+          content={`${repayInfo.loanName}의 \n 대출 잔액 ${repayInfo.repayAmount}원 타입은 아래와 같습니다.`}
           onConfirm={handleLoanConfirm}
           onCancel={handleLoanCancel}
         >
