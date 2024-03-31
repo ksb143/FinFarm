@@ -69,7 +69,7 @@ public class AccountServiceImpl implements AccountService {
 
             // 필터링3: startDate ~ endDate
             LocalDateTime accountDate = account.getAccountDate();
-            if(accountDate.isBefore(startDate.atStartOfDay()) || accountDate.isAfter(endDate.atStartOfDay())) continue accountLoop;
+            if(accountDate.isBefore(startDate.atStartOfDay()) || accountDate.isAfter(endDate.plusDays(1).atStartOfDay())) continue accountLoop;
 
             Long amount = account.getAccountAmount();
             LocalDateTime date = account.getAccountDate();
@@ -121,6 +121,7 @@ public class AccountServiceImpl implements AccountService {
 
         accountRepository.save(deposit);
         member.updateCurPoint((-1)*amount); // 입금: curPoint -> accountBalance
+        memberRepository.save(member);
 
         Long curPoint = member.getMemberCurPoint();
         LocalDateTime requestTime = deposit.getAccountDate();
@@ -165,6 +166,8 @@ public class AccountServiceImpl implements AccountService {
 
         accountRepository.save(withdraw);
         member.updateCurPoint(amount);
+        memberRepository.save(member);
+
         Long curPoint = member.getMemberCurPoint();
         LocalDateTime requestTime = withdraw.getAccountDate();
 
