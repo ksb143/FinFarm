@@ -199,7 +199,7 @@ export default function BankLoanHistoryPage() {
                   endDate={currentDatum.endDate}
                   amount={currentDatum.amount}
                   repayAmount={currentDatum.repayAmount}
-                  dDay={currentDatum.dDay}
+                  dDay={currentDatum.dday}
                   onRepay={() => {
                     handleRepay(
                       currentDatum.pk,

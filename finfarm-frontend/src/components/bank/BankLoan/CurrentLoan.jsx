@@ -9,6 +9,7 @@ CurrentLoan.propTypes = {
   amount: PropTypes.number,
   repayAmount: PropTypes.number,
   dDay: PropTypes.number,
+  onRepay: PropTypes.func,
 };
 
 export default function CurrentLoan({
