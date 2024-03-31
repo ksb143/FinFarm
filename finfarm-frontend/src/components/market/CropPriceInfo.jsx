@@ -6,7 +6,7 @@ export default function CropPriceInfo({
   fluctuationRate,
 }) {
   return (
-    <div className="grid w-full grid-cols-9 items-center">
+    <div className="mb-6 grid w-full grid-cols-9 items-center">
       <div className="avatar col-span-2">
         <div className="w-20 rounded-full ring ring-gray-300 ring-offset-2 ring-offset-base-100">
           <img src={agricultureImg} />
@@ -14,7 +14,7 @@ export default function CropPriceInfo({
       </div>
       <div className="col-span-5">
         <p className="text-xl">{agricultureName}</p>
-        <p className="text-sm">{agricultureContent}</p>
+        <p className="text-sm text-gray-500">{agricultureContent}</p>
       </div>
       <div className="col-span-2 text-center">
         {fluctuationRate >= 0 ? (
