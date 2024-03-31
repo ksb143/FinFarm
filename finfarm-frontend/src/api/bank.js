@@ -122,7 +122,7 @@ async function loan(loanInfo) {
 // 대출 상환
 async function loanRepay(repayInfo) {
   try {
-    const response = await local.post('/banking/loan/take', {
+    const response = await local.post('/banking/loan/repay', {
       loanHistoryPk: repayInfo.pk,
       repayAmount: repayInfo.repayAmount,
       accountPassword: repayInfo.password,
