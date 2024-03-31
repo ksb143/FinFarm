@@ -81,7 +81,7 @@ export default function BankLoanHistoryPage() {
         password: password,
       }));
       try {
-        const response = await loanRepay(repayInfo);
+        await loanRepay(repayInfo);
         const historyResponse = await loanHistory();
         setCurrentLoanData(historyResponse.currentLoans);
         setLoanHistories(historyResponse.loanHistories);
