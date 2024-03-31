@@ -92,6 +92,7 @@ export default function BankAtmPage() {
     };
     try {
       const response = withdrawCash(withdrawInfo);
+      console.log('리스폰스입니다.', response);
       setPointsInthePocket(response.curPoint);
       setAccountBalance(response.accountBalance);
       setWithdrawSuccess(true);

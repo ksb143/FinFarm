@@ -34,7 +34,7 @@ export default function BankAccountTable({ data, recordsView }) {
       <table className="table rounded-none bg-white">
         {/* head */}
         <thead>
-          <tr className="bg-gray-300">
+          <tr className="bg-gray-300 text-center">
             <th>거래일시</th>
             <th>구분</th>
             <th>닉네임</th>
@@ -43,7 +43,7 @@ export default function BankAccountTable({ data, recordsView }) {
             <th>잔액</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="text-center">
           {currentRecords.map((datum, idx) => (
             <tr key={idx}>
               <td>
