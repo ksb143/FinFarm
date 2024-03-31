@@ -63,7 +63,7 @@ export default function BankLoanHistoryPage() {
     setRepayInfo({
       loanPk: pk,
       loanName: name,
-      loanRepayAmount: repayAmount,
+      repayAmount: repayAmount,
       password: '',
     });
     setVisibleModal(true);
@@ -102,7 +102,7 @@ export default function BankLoanHistoryPage() {
     setRepayInfo({
       loanPk: '',
       loanName: '',
-      loanRepayAmount: '',
+      repayAmount: '',
       password: '',
     });
   };
@@ -148,7 +148,7 @@ export default function BankLoanHistoryPage() {
       {visibleModal && (
         <Modal
           isInput={true}
-          content={`${repayInfo.loanName}의 \n 대출 잔액 ${repayInfo.loanRepayAmount.toLocaleString('ko-KR')}원`}
+          content={`${repayInfo.loanName}의 \n 대출 잔액 ${repayInfo.repayAmount.toLocaleString('ko-KR')}원 타입은 아래와 같습니다 ${repayInfo.repayAmount}`}
           onConfirm={handleLoanConfirm}
           onCancel={handleLoanCancel}
         >
@@ -172,10 +172,12 @@ export default function BankLoanHistoryPage() {
             <div>
               <span className="mr-16">총 상환 금액</span>
               <span>총 {loanRepayAmount}원</span>
+              <span>{typeof loanAmount}</span>
             </div>
             <div>
               <span className="mr-16">총 대출 금액</span>
-              <span>총 {loanAmount.toLocaleString('ko-KR')}원</span>
+              <span>총 {loanAmount}원</span>
+              <span>{typeof loanAmount}</span>
             </div>
           </div>
           <Link to="/bank/loan/item">
