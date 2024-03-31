@@ -295,11 +295,11 @@ export default function BankTransferPage() {
                     nickName={recentTransfer.nickname}
                     profileImg={recentTransfer.imageUrl}
                     transferDate={recentTransfer.requestTime}
-                    onClick={() => {
+                    onClickEvent={() => {
                       handleRecipient(recentTransfer.nickname);
                       setClickedIndex(idx);
                     }}
-                    className={
+                    clickClass={
                       clickedIndex === idx ? 'border-double border-red-600' : ''
                     }
                   />

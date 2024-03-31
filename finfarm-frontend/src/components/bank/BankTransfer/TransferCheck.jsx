@@ -11,6 +11,8 @@ TransferCheck.propTypes = {
   balance: PropTypes.number,
   onTransferResult: PropTypes.func,
   onTransferCancel: PropTypes.func,
+  onClickEvent: PropTypes.func,
+  clickClass: PropTypes.string,
 };
 
 export default function TransferCheck({
@@ -21,6 +23,8 @@ export default function TransferCheck({
   balance,
   onTransferResult,
   onTransferCancel,
+  onClickEvent,
+  clickClass,
 }) {
   const transferContent = {
     recipient,
@@ -40,7 +44,10 @@ export default function TransferCheck({
   };
 
   return (
-    <div className="flex w-full flex-col gap-5 rounded-lg border-2 border-solid border-gray-300 bg-white px-5 py-8">
+    <div
+      onClick={onClickEvent}
+      className={`flex w-full cursor-default flex-col gap-5 rounded-lg border-2 border-solid border-gray-300 bg-white px-5 py-8 ${clickClass}`}
+    >
       <h1 className="text-center text-xl">이체 확인</h1>
       <div className="flex w-full">
         <div className="w-2/6">받는 분</div>
