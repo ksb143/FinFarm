@@ -121,7 +121,7 @@ export default function BankLoanHistoryPage() {
         setCurrentLoanData(response.currentLoans);
         setLoanHistories(response.loanHistories);
         setLoanAmount(response.totalTakeAmount);
-        setLoanRepayAmount(response.totalRepayAmount); // 오타 수정
+        setLoanRepayAmount(response.totalRepayAmount);
       } catch (error) {
         console.error(error);
       }
@@ -171,7 +171,7 @@ export default function BankLoanHistoryPage() {
             <h1 className="mb-5 text-2xl">대출 현황</h1>
             <div>
               <span className="mr-16">총 상환 금액</span>
-              <span>총 {loanRepayAmount.toLocaleString('ko-KR')}원</span>
+              <span>총 {loanRepayAmount}원</span>
             </div>
             <div>
               <span className="mr-16">총 대출 금액</span>
