@@ -14,8 +14,8 @@ import CheckModal from '@/components/layout/CheckModal';
 import loanItem from '@/assets/images/loanItem.png';
 
 export default function BankLoanHistoryPage() {
-  const [loanAmount, setLoanAmount] = useState(''); // 대출 금액
-  const [loanRepayAmount, setLoanRepayAmount] = useState(); // 상환 금액
+  const [loanAmount, setLoanAmount] = useState(0); // 대출 금액
+  const [loanRepayAmount, setLoanRepayAmount] = useState(0); // 상환 금액
   const [currentLoanData, setCurrentLoanData] = useState([]); // 현재 대출 기록
   const [loanHistories, setLoanHistories] = useState([]); // 모든 대출 기록
   const [visibleModal, setVisibleModal] = useState(false); // 모달창 유무
@@ -25,7 +25,7 @@ export default function BankLoanHistoryPage() {
     loanIndex: '',
     pk: '',
     name: '',
-    repayAmount: '',
+    repayAmount: 0,
     password: '',
   }); // 상환 시 제공 정보
   const [sliderSettings, setSliderSettings] = useState({
@@ -148,7 +148,7 @@ export default function BankLoanHistoryPage() {
       {visibleModal && (
         <Modal
           isInput={true}
-          content={`${repayInfo.loanName}의 \n 대출 잔액 ${repayInfo.repayAmount}원 타입은 아래와 같습니다.`}
+          content={`${repayInfo.loanName}의 \n 대출 잔액 ${repayInfo.repayAmount.toLocaleString('ko-KR')}원 타입은 아래와 같습니다.`}
           onConfirm={handleLoanConfirm}
           onCancel={handleLoanCancel}
         >
