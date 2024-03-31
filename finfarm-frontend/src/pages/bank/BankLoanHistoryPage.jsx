@@ -75,7 +75,7 @@ export default function BankLoanHistoryPage() {
     } else if (password.length < 4) {
       alert('계좌 비밀번호 4자리를 입력해주세요');
     } else {
-      const updatedRepayInfo = { ...repayInfo, password: password };
+      const updatedRepayInfo = { ...repayInfo, password: Number(password) };
       try {
         await loanRepay(updatedRepayInfo);
         const historyResponse = await loanHistory();
