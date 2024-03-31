@@ -31,6 +31,7 @@ export default function BankTransferPage() {
   }); // anotherUser 상태 추가
   const [isTransferSuccess, setIsTransferSuccess] = useState(true); // 송금 성공
   const [isTransferCheckModal, setIsTransferCheckModal] = useState(false); // 송금 체크 모달
+  const [clickedIndex, setClickedIndex] = useState(null); // 최근 이체 내역 중 클릭한사람
 
   const { nickname: nickname } = useUserStore((state) => ({
     nickname: state.nickname,
@@ -296,6 +297,7 @@ export default function BankTransferPage() {
                     transferDate={recentTransfer.requestTime}
                     onClick={() => {
                       handleRecipient(recentTransfer.nickname);
+                      setClickedIndex(idx);
                     }}
                     className={
                       clickedIndex === idx ? 'border-double border-red-600' : ''

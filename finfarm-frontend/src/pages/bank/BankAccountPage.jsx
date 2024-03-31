@@ -36,6 +36,7 @@ export default function BankAccountPage() {
     };
     try {
       const data = await accountCheck(accountContent);
+      console.log(`조회한 후 데이터 ${data}`);
       setAccountData(data);
     } catch (error) {
       console.log('조회 실패:', error);
