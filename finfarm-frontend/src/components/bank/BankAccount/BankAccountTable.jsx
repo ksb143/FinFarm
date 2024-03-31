@@ -54,8 +54,12 @@ export default function BankAccountTable({ data, recordsView }) {
               </td>
               <td>{datum.type}</td>
               <td>{datum.nickname}</td>
-              <td>{datum.amount >= 0 ? datum.amount : ''}</td>
-              <td>{datum.amount < 0 ? datum.amount : ''}</td>
+              <td className="text-blue-600">
+                +{datum.amount >= 0 ? datum.amount : ''}
+              </td>
+              <td className="text-red-600">
+                -{datum.amount < 0 ? datum.amount : ''}
+              </td>
             </tr>
           ))}
         </tbody>

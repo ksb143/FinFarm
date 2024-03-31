@@ -18,7 +18,7 @@ export default function BankAtmPage() {
     useState(false); // 입금 체크 모달
   const [depositSuccess, setDepositSuccess] = useState(true); // 입금 성공
   const [visibleWithdrawCheckModal, setVisibleWithdrawCheckModal] =
-    useState(false); // 입금 체크 모달
+    useState(false); // 출금 체크 모달
   const [withdrawSuccess, setWithdrawSuccess] = useState(true); // 출금 성공
 
   const charge = 1000; // 수수료
@@ -125,7 +125,7 @@ export default function BankAtmPage() {
           <CheckModal
             isSuccess={depositSuccess}
             onConfirm={() => {
-              visibleDepositCheckModal(false);
+              setVisibleDepositCheckModal(false);
             }}
           >
             입금이 완료되었습니다
@@ -134,7 +134,7 @@ export default function BankAtmPage() {
           <CheckModal
             isSuccess={depositSuccess}
             onConfirm={() => {
-              visibleDepositCheckModal(false);
+              setVisibleDepositCheckModal(false);
             }}
           >
             입금에 실패했습니다
@@ -145,7 +145,7 @@ export default function BankAtmPage() {
           <CheckModal
             isSuccess={withdrawSuccess}
             onConfirm={() => {
-              visibleWithdrawCheckModal(false);
+              setVisibleWithdrawCheckModal(false);
             }}
           >
             출금이 완료되었습니다
@@ -154,7 +154,7 @@ export default function BankAtmPage() {
           <CheckModal
             isSuccess={withdrawSuccess}
             onConfirm={() => {
-              visibleWithdrawCheckModal(false);
+              setVisibleWithdrawCheckModal(false);
             }}
           >
             출금에 실패했습니다
