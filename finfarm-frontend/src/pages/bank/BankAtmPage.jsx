@@ -51,7 +51,8 @@ export default function BankAtmPage() {
   const handleDepositConfirm = async () => {
     try {
       const response = await depositCash(depositAmount);
-      setAccountBalance(response);
+      setPointsInthePocket(response.curPoint);
+      setAccountBalance(response.accountBalance);
       setDepositSuccess(true);
     } catch (error) {
       console.error(error);
@@ -92,7 +93,7 @@ export default function BankAtmPage() {
     try {
       const response = withdrawCash(withdrawInfo);
       setPointsInthePocket(response.curPoint);
-      updateAccountBalance(response.accountBalance);
+      setAccountBalance(response.accountBalance);
       setWithdrawSuccess(true);
     } catch (error) {
       console.error(error);
@@ -307,7 +308,7 @@ export default function BankAtmPage() {
             <span className="ml-96">{nickname}</span>
           </div>
           <div>
-            <span>보낼 금액</span>
+            <span>입금 금액</span>
             <span className="ml-96">
               {depositAmount.toLocaleString('ko-KR')}
             </span>
@@ -344,9 +345,9 @@ export default function BankAtmPage() {
             <span className="ml-96">{nickname}</span>
           </div>
           <div>
-            <span>거래 금액</span>
+            <span>출금 금액</span>
             <span className="ml-96">
-              {depositAmount.toLocaleString('ko-KR')}
+              {withdrawAmount.toLocaleString('ko-KR')}
             </span>
             <span>원</span>
           </div>

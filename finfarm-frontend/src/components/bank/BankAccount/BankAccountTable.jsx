@@ -55,10 +55,10 @@ export default function BankAccountTable({ data, recordsView }) {
               <td>{datum.type}</td>
               <td>{datum.nickname}</td>
               <td className="text-blue-600">
-                +{datum.amount >= 0 ? datum.amount : ''}
+                {datum.amount >= 0 ? datum.amount.toLocaleString('ko-KR') : ''}
               </td>
               <td className="text-red-600">
-                -{datum.amount < 0 ? datum.amount : ''}
+                {datum.amount < 0 ? datum.amount.toLocaleString('ko-KR') : ''}
               </td>
             </tr>
           ))}
