@@ -3,33 +3,37 @@ import { useNavigate } from 'react-router-dom';
 
 import { checkBalance } from '@/api/bank';
 import useUserStore from '@/store/userStore';
+import useBankStore from '@/store/bankStore';
 
 import Button from '@/components/layout/Button';
 
 import PropTypes from 'prop-types';
+
 BankBasicinfo.propTypes = {
   isButton: PropTypes.bool,
 };
 
 export default function BankBasicinfo({ isButton }) {
-  const [balance, setBalance] = useState(0);
-
   const { nickname: nickname } = useUserStore((state) => ({
     nickname: state.nickname,
   }));
+
+  const { balance, setAccountBalance } = useBankStore({
+    balance: state.accountBalance,
+    setAccountBalance: state.updateAccountBalance,
+  });
 
   useEffect(() => {
     const fetchBalance = async () => {
       try {
         const userBalance = await checkBalance(); // 비동기 호출을 기다림
-        setBalance(userBalance); // 상태 업데이트
+        setAccountBalance(userBalance); // 상태 업데이트
       } catch (error) {
         console.error(`계좌 잔액 조회 실패: ${error}`);
       }
     };
-
     fetchBalance(); // 비동기 함수 실행
-  }, []);
+  }, [setAccountBalance]);
 
   // 네비게이션
   const navigate = useNavigate();

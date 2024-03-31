@@ -71,23 +71,29 @@ export default function BankLoanHistoryPage() {
 
   // 상환 확인
   const handleLoanConfirm = async (password) => {
-    setRepayInfo((prevState) => ({
-      ...prevState,
-      password: password,
-    }));
-    try {
-      const response = await loanRepay(repayInfo);
-      const historyResponse = await loanHistory();
-      setCurrentLoanData(historyResponse.currentLoans);
-      setLoanHistories(historyResponse.loanHistories);
-      setLoanAmount(historyResponse.totalTakeAmount);
-      setLoanRepayAmount(historyResponse.totalRepayAmount);
-      setRepaymentSuccess(true);
-    } catch (error) {
-      console.error(error);
+    if (!password) {
+      alert('계좌 비밀번호를 입력해주세요');
+    } else if (password.length < 4) {
+      alert('계좌 비밀번호 4자리를 입력해주세요');
+    } else {
+      setRepayInfo((prevState) => ({
+        ...prevState,
+        password: password,
+      }));
+      try {
+        const response = await loanRepay(repayInfo);
+        const historyResponse = await loanHistory();
+        setCurrentLoanData(historyResponse.currentLoans);
+        setLoanHistories(historyResponse.loanHistories);
+        setLoanAmount(historyResponse.totalTakeAmount);
+        setLoanRepayAmount(historyResponse.totalRepayAmount);
+        setRepaymentSuccess(true);
+      } catch (error) {
+        console.error(error);
+      }
+      setVisibleModal(false); // 상환 모달 닫기
+      setVisibleCheckModal(true); // 상환 체크 모달 열기
     }
-    setVisibleModal(false); // 상환 모달 닫기
-    setVisibleCheckModal(true); // 상환 체크 모달 열기
   };
 
   // 상환 취소

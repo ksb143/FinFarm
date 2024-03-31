@@ -42,18 +42,24 @@ export default function BankLoanItemPage() {
 
   // 대출 신청 함수
   const handleLoanConfirm = async (password) => {
-    try {
-      const loanInfo = await loan({
-        loanPk: 2,
-        amount: amount,
-        accountPassword: password,
-      });
-      setSuccessLoan(true);
-    } catch (error) {
-      console.log(error);
+    if (!password) {
+      alert('계좌 비밀번호를 입력해주세요');
+    } else if (password.length < 4) {
+      alert('계좌 비밀번호 4자리를 입력해주세요');
+    } else {
+      try {
+        const loanInfo = await loan({
+          loanPk: 2,
+          amount: amount,
+          accountPassword: password,
+        });
+        setSuccessLoan(true);
+      } catch (error) {
+        console.log(error);
+      }
+      setVisibleModal(false);
+      setVisibleCheckModal(true);
     }
-    setVisibleModal(false);
-    setVisibleCheckModal(true);
   };
 
   const currentDate = new Date(); // 현재 날짜
