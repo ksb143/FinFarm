@@ -36,10 +36,10 @@ export default function BankTransferPage() {
     nickname: state.nickname,
   })); // 유저 닉네임
 
-  const { balance, setAccountBalance } = useBankStore({
+  const { balance, setAccountBalance } = useBankStore((state) => ({
     balance: state.accountBalance,
     setAccountBalance: state.setAccountBalance,
-  }); // 유저 계좌 잔액
+  })); // 유저 계좌 잔액
 
   // 선택 금액 입력 필드에 설정
   const handleAmountSelect = (selectedAmount) => {
