@@ -10,13 +10,15 @@ import java.time.LocalDateTime;
 @Builder
 public class BankingAccountDetail {
     private Long amount;
+    private Long accountBalanceAtThatTime;
     private LocalDateTime accountDate;
     private String type;
     private String nickname;
 
-    public static BankingAccountDetail create(Long amount, LocalDateTime date, String type, String nickname) {
+    public static BankingAccountDetail create(Long amount, Long accountBalanceAtThatTime, LocalDateTime date, String type, String nickname) {
         return BankingAccountDetail.builder()
                 .amount(amount)
+                .accountBalanceAtThatTime(accountBalanceAtThatTime)
                 .accountDate(date)
                 .type(type)
                 .nickname(nickname)

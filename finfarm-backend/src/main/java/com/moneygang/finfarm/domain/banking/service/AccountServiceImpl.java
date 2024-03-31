@@ -72,10 +72,11 @@ public class AccountServiceImpl implements AccountService {
             if(accountDate.isBefore(startDate.atStartOfDay()) || accountDate.isAfter(endDate.plusDays(1).atStartOfDay())) continue accountLoop;
 
             Long amount = account.getAccountAmount();
+            Long accountBalanceAtThatTime = account.getAccountBalance();
             LocalDateTime date = account.getAccountDate();
             String type = account.getAccountType();
             String nickname = account.getAccountNickname();
-            BankingAccountDetail accountDetail = BankingAccountDetail.create(amount, date, type, nickname);
+            BankingAccountDetail accountDetail = BankingAccountDetail.create(amount, accountBalanceAtThatTime, date, type, nickname);
 
             bankingAccountDetailList.add(accountDetail);
         }
