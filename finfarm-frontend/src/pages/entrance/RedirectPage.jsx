@@ -27,6 +27,7 @@ const RedirectPage = () => {
 
   const navigate = useNavigate();
   useEffect(() => {
+    console.log(import.meta.env.VITE_REDIRECT_URI); // 현재 설정된 REDIRECT_URI 확인
     // URL에서 인가 코드를 추출합니다.
     const auth_code0 = new URLSearchParams(window.location.search).get('code');
     if (auth_code0) {
@@ -53,7 +54,7 @@ const RedirectPage = () => {
     try {
       const res = await axios.post(
         `${VITE_REACT_API_URL}member/login`,
-        JSON.stringify(dataToSend),
+        dataToSend,
         { withCredentials: true, headers },
       );
 
@@ -93,12 +94,21 @@ const RedirectPage = () => {
         navigate('/entrance/signup');
       }
     } catch (error) {
-      console.error(
-        'Error:',
-        error.response ? error.response.data : error.message,
-      );
       // Todo.[에러핸들링] 어떤 에러인가에 따라서 사용자에게 더 명확한 피드백을 주는 것이 나아 보임.
       // 특정 에러 별로 각각 다른 페이지로 리다이렉션 필요.
+      if (error.response) {
+        // 서버가 2xx 범위 외의 상태 코드로 응답한 경우
+        console.error('Error response', error.response.data);
+        console.error('Error status', error.response.status);
+        console.error('Error headers', error.response.headers);
+      } else if (error.request) {
+        // 요청이 이루어졌으나 응답을 받지 못한 경우
+        console.error('Error request', error.request);
+      } else {
+        // 요청을 설정하는 동안에 문제가 발생한 경우
+        console.error('Error message', error.message);
+      }
+      console.error('Error config', error.config);
     }
   };
 
