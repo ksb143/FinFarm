@@ -149,7 +149,9 @@ export default function BankLoanHistoryPage() {
         <Modal
           isInput={true}
           content={`${repayInfo.name}의 \n 대출 잔액 ${repayInfo.repayAmount.toLocaleString('ko-KR')}원 타입은 아래와 같습니다.`}
-          onConfirm={handleLoanConfirm}
+          onConfirm={(password) => {
+            handleLoanConfirm(password);
+          }}
           onCancel={handleLoanCancel}
         >
           상환하실 금액을 확인해주세요.
