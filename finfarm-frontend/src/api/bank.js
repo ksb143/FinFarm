@@ -123,8 +123,8 @@ async function loan(loanInfo) {
 async function loanRepay(repayInfo) {
   try {
     const response = await local.post('/banking/loan/take', {
-      loanHistoryPk: repayInfo.loanPk,
-      repayAmount: repayInfo.loanRepayAmount,
+      loanHistoryPk: repayInfo.pk,
+      repayAmount: repayInfo.repayAmount,
       accountPassword: repayInfo.password,
     });
     return response.data;

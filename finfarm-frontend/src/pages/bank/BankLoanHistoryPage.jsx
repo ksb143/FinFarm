@@ -22,7 +22,6 @@ export default function BankLoanHistoryPage() {
   const [visibleCheckModal, setVisibleCheckModal] = useState(false); // 체크 모달창 유무
   const [repaymentSuccess, setRepaymentSuccess] = useState(false); // 상환 성공
   const [repayInfo, setRepayInfo] = useState({
-    loanIndex: '',
     pk: '',
     name: '',
     repayAmount: 0,
@@ -61,8 +60,8 @@ export default function BankLoanHistoryPage() {
   // 상환하기 버튼 클릭
   const handleRepay = (pk, repayAmount, name) => {
     setRepayInfo({
-      loanPk: pk,
-      loanName: name,
+      pk: pk,
+      name: name,
       repayAmount: repayAmount,
       password: '',
     });
@@ -149,7 +148,7 @@ export default function BankLoanHistoryPage() {
       {visibleModal && (
         <Modal
           isInput={true}
-          content={`${repayInfo.loanName}의 \n 대출 잔액 ${repayInfo.repayAmount.toLocaleString('ko-KR')}원 타입은 아래와 같습니다.`}
+          content={`${repayInfo.name}의 \n 대출 잔액 ${repayInfo.repayAmount.toLocaleString('ko-KR')}원 타입은 아래와 같습니다.`}
           onConfirm={handleLoanConfirm}
           onCancel={handleLoanCancel}
         >
@@ -201,12 +200,8 @@ export default function BankLoanHistoryPage() {
                   amount={currentDatum.amount}
                   repayAmount={currentDatum.repayAmount}
                   dDay={currentDatum.dday}
-                  onRepay={() => {
-                    handleRepay(
-                      currentDatum.pk,
-                      currentDatum.repayAmount,
-                      currentDatum.name,
-                    );
+                  onRepay={(pk, repayAmount, name) => {
+                    handleRepay(pk, repayAmount, name);
                   }}
                 />
               </div>
@@ -225,12 +220,8 @@ export default function BankLoanHistoryPage() {
                   amount={currentDatum.amount}
                   repayAmount={currentDatum.repayAmount}
                   dDay={currentDatum.dday}
-                  onRepay={() => {
-                    handleRepay(
-                      currentDatum.pk,
-                      currentDatum.repayAmount,
-                      currentDatum.name,
-                    );
+                  onRepay={(pk, repayAmount, name) => {
+                    handleRepay(pk, repayAmount, name);
                   }}
                 />
               </div>
