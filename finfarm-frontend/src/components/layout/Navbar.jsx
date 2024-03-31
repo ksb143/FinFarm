@@ -56,9 +56,9 @@ export default function Navbar() {
 
   const CurrentPoint = () => {
     if (!localStorage.getItem('accessToken')) {
-      return '????? 포인트';
+      return '?????';
     }
-    return `${pointsInthePocket} 포인트`;
+    return pointsInthePocket;
   };
 
   const UserNickname = () => {
@@ -158,7 +158,10 @@ export default function Navbar() {
           <div className="flex items-center gap-x-11">
             <span className="text-xl">💰 Point :</span>
             <span className="text-xl">
-              {CurrentPoint().toLocaleString('ko-KR')}
+              {localStorage.getItem('accessToken')
+                ? pointsInthePocket.toLocaleString('ko-KR')
+                : '?????'}{' '}
+              원
             </span>
           </div>
 

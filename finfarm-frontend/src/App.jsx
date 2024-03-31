@@ -14,7 +14,7 @@ function App() {
   return (
     <Router>
       <div className="min-h-screen bg-gray-50 px-32">
-        <Navbar></Navbar>
+        {localStorage.getItem('accessToken') && <Navbar></Navbar>}\
         <Routes>
           <Route path="/" element={<EntrancePage />} />
           {/* 카카오 로그인시, 리다이렉션 진행 페이지 */}
