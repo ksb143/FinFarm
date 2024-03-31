@@ -118,6 +118,7 @@ export default function BankLoanHistoryPage() {
     const fetchLoanData = async () => {
       try {
         const response = await loanHistory();
+        console.log('대출 관련 리스폰스', response);
         setCurrentLoanData(response.currentLoans);
         setLoanHistories(response.loanHistories);
         setLoanAmount(response.totalTakeAmount);
@@ -223,7 +224,7 @@ export default function BankLoanHistoryPage() {
                   endDate={currentDatum.endDate}
                   amount={currentDatum.amount}
                   repayAmount={currentDatum.repayAmount}
-                  dDay={currentDatum.dDay}
+                  dDay={currentDatum.dday}
                   onRepay={() => {
                     handleRepay(
                       currentDatum.pk,

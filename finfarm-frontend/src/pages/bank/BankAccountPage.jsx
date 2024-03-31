@@ -28,8 +28,8 @@ export default function BankAccountPage() {
     const end = new Date();
     const start = new Date();
     start.setDate(end.getDate() - days);
-    setEndDate(end.toISOString().split('T')[0]);
-    setStartDate(start.toISOString().split('T')[0]);
+    setEndDate(toLocalISOString(end));
+    setStartDate(toLocalISOString(start));
   };
 
   // 계좌조회
