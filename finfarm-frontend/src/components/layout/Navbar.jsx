@@ -55,15 +55,15 @@ export default function Navbar() {
   const formattedDate = `${today.getFullYear()}년 ${today.getMonth() + 1}월 ${today.getDate()}일`;
 
   const CurrentPoint = () => {
-    if (!localStorage.getItem('accessToken')){
-      return "????? 포인트";
+    if (!localStorage.getItem('accessToken')) {
+      return '????? 포인트';
     }
     return `${pointsInthePocket} 포인트`;
   };
 
   const UserNickname = () => {
-    if (!localStorage.getItem('accessToken')){
-      return "익명의 농부 님";
+    if (!localStorage.getItem('accessToken')) {
+      return '익명의 농부 님';
     }
     return `${nickname} 님`;
   };
@@ -114,7 +114,7 @@ export default function Navbar() {
           </button>
           {/* Dropdown이 열려있을 때만 보이도록 설정 */}
           {isDropdownOpen && (
-            <ul className="menu dropdown-content menu-xl text-2xl z-[1] mt-3 w-48 rounded-box bg-base-100 p-2 shadow">
+            <ul className="menu-xl menu dropdown-content z-[1] mt-3 w-48 rounded-box bg-base-100 p-2 text-2xl shadow">
               <li>
                 <Link
                   to="/mypage"
@@ -148,7 +148,8 @@ export default function Navbar() {
 
           <button
             onClick={handleLogout}
-            className="btn-base btn min-w-32 rounded-full bg-lime-500 font-hopang text-2xl text-white hover:bg-lime-800">
+            className="btn-base btn min-w-32 rounded-full bg-lime-500 font-hopang text-2xl text-white hover:bg-lime-800"
+          >
             로그아웃
           </button>
         </div>
@@ -156,7 +157,9 @@ export default function Navbar() {
         <div className="flex flex-col">
           <div className="flex items-center gap-x-11">
             <span className="text-xl">💰 Point :</span>
-            <span className="text-xl">{CurrentPoint()}</span>
+            <span className="text-xl">
+              {CurrentPoint().toLocaleString('ko-KR')}
+            </span>
           </div>
 
           <div className="flex items-center gap-x-8">

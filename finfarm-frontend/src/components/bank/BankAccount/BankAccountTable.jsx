@@ -60,7 +60,7 @@ export default function BankAccountTable({ data, recordsView }) {
               <td className="text-red-600">
                 {datum.amount < 0 ? datum.amount.toLocaleString('ko-KR') : ''}
               </td>
-              <td>{datum.accountBalanceAtThatTime}</td>
+              <td>{datum.accountBalanceAtThatTime.toLocaleString('ko-KR')}</td>
             </tr>
           ))}
         </tbody>
