@@ -48,7 +48,7 @@ export default function BankLoanItemPage() {
       alert('계좌 비밀번호 4자리를 입력해주세요');
     } else {
       try {
-        const loanInfo = await loan({
+        await loan({
           loanPk: 2,
           amount: amount,
           accountPassword: password,
@@ -179,7 +179,7 @@ export default function BankLoanItemPage() {
           )}
         </div>
         <div>
-          <img src={firstFamerLoan} alt="first farmer loan image" />
+          <img src={firstFamerLoan} alt="first farmer loan" />
         </div>
       </div>
       {afterQualification ? (

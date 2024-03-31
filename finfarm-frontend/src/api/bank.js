@@ -110,7 +110,7 @@ async function loan(loanInfo) {
     const response = await local.post('/banking/loan/take', {
       loanPk: loanInfo.loanPk,
       amount: loanInfo.amount,
-      accountPassword: loanInfo.password,
+      accountPassword: loanInfo.accountPassword,
     });
     return response.data;
   } catch (error) {
