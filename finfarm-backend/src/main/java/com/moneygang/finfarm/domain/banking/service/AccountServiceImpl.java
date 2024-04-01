@@ -318,40 +318,38 @@ public class AccountServiceImpl implements AccountService {
 
         Member member = commonUtil.getMember();
 
-        Integer changePassword = request.getChangePassword();
-        Integer checkPassword = request.getCheckPassword();
-        Integer originPassword = request.getOriginPassword();
+        String changePassword = request.getChangePassword();
+        String checkPassword = request.getCheckPassword();
+        String originPassword = request.getOriginPassword();
 
         String accountPassword = member.getMemberAccountPassword();
-        String changePasswordToStr = String.valueOf(changePassword);
-        String checkPasswordToStr = String.valueOf(checkPassword);
 
         // 예외1: 확인 비밀번호가 유저의 비밀번호와 다른 경우 (400)
         if(!String.valueOf(originPassword).equals(accountPassword)) {
             throw new GlobalException(HttpStatus.BAD_REQUEST, "Password Not Match");
         }
 
-        String pattern = "\\d{4}"; // 4자리 숫자 형태의 정규 표현식
-        Pattern regex = Pattern.compile(pattern);
-        Matcher matcher1 = regex.matcher(changePasswordToStr);
-        Matcher matcher2 = regex.matcher(checkPasswordToStr);
-
-        // 예외2: 변경할 비밀번호 형식이 안맞을 때 (400)
-        if(!matcher1.matches()||!matcher2.matches()) {
-            throw new GlobalException(HttpStatus.BAD_REQUEST, "Not Match Input Format");
-        }
+//        String pattern = "\\d{4}"; // 4자리 숫자 형태의 정규 표현식
+//        Pattern regex = Pattern.compile(pattern);
+//        Matcher matcher1 = regex.matcher(changePassword);
+//        Matcher matcher2 = regex.matcher(checkPassword);
+//
+//        // 예외2: 변경할 비밀번호 형식이 안맞을 때 (400)
+//        if(!matcher1.matches()||!matcher2.matches()) {
+//            throw new GlobalException(HttpStatus.BAD_REQUEST, "Not Match Input Format");
+//        }
 
         // 예외3: 변경 비밀번호와 변경 확인 비밀번호가 다를 때 (400)
-        if(!changePasswordToStr.equals(checkPasswordToStr)) {
+        if(!changePassword.equals(checkPassword)) {
             throw new GlobalException(HttpStatus.BAD_REQUEST, "Check Password Not Match");
         }
 
         // 예외4: 변경할 비밀번호가 기존 비밀번호랑 같을 때 (400)
-        if(changePasswordToStr.equals(accountPassword)) {
+        if(changePassword.equals(accountPassword)) {
             throw new GlobalException(HttpStatus.BAD_REQUEST, "Same Change Password");
         }
 
-        member.changeAccountPassword(changePasswordToStr);
+        member.changeAccountPassword(changePassword);
         BankingPasswordChangeResponse response = BankingPasswordChangeResponse.create(true);
 
         return ResponseEntity.ok(response);

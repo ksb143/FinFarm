@@ -107,8 +107,6 @@ public class BankingAccountController {
             @ApiResponse(responseCode = "400", description = """
                     (message : "Password Not Match", code : 400)
                     
-                    (message : "Not Match Input Format", code : 400)
-                    
                     (message : "Check Password Not Match", code : 400)
                     
                     (message : "Same Change Password", code : 400)""", content = @Content)
