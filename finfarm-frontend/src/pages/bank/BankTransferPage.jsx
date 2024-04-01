@@ -107,7 +107,7 @@ export default function BankTransferPage() {
       password: password,
     };
     try {
-      const response = accountTransfer(transferContent);
+      const response = await accountTransfer(transferContent);
       setAccountBalance(response.accountBalance);
       setIsTransferSuccess(true);
       fetchRecentTransfers();
@@ -116,6 +116,7 @@ export default function BankTransferPage() {
       setIsTransferSuccess(false);
     }
     setTransferInfo(false);
+    setIsTransferCheckModal(true);
   };
 
   // 최근 이체 내역 설정
@@ -268,7 +269,7 @@ export default function BankTransferPage() {
                       setAmount(numericValue);
                     }
                   } else {
-                    setAmount(0); // 값이 없으면 빈 문자열로 설정
+                    setAmount(0); // 값이 없으면 0으로 설정
                   }
                 }}
               />
