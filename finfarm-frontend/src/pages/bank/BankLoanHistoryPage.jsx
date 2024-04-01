@@ -14,18 +14,17 @@ import CheckModal from '@/components/layout/CheckModal';
 import loanItem from '@/assets/images/loanItem.png';
 
 export default function BankLoanHistoryPage() {
-  const [loanAmount, setLoanAmount] = useState(''); // 대출 금액
-  const [loanRepayAmount, setLoanRepayAmount] = useState(); // 상환 금액
+  const [loanAmount, setLoanAmount] = useState(0); // 대출 금액
+  const [loanRepayAmount, setLoanRepayAmount] = useState(0); // 상환 금액
   const [currentLoanData, setCurrentLoanData] = useState([]); // 현재 대출 기록
   const [loanHistories, setLoanHistories] = useState([]); // 모든 대출 기록
   const [visibleModal, setVisibleModal] = useState(false); // 모달창 유무
   const [visibleCheckModal, setVisibleCheckModal] = useState(false); // 체크 모달창 유무
   const [repaymentSuccess, setRepaymentSuccess] = useState(false); // 상환 성공
   const [repayInfo, setRepayInfo] = useState({
-    loanIndex: '',
     pk: '',
     name: '',
-    repayAmount: '',
+    repayAmount: 0,
     password: '',
   }); // 상환 시 제공 정보
   const [sliderSettings, setSliderSettings] = useState({
@@ -61,9 +60,9 @@ export default function BankLoanHistoryPage() {
   // 상환하기 버튼 클릭
   const handleRepay = (pk, repayAmount, name) => {
     setRepayInfo({
-      loanPk: pk,
-      loanName: name,
-      loanRepayAmount: repayAmount,
+      pk: pk,
+      name: name,
+      repayAmount: repayAmount,
       password: '',
     });
     setVisibleModal(true);
@@ -76,12 +75,9 @@ export default function BankLoanHistoryPage() {
     } else if (password.length < 4) {
       alert('계좌 비밀번호 4자리를 입력해주세요');
     } else {
-      setRepayInfo((prevState) => ({
-        ...prevState,
-        password: password,
-      }));
+      const updatedRepayInfo = { ...repayInfo, password: Number(password) };
       try {
-        const response = await loanRepay(repayInfo);
+        await loanRepay(updatedRepayInfo);
         const historyResponse = await loanHistory();
         setCurrentLoanData(historyResponse.currentLoans);
         setLoanHistories(historyResponse.loanHistories);
@@ -102,7 +98,7 @@ export default function BankLoanHistoryPage() {
     setRepayInfo({
       loanPk: '',
       loanName: '',
-      loanRepayAmount: '',
+      repayAmount: '',
       password: '',
     });
   };
@@ -118,10 +114,11 @@ export default function BankLoanHistoryPage() {
     const fetchLoanData = async () => {
       try {
         const response = await loanHistory();
+        console.log('대출 관련 리스폰스', response);
         setCurrentLoanData(response.currentLoans);
         setLoanHistories(response.loanHistories);
         setLoanAmount(response.totalTakeAmount);
-        setLoanRepayAmount(response.totalRepayAmount); // 오타 수정
+        setLoanRepayAmount(response.totalRepayAmount);
       } catch (error) {
         console.error(error);
       }
@@ -148,8 +145,10 @@ export default function BankLoanHistoryPage() {
       {visibleModal && (
         <Modal
           isInput={true}
-          content={`${repayInfo.loanName}의 \n 대출 잔액 ${repayInfo.loanRepayAmount.toLocaleString('ko-KR')}원`}
-          onConfirm={handleLoanConfirm}
+          content={`${repayInfo.name}의 \n 대출 잔액 ${repayInfo.repayAmount.toLocaleString('ko-KR')}원 타입은 아래와 같습니다.`}
+          onConfirm={(password) => {
+            handleLoanConfirm(password);
+          }}
           onCancel={handleLoanCancel}
         >
           상환하실 금액을 확인해주세요.
@@ -171,16 +170,16 @@ export default function BankLoanHistoryPage() {
             <h1 className="mb-5 text-2xl">대출 현황</h1>
             <div>
               <span className="mr-16">총 상환 금액</span>
-              <span>총 {loanRepayAmount}</span>
+              <span>총 {loanRepayAmount.toLocaleString('ko-KR')}원</span>
             </div>
             <div>
               <span className="mr-16">총 대출 금액</span>
-              <span>총 {loanAmount}</span>
+              <span>총 {loanAmount.toLocaleString('ko-KR')}원</span>
             </div>
           </div>
           <Link to="/bank/loan/item">
             <div className="flex items-center rounded-lg bg-blue-600 px-6 py-4 font-hopang text-white">
-              <img src={loanItem} alt="loan image" />
+              <img src={loanItem} alt="loan_items" />
               더 많은 대출상품 <br />
               알아보기
             </div>
@@ -199,13 +198,9 @@ export default function BankLoanHistoryPage() {
                   endDate={currentDatum.endDate}
                   amount={currentDatum.amount}
                   repayAmount={currentDatum.repayAmount}
-                  dDay={currentDatum.dDay}
-                  onRepay={() => {
-                    handleRepay(
-                      currentDatum.pk,
-                      currentDatum.repayAmount,
-                      currentDatum.name,
-                    );
+                  dDay={currentDatum.dday}
+                  onRepay={(pk, repayAmount, name) => {
+                    handleRepay(pk, repayAmount, name);
                   }}
                 />
               </div>
@@ -223,13 +218,9 @@ export default function BankLoanHistoryPage() {
                   endDate={currentDatum.endDate}
                   amount={currentDatum.amount}
                   repayAmount={currentDatum.repayAmount}
-                  dDay={currentDatum.dDay}
-                  onRepay={() => {
-                    handleRepay(
-                      currentDatum.pk,
-                      currentDatum.repayAmount,
-                      currentDatum.name,
-                    );
+                  dDay={currentDatum.dday}
+                  onRepay={(pk, repayAmount, name) => {
+                    handleRepay(pk, repayAmount, name);
                   }}
                 />
               </div>

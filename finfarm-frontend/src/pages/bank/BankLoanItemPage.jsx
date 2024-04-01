@@ -47,12 +47,14 @@ export default function BankLoanItemPage() {
     } else if (password.length < 4) {
       alert('계좌 비밀번호 4자리를 입력해주세요');
     } else {
+      const loanInfo = {
+        loanPk: 2,
+        amount: amount,
+        accountPassword: password,
+      };
+      console.log(loanInfo.accountPassword);
       try {
-        const loanInfo = await loan({
-          loanPk: 2,
-          amount: amount,
-          accountPassword: password,
-        });
+        await loan(loanInfo);
         setSuccessLoan(true);
       } catch (error) {
         console.log(error);
@@ -84,7 +86,7 @@ export default function BankLoanItemPage() {
         <Modal
           isInput={true}
           content={`${amount.toLocaleString('ko-KR')}원의 금액으로,\n주 10% 금리 적용하며\n상환일은 ${formattedDate}입니다.`}
-          onConfirm={() => {
+          onConfirm={(password) => {
             handleLoanConfirm(password);
           }}
           onCancel={() => {
@@ -179,7 +181,7 @@ export default function BankLoanItemPage() {
           )}
         </div>
         <div>
-          <img src={firstFamerLoan} alt="first farmer loan image" />
+          <img src={firstFamerLoan} alt="first farmer loan" />
         </div>
       </div>
       {afterQualification ? (

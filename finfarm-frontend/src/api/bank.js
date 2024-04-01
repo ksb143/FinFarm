@@ -110,7 +110,7 @@ async function loan(loanInfo) {
     const response = await local.post('/banking/loan/take', {
       loanPk: loanInfo.loanPk,
       amount: loanInfo.amount,
-      accountPassword: loanInfo.password,
+      accountPassword: loanInfo.accountPassword,
     });
     return response.data;
   } catch (error) {
@@ -122,9 +122,9 @@ async function loan(loanInfo) {
 // 대출 상환
 async function loanRepay(repayInfo) {
   try {
-    const response = await local.post('/banking/loan/take', {
-      loanHistoryPk: repayInfo.loanPk,
-      repayAmount: repayInfo.loanRepayAmount,
+    const response = await local.post('/banking/loan/repay', {
+      loanHistoryPk: repayInfo.pk,
+      repayAmount: repayInfo.repayAmount,
       accountPassword: repayInfo.password,
     });
     return response.data;

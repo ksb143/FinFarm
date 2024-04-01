@@ -91,8 +91,7 @@ export default function BankAtmPage() {
       password: password,
     };
     try {
-      const response = withdrawCash(withdrawInfo);
-      console.log('리스폰스입니다.', response);
+      const response = await withdrawCash(withdrawInfo);
       setPointsInthePocket(response.curPoint);
       setAccountBalance(response.accountBalance);
       setWithdrawSuccess(true);
@@ -211,7 +210,7 @@ export default function BankAtmPage() {
               value={depositAmount.toLocaleString('ko-KR')}
               type="text"
               className="grow"
-              placeholder="보낼 금액"
+              placeholder="입금 금액"
               onChange={(e) => {
                 const value = e.target.value.replace(/[^0-9]/g, ''); // 숫자가 아닌 모든 문자를 제거
                 if (value) {
