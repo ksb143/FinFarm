@@ -131,9 +131,9 @@ public class MarketServiceImpl implements MarketService {
                 warehouseRepository.findAllByMember_MemberPkAndAgriculture_AgriculturePkAndWarehouseCategoryOrderByWarehouseAmountDesc(
                         member.getMemberPk(), seed.getAgriculture().getAgriculturePk(), 1
                 );
-        Warehouse warehouse = null;
         if(warehouseList.isEmpty()){
-            warehouse = new Warehouse(1, request.getSeedCount(), member, seed.getAgriculture());
+            Warehouse warehouse = new Warehouse(1, request.getSeedCount(), member, seed.getAgriculture());
+            warehouseRepository.save(warehouse);
         }else{
             int seedsToStore = request.getSeedCount(); // 저장할 씨앗의 총 수량
             for (Warehouse warehouseLoop : warehouseList) {
