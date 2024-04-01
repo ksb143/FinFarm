@@ -7,8 +7,9 @@ plugins {
 
 sonarqube {
 	properties {
+		property "sonar.projectKey", "moneyGang"
 		property "sonar.host.url", "http://j10d203.p.ssafy.io:9000"
-		property "sonar.login", "sqp_1749ec42e64c831acdd2544c6f8da8e98db0f4fb"
+		property "sonar.login", "sqp_c64ed593860eee22a921546aaf9fad0b01f56a48"
 	}
 }
 
