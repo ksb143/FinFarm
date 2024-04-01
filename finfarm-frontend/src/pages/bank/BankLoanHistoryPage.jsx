@@ -161,7 +161,7 @@ export default function BankLoanHistoryPage() {
             대출 상환 완료
           </CheckModal>
         ) : (
-          <CheckModal nConfirm={closeCheckModal} isSuccess={repaymentSuccess}>
+          <CheckModal onConfirm={closeCheckModal} isSuccess={repaymentSuccess}>
             대출 상환 실패
           </CheckModal>
         ))}
