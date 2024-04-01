@@ -19,6 +19,7 @@ const Warehouse = () => {
         if (data.memberItems) {
           console.log('3');
           setInventory(data.memberItems); // 응답 데이터로 상태 업데이트
+          console.log(data);
           console.log('4');
         }
       } catch (error) {
