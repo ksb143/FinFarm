@@ -5,6 +5,8 @@ import axios from 'axios';
 const { VITE_REACT_API_URL } = import.meta.env;
 import loading from '@/assets/images/loading.gif';
 
+const { VITE_REDIRECT_URI } = import.meta.env;
+
 const RedirectPage = () => {
   // 전역상태관리 수정 로직
   const {
@@ -51,6 +53,7 @@ const RedirectPage = () => {
 
     const dataToSend = {
       authCode: code, // 여기서 'code'를 'authCode' 키의 값으로 설정
+      url: VITE_REDIRECT_URI, // Redirect 주소
     };
 
     try {

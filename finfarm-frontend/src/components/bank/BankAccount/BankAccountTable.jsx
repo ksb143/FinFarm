@@ -38,8 +38,8 @@ export default function BankAccountTable({ data, recordsView }) {
             <th>거래일시</th>
             <th>구분</th>
             <th>닉네임</th>
-            <th>출금액</th>
             <th>입금액</th>
+            <th>출금액</th>
             <th>잔액</th>
           </tr>
         </thead>

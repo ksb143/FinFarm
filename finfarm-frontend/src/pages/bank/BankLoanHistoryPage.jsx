@@ -98,7 +98,7 @@ export default function BankLoanHistoryPage() {
     setRepayInfo({
       loanPk: '',
       loanName: '',
-      repayAmount: '',
+      repayAmount: 0,
       password: '',
     });
   };
@@ -114,7 +114,6 @@ export default function BankLoanHistoryPage() {
     const fetchLoanData = async () => {
       try {
         const response = await loanHistory();
-        console.log('대출 관련 리스폰스', response);
         setCurrentLoanData(response.currentLoans);
         setLoanHistories(response.loanHistories);
         setLoanAmount(response.totalTakeAmount);
@@ -137,7 +136,6 @@ export default function BankLoanHistoryPage() {
         currentLoanData.length === 1 ? 1 : Math.min(3, currentLoanData.length),
     };
     setSliderSettings(newSettings);
-    console.log('Updating slider settings:', newSettings);
   }, [currentLoanData.length]);
 
   return (
@@ -189,9 +187,10 @@ export default function BankLoanHistoryPage() {
           <Slider {...sliderSettings}>
             {currentLoanData.map((currentDatum, idx) => (
               <div className="mt-4" key={idx}>
+                <p>{currentDatum}</p>
                 <CurrentLoan
                   loanIndex={idx}
-                  pk={currentDatum.pk}
+                  pk={currentDatum.historyPk}
                   name={currentDatum.name}
                   interest={currentDatum.interest}
                   startDate={currentDatum.startDate}
@@ -211,7 +210,7 @@ export default function BankLoanHistoryPage() {
             {currentLoanData.map((currentDatum, idx) => (
               <div className="mt-4" key={idx}>
                 <CurrentLoan
-                  pk={currentDatum.pk}
+                  pk={currentDatum.historyPk}
                   name={currentDatum.name}
                   interest={currentDatum.interest}
                   startDate={currentDatum.startDate}
