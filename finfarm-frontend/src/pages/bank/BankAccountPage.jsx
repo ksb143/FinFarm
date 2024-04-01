@@ -1,14 +1,13 @@
 import { useState } from 'react';
 
 import { accountCheck } from '@/api/bank';
-import useUserStore from '@/store/userStore';
 import BankBasicinfo from '@/components/bank/BankBasicInfo';
 import BankAccountTable from '@/components/bank/BankAccount/BankAccountTable';
 
 export default function BankAccountPage() {
   const today = new Date();
-  const [startDate, setStartDate] = useState(today.toISOString().split('T')[0]);
-  const [endDate, setEndDate] = useState(today.toISOString().split('T')[0]);
+  const [startDate, setStartDate] = useState(toLocalISOString(today));
+  const [endDate, setEndDate] = useState(toLocalISOString(today));
   const [transitionType, setTransitionType] = useState('all');
   const [searchAccount, setSearchAccount] = useState('');
   const [recordsView, setRecordView] = useState(15);
@@ -16,10 +15,12 @@ export default function BankAccountPage() {
   const [selectedRange, setSelectedRange] = useState('');
   const [accountData, setAccountData] = useState(null);
 
-  // 닉네임
-  const { nickname: nickname } = useUserStore((state) => ({
-    nickname: state.nickname,
-  }));
+  // 한국 시간으로 변경
+  function toLocalISOString(date) {
+    const offset = date.getTimezoneOffset() * 60000; // 시간대 오프셋을 밀리초 단위로 변환
+    const localISOTime = new Date(date - offset).toISOString().split('T')[0];
+    return localISOTime;
+  }
 
   // 날짜 지정 데이터
   const setDateRange = (days) => {
@@ -27,8 +28,8 @@ export default function BankAccountPage() {
     const end = new Date();
     const start = new Date();
     start.setDate(end.getDate() - days);
-    setEndDate(end.toISOString().split('T')[0]);
-    setStartDate(start.toISOString().split('T')[0]);
+    setEndDate(toLocalISOString(end));
+    setStartDate(toLocalISOString(start));
   };
 
   // 계좌조회
@@ -42,6 +43,7 @@ export default function BankAccountPage() {
     };
     try {
       const data = await accountCheck(accountContent);
+      console.log('조회한 후 데이터', data);
       setAccountData(data);
     } catch (error) {
       console.log('조회 실패:', error);

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 
 import useUserStore from '@/store/userStore';
+import useBankStore from '@/store/bankStore';
 
 import BankBasicinfo from '@/components/bank/BankBasicInfo';
 import TransferDetail from '@/components/bank/BankTransfer/TransferDetail';
@@ -9,47 +10,60 @@ import danger from '@/assets/images/danger.png';
 import Modal from '@/components/layout/Modal';
 import CheckModal from '@/components/layout/CheckModal';
 
-import { recentTransferDetails, checkAnotherUser } from '@/api/bank';
+import {
+  recentTransferDetails,
+  checkAnotherUser,
+  accountTransfer,
+} from '@/api/bank';
 
 export default function BankTransferPage() {
   const [transferInfo, setTransferInfo] = useState(false); // 이체 확인 컴포넌트 유무
   const [recentTransfers, setRecentTransfers] = useState([]); // 최근 이체 내역
-  const [clickedIndex, setClickedIndex] = useState(null); // 최근 이체 내역 인덱스
+  const [searchNick, setSearchNick] = useState(''); // 닉네임 검색
   const [password, setPassword] = useState(''); // 계좌 비밀번호
   const [amount, setAmount] = useState(''); // 금액
   const [recipient, setRecipient] = useState(''); // 받는 분
-  const [isModalVisible, setIsModalVisible] = useState(false); // 모달 보이기 유무
+  const [isNickSearchSuccess, setIsNickSearchSuccess] = useState(true); // 닉네임 찾기 성공
   const [isNickModalVisible, setIsNickModalVisible] = useState(false); // 닉네임 모달 보이기 유무
   const [anotherUser, setAnotherUser] = useState({
     imageUrl: '',
     nickname: '',
   }); // anotherUser 상태 추가
-  const [isCheckModalVisible, setIsCheckModalVisible] = useState(false); // 닉네임 체크 모달 보이기 유무
+  const [isTransferSuccess, setIsTransferSuccess] = useState(true); // 송금 성공
+  const [isTransferCheckModal, setIsTransferCheckModal] = useState(false); // 송금 체크 모달
+  const [clickedIndex, setClickedIndex] = useState(null); // 최근 이체 내역 중 클릭한사람
 
   const { nickname: nickname } = useUserStore((state) => ({
     nickname: state.nickname,
   })); // 유저 닉네임
 
-  // 이체 여부 확인 함수
-  const handleTransferResult = (response) => {
-    console.log(response);
-    fetchRecentTransfers();
-    setTransferInfo(false);
-    // 여기에 성공 실패 여부 시 모달 띄우기
+  const { balance, setAccountBalance } = useBankStore((state) => ({
+    balance: state.accountBalance,
+    setAccountBalance: state.setAccountBalance,
+  })); // 유저 계좌 잔액
+
+  // 선택 금액 입력 필드에 설정
+  const handleAmountSelect = (selectedAmount) => {
+    setAmount(Number(selectedAmount));
   };
 
-  // 이체 취소 함수
-  const handleTransferCancel = () => {
-    setTransferInfo(false);
-  };
-
-  // 이체 실행 버튼 함수
-  const handleTransferInfo = () => {
-    if (password && recipient && amount) {
-      setTransferInfo(true);
-    } else {
-      alert('계좌비밀번호, 입금금액, 송금자와 관련된 모든 정보를 기입해주세요');
+  // 닉네임 조회
+  const handleSearchNick = async (nickname) => {
+    try {
+      const user = await checkAnotherUser(nickname);
+      setAnotherUser(user);
+      setIsNickSearchSuccess(true);
+    } catch (error) {
+      console.error('Error in checkAnotherUser:', error);
+      setIsNickSearchSuccess(false);
     }
+    setIsNickModalVisible(true);
+  };
+
+  // 이체 닉네임 선택
+  const handleRecipient = (nickname) => {
+    setRecipient(nickname);
+    setIsNickModalVisible(false);
   };
 
   // 최근 이체 내역 업데이트 함수
@@ -61,7 +75,6 @@ export default function BankTransferPage() {
         setRecentTransfers([]);
       } else {
         setRecentTransfers(recentTransferData);
-        console.log(recentTransferData);
       }
     } catch (error) {
       console.error(error);
@@ -69,56 +82,40 @@ export default function BankTransferPage() {
     }
   };
 
-  // 선택 금액 입력 필드에 설정
-  const handleAmountSelect = (selectedAmount) => {
-    setAmount(Number(selectedAmount));
-  };
-
-  // 최근 이체자 선택
-  const handleRecipient = (index) => {
-    setClickedIndex(index);
-    setRecipient(recentTransfers[index].nickname);
-  };
-
-  // 모달 확정 함수
-  const handleConfirm = () => {
-    console.log('예 버튼 클릭됨!');
-    // 예 버튼 클릭 시 수행할 작업
-    setIsModalVisible(false); // 모달 숨기기
-  };
-
-  // 모달 취소 함수
-  const handleCancel = () => {
-    console.log('아니오 버튼 클릭됨!');
-    // 아니오 버튼 클릭 시 수행할 작업
-    setIsModalVisible(false); // 모달 숨기기
-  };
-
-  // 닉네임 조회
-  const handleSearchNick = async (nickname) => {
-    try {
-      const user = await checkAnotherUser(nickname);
-      setAnotherUser(user);
-      setIsNickModalVisible(true);
-    } catch (error) {
-      console.error('Error in checkAnotherUser:', error);
-      setIsCheckModalVisible(true);
+  // 이체 실행 버튼 함수
+  const handleTransferInfo = () => {
+    if (!recipient) {
+      alert('송금자란을 기입해주세요');
+    } else if (!amount) {
+      alert('입금 금액란을 기입해주세요');
+    } else if (balance < amount) {
+      alert('송금 금액이 현재 계좌 보유 금액보다 많습니다');
+    } else if (!password) {
+      alert('계좌 비밀번호란을 기입해주세요');
+    } else if (password.length < 4) {
+      alert('계좌 비밀번호 4자리를 모두 기입해주세요');
+    } else {
+      setTransferInfo(true);
     }
   };
 
-  // 닉네임 모달 확정 함수
-  const handleNickConfirm = () => {
-    setIsNickModalVisible(false);
-  };
-
-  // 닉네임 모달 취소 함수
-  const handleNickCancel = () => {
-    setIsNickModalVisible(false);
-  };
-
-  // 닉네임 체크 모달 확인 함수
-  const handleCheckConfirm = () => {
-    setIsCheckModalVisible(false);
+  // 이체 여부 확인 함수
+  const handleTransferResult = async () => {
+    const transferContent = {
+      recipient: recipient,
+      amount: amount,
+      password: password,
+    };
+    try {
+      const response = accountTransfer(transferContent);
+      setAccountBalance(response.accountBalance);
+      setIsTransferSuccess(true);
+      fetchRecentTransfers();
+    } catch (error) {
+      console.error(error);
+      setIsTransferSuccess(false);
+    }
+    setTransferInfo(false);
   };
 
   // 최근 이체 내역 설정
@@ -128,24 +125,50 @@ export default function BankTransferPage() {
 
   return (
     <div className="flex gap-3">
-      {isModalVisible && (
-        <Modal onConfirm={handleConfirm} onCancel={handleCancel}></Modal>
-      )}
-      {isNickModalVisible && (
-        <Modal
-          onConfirm={handleNickConfirm}
-          onCancel={handleNickCancel}
-          imageUrl={anotherUser.imageUrl}
-          content={anotherUser.nickname}
-        >
-          해당 닉네임이 맞습니까?
-        </Modal>
-      )}
-      {isCheckModalVisible && (
-        <CheckModal onConfirm={handleCheckConfirm} isSuccess={false}>
-          해당 닉네임은 없습니다.
-        </CheckModal>
-      )}
+      {isTransferCheckModal &&
+        (isTransferSuccess ? (
+          <CheckModal
+            isSuccess={isTransferSuccess}
+            onConfirm={() => {
+              setIsTransferCheckModal(false);
+            }}
+          >
+            송금에 성공했습니다
+          </CheckModal>
+        ) : (
+          <CheckModal
+            isSuccess={isTransferSuccess}
+            onConfirm={() => {
+              setIsTransferCheckModal(false);
+            }}
+          >
+            송금에 실패했습니다
+          </CheckModal>
+        ))}
+      {isNickModalVisible &&
+        (isNickSearchSuccess ? (
+          <Modal
+            onConfirm={() => {
+              handleRecipient(anotherUser.nickname);
+            }}
+            onCancel={() => {
+              setIsNickModalVisible(false);
+            }}
+            imageUrl={anotherUser.imageUrl}
+            content={anotherUser.nickname}
+          >
+            해당 닉네임이 맞습니까?
+          </Modal>
+        ) : (
+          <CheckModal
+            onConfirm={() => {
+              setIsNickModalVisible(false);
+            }}
+            isSuccess={false}
+          >
+            해당 닉네임은 없습니다.
+          </CheckModal>
+        ))}
       <div className="flex w-8/12 flex-col gap-3">
         <div className="flex flex-col gap-10 rounded-xl border-2 border-solid border-gray-300 bg-white px-10 py-5">
           <BankBasicinfo isButton={false} />
@@ -221,7 +244,7 @@ export default function BankTransferPage() {
                 100만원
               </button>
               <button
-                onClick={() => handleAmountSelect(100000)}
+                onClick={() => handleAmountSelect(balance)}
                 className="w-1/6 text-center"
               >
                 전액
@@ -232,11 +255,18 @@ export default function BankTransferPage() {
                 value={amount.toLocaleString('ko-KR')}
                 type="text"
                 className="grow"
-                placeholder="입금금액"
+                placeholder="송금 금액"
                 onChange={(e) => {
                   const value = e.target.value.replace(/[^0-9]/g, ''); // 숫자가 아닌 모든 문자를 제거
                   if (value) {
-                    setAmount(Number(value)); // 값이 있으면 숫자로 변환하여 설정
+                    const numericValue = Number(value);
+                    if (numericValue > balance) {
+                      // 입력 값이 잔액을 초과하는 경우, 잔액으로 설정
+                      setAmount(balance);
+                    } else {
+                      // 그렇지 않으면 입력 값으로 설정
+                      setAmount(numericValue);
+                    }
                   } else {
                     setAmount(''); // 값이 없으면 빈 문자열로 설정
                   }
@@ -265,10 +295,11 @@ export default function BankTransferPage() {
                     nickName={recentTransfer.nickname}
                     profileImg={recentTransfer.imageUrl}
                     transferDate={recentTransfer.requestTime}
-                    onClick={() => {
-                      handleRecipient(idx);
+                    onClickEvent={() => {
+                      handleRecipient(recentTransfer.nickname);
+                      setClickedIndex(idx);
                     }}
-                    className={
+                    clickClass={
                       clickedIndex === idx ? 'border-double border-red-600' : ''
                     }
                   />
@@ -300,12 +331,12 @@ export default function BankTransferPage() {
                   type="text"
                   className="grow"
                   placeholder="송금하실 분의 닉네임"
-                  value={recipient}
-                  onChange={(e) => setRecipient(e.target.value)}
+                  value={searchNick}
+                  onChange={(e) => setSearchNick(e.target.value)}
                 />
                 <button
                   onClick={() => {
-                    handleSearchNick(recipient);
+                    handleSearchNick(searchNick);
                   }}
                   className="h-full rounded-r-lg border-2 border-gray-300 bg-lime-500 px-7 text-white hover:bg-lime-800"
                 >
@@ -339,9 +370,11 @@ export default function BankTransferPage() {
             recipient={recipient}
             sender={nickname}
             amount={amount}
-            balance={30000}
+            balance={balance}
             onTransferResult={handleTransferResult}
-            onTransferCancel={handleTransferCancel}
+            onTransferCancel={() => {
+              setTransferInfo(false);
+            }}
           ></TransferCheck>
         )}
       </div>

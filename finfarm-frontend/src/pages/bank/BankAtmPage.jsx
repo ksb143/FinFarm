@@ -1,36 +1,65 @@
 import { useState, useEffect } from 'react';
+
+import { withdrawCash, depositCash } from '@/api/bank';
+import CheckModal from '@/components/layout/CheckModal';
 import BankBasicinfo from '@/components/bank/BankBasicInfo';
 import useUserStore from '@/store/userStore';
+import useBankStore from '@/store/bankStore';
 
 export default function BankAtmPage() {
   // 선택된 버튼을 추적하는 state 추가
   const [selectedOption, setSelectedOption] = useState('deposit'); // 입출금 버튼
-  const [accountName, setAccountName] = useState(''); // 계좌명
   const [depositAmount, setDepositAmount] = useState(''); // 입금 금액
   const [depositCheck, setDepositCheck] = useState(false); // 입금 확인란
   const [withdrawAmount, setWithdrawAmount] = useState(''); // 출금 금액
   const [password, setPassword] = useState(''); // 출금 패스워드
   const [withdrawCheck, setWithdrawCheck] = useState(false); // 출금 확인란
+  const [visibleDepositCheckModal, setVisibleDepositCheckModal] =
+    useState(false); // 입금 체크 모달
+  const [depositSuccess, setDepositSuccess] = useState(true); // 입금 성공
+  const [visibleWithdrawCheckModal, setVisibleWithdrawCheckModal] =
+    useState(false); // 출금 체크 모달
+  const [withdrawSuccess, setWithdrawSuccess] = useState(true); // 출금 성공
 
   const charge = 1000; // 수수료
 
-  const { nickname: nickname } = useUserStore((state) => ({
-    nickname: state.nickname,
-  })); // 유저 닉네임
+  const { nickname, pointsInthePocket, setPointsInthePocket } = useUserStore(
+    (state) => ({
+      nickname: state.nickname,
+      pointsInthePocket: state.pointsInthePocket,
+      setPointsInthePocket: state.setPointsInthePocket,
+    }),
+  ); // 유저 닉네임 및 현금
 
-  // 입출금 성공 시 모달창 띄워야 함!!!!!!!!!!!!!!!
+  const { accountBalance, setAccountBalance } = useBankStore((state) => ({
+    accountBalance: state.accountBalance,
+    setAccountBalance: state.setAccountBalance,
+  })); // 유저 계좌 잔액
 
   // 입금 확인
   const handleDepositCheck = () => {
-    if (depositAmount) {
+    if (!depositAmount) {
+      alert('입금 금액을 입력해주세요');
+    } else if (depositAmount > pointsInthePocket) {
+      alert('입금 금액이 현재 보유 현금보다 많습니다');
+    } else {
       setDepositCheck(true);
-    } else alert('보낼 금액을 입력해주세요');
+    }
   };
 
   // 입금 실행
-  const handleDepositConfirm = () => {
+  const handleDepositConfirm = async () => {
+    try {
+      const response = await depositCash(depositAmount);
+      setPointsInthePocket(response.curPoint);
+      setAccountBalance(response.accountBalance);
+      setDepositSuccess(true);
+    } catch (error) {
+      console.error(error);
+      setDepositSuccess(false);
+    }
+    setVisibleDepositCheckModal(true);
     setDepositCheck(false);
-    // 입금 실행 시 axios 연결 해야함
   };
 
   // 입금 취소
@@ -40,21 +69,38 @@ export default function BankAtmPage() {
 
   // 출금 확인
   const handleWithdrawCheck = () => {
-    if (withdrawAmount && password) {
-      setWithdrawCheck(true);
-    } else if (!withdrawAmount && !password) {
+    if (!withdrawAmount && !password) {
       alert('인출 금액과 비밀번호를 입력해주세요');
     } else if (!withdrawAmount) {
       alert('인출 금액을 입력해주세요');
     } else if (!password) {
       alert('비밀번호를 입력해주세요');
+    } else if (password.length < 4) {
+      alert('계좌 비밀번호 4자리를 입력해주세요');
+    } else if (accountBalance < withdrawAmount) {
+      alert('인출 금액이 현재 계좌 금액보다 많습니다');
+    } else {
+      setWithdrawCheck(true);
     }
   };
 
   // 출금 실행
-  const handleWithdrawConfirm = () => {
+  const handleWithdrawConfirm = async () => {
+    const withdrawInfo = {
+      amount: withdrawAmount,
+      password: password,
+    };
+    try {
+      const response = await withdrawCash(withdrawInfo);
+      setPointsInthePocket(response.curPoint);
+      setAccountBalance(response.accountBalance);
+      setWithdrawSuccess(true);
+    } catch (error) {
+      console.error(error);
+      setWithdrawSuccess(false);
+    }
+    setVisibleWithdrawCheckModal(true);
     setWithdrawCheck(false);
-    // 출금 실행 시 axios 연결 해야함
   };
 
   // 출금 취소
@@ -75,6 +121,46 @@ export default function BankAtmPage() {
 
   return (
     <div className="flex w-full flex-col items-center gap-10">
+      {visibleDepositCheckModal &&
+        (depositSuccess ? (
+          <CheckModal
+            isSuccess={depositSuccess}
+            onConfirm={() => {
+              setVisibleDepositCheckModal(false);
+            }}
+          >
+            입금이 완료되었습니다
+          </CheckModal>
+        ) : (
+          <CheckModal
+            isSuccess={depositSuccess}
+            onConfirm={() => {
+              setVisibleDepositCheckModal(false);
+            }}
+          >
+            입금에 실패했습니다
+          </CheckModal>
+        ))}
+      {visibleWithdrawCheckModal &&
+        (depositSuccess ? (
+          <CheckModal
+            isSuccess={withdrawSuccess}
+            onConfirm={() => {
+              setVisibleWithdrawCheckModal(false);
+            }}
+          >
+            출금이 완료되었습니다
+          </CheckModal>
+        ) : (
+          <CheckModal
+            isSuccess={withdrawSuccess}
+            onConfirm={() => {
+              setVisibleWithdrawCheckModal(false);
+            }}
+          >
+            출금에 실패했습니다
+          </CheckModal>
+        ))}
       <div className="flex w-10/12 gap-5">
         <input
           type="radio"
@@ -124,7 +210,7 @@ export default function BankAtmPage() {
               value={depositAmount.toLocaleString('ko-KR')}
               type="text"
               className="grow"
-              placeholder="보낼 금액"
+              placeholder="입금 금액"
               onChange={(e) => {
                 const value = e.target.value.replace(/[^0-9]/g, ''); // 숫자가 아닌 모든 문자를 제거
                 if (value) {
@@ -219,10 +305,10 @@ export default function BankAtmPage() {
           <h2 className="text-xl">입금 확인</h2>
           <div>
             <span>입금 계좌명</span>
-            <span className="ml-96">{accountName}</span>
+            <span className="ml-96">{nickname}</span>
           </div>
           <div>
-            <span>보낼 금액</span>
+            <span>입금 금액</span>
             <span className="ml-96">
               {depositAmount.toLocaleString('ko-KR')}
             </span>
@@ -256,12 +342,12 @@ export default function BankAtmPage() {
           <h2 className="text-xl">출금 확인</h2>
           <div>
             <span>출금 계좌명</span>
-            <span className="ml-96">{accountName}</span>
+            <span className="ml-96">{nickname}</span>
           </div>
           <div>
-            <span>거래 금액</span>
+            <span>출금 금액</span>
             <span className="ml-96">
-              {depositAmount.toLocaleString('ko-KR')}
+              {withdrawAmount.toLocaleString('ko-KR')}
             </span>
             <span>원</span>
           </div>

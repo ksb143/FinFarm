@@ -12,11 +12,16 @@ import MyFarm from '@/router/MyFarm';
 import MyPage from '@/router/MyPage';
 import MainHome from '@/router/MainHome';
 
+import useUserStore from '@/store/userStore';
+
 function App() {
+  const { accessToken: accessToken } = useUserStore((state) => ({
+    accessToken: state.accessToken,
+  }));
   return (
     <Router>
       <div className="min-h-screen bg-gray-50 px-32">
-        <Navbar></Navbar>
+        {accessToken && <Navbar></Navbar>}
         <Routes>
           <Route path="/" element={<EntrancePage />} />
           {/* 카카오 로그인시, 리다이렉션 진행 페이지 */}

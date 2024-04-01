@@ -12,12 +12,29 @@ export default function BankAccountTable({ data, recordsView }) {
   const indexOfLastRecord = currentPage * recordsView;
   const indexOfFirstRecord = indexOfLastRecord - recordsView;
   const currentRecords = dataList.slice(indexOfFirstRecord, indexOfLastRecord);
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  const formatTime = (dateString) => {
+    const date = new Date(dateString);
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    const seconds = date.getSeconds().toString().padStart(2, '0');
+    return `${hours}:${minutes}:${seconds}`;
+  };
+
   return (
     <>
       <table className="table rounded-none bg-white">
         {/* head */}
         <thead>
-          <tr className="bg-gray-300">
+          <tr className="bg-gray-300 text-center">
             <th>거래일시</th>
             <th>구분</th>
             <th>닉네임</th>
@@ -26,14 +43,26 @@ export default function BankAccountTable({ data, recordsView }) {
             <th>잔액</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="text-center">
           {currentRecords.map((datum, idx) => (
             <tr key={idx}>
-              <td>{datum.odate}</td>
+              <td>
+                {formatDate(datum.accountDate)} <br />
+                <span className="text-xs text-gray-500">
+                  {formatTime(datum.accountDate)}
+                </span>
+              </td>
               <td>{datum.type}</td>
               <td>{datum.nickname}</td>
-              <td>{datum.amount >= 0 ? datum.amount : ''}</td>
-              <td>{datum.amount < 0 ? datum.amount : ''}</td>
+              <td className="text-blue-600">
+                {datum.amount >= 0
+                  ? `+${datum.amount.toLocaleString('ko-KR')}`
+                  : ''}
+              </td>
+              <td className="text-red-600">
+                {datum.amount < 0 ? datum.amount.toLocaleString('ko-KR') : ''}
+              </td>
+              <td>{datum.accountBalanceAtThatTime.toLocaleString('ko-KR')}</td>
             </tr>
           ))}
         </tbody>

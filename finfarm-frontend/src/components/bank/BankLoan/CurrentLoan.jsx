@@ -9,6 +9,7 @@ CurrentLoan.propTypes = {
   amount: PropTypes.number,
   repayAmount: PropTypes.number,
   dDay: PropTypes.number,
+  onRepay: PropTypes.func,
 };
 
 export default function CurrentLoan({
@@ -70,7 +71,7 @@ export default function CurrentLoan({
         </div>
       </div>
       <button
-        onClick={() => onRepay(pk, repayAmount, name)}
+        onClick={() => onRepay()}
         className="h-20 w-1/4  rounded-lg bg-lime-500 px-3 font-hopang text-xl text-white hover:border-4 hover:border-gray-300 hover:bg-lime-800"
       >
         상환하기
