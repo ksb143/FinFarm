@@ -15,6 +15,7 @@ const SignupProcessPage = () => {
     setIsQuizSolved,
     setDateOfSignup,
     setEmail,
+    setTimeQuizSolve,
   } = useUserStore((state) => ({
     setAccountPassword: state.setAccountPassword,
     setAccessToken: state.setAccessToken,
@@ -24,6 +25,7 @@ const SignupProcessPage = () => {
     setIsQuizSolved: state.setIsQuizSolved,
     setDateOfSignup: state.setDateOfSignup,
     setEmail: state.setEmail,
+    setTimeQuizSolve: state.setTimeQuizSolve,
   }));
   // 전역상태관리 import 로직
   const {
@@ -35,6 +37,7 @@ const SignupProcessPage = () => {
     isQuizSolved: isQuizSolved,
     dateOfSignup: dateOfSignup,
     accountPassword: accountPassword,
+    timeQuizSolve: timeQuizSolve,
   } = useUserStore((state) => ({
     accessToken: state.accessToken,
     nickname: state.nickname,
@@ -44,6 +47,7 @@ const SignupProcessPage = () => {
     isQuizSolved: state.isQuizSolved,
     dateOfSignup: state.dateOfSignup,
     accountPassword: state.accountPassword,
+    timeQuizSolve: state.timeQuizSolve,
   }));
 
   const actionData = useActionData();
@@ -52,6 +56,8 @@ const SignupProcessPage = () => {
   const [accountPW0, setAccountPW0] = useState('');
 
   const handleInputNickname = (e) => {
+    // Todo.Todo.Todo. input 된 nickname의 중복검사 및 유효성검사 필요
+    
     const value = e.target.value;
     setNickname0(value); // input된대로 nickname의 state를 변경함
     setNickname(value); // useUserStore에 닉네임 저장함.
@@ -59,6 +65,8 @@ const SignupProcessPage = () => {
   };
 
   const handleInputAccountPW = (e) => {
+    // Todo.Todo.Todo. input 된 account pw의 유효성검사 필요
+    
     const value = e.target.value;
     setAccountPW0(value); // input된대로 account_pw의 state를 변경함
     setAccountPassword(value); // useUserStore에 계좌 비번 저장함.
@@ -108,16 +116,17 @@ const SignupProcessPage = () => {
       <h1 className="text-4xl">회원가입을 진행합니다.</h1>
 
       <div>
-        <p>1. 5자 이하로 닉네임을 설정해주세요.</p>
-        <input type="text" value={nickname0} />
-        <button type="submit" onClick={handleInputNickname}>
-          중복검사
-        </button>
+            <p className='text-xl'>1. 5자 이하로 닉네임을 설정해주세요.</p>
+            <input type="text" value={nickname0} />
+            <button type="submit" onClick={handleInputNickname}>
+              중복검사
+            </button>
       </div>
 
-      <p>2. 계좌 비밀번호를 0~9 사이 숫자 4글자로 설정해주세요.</p>
-      <input type="number" value={accountPW0} onChange={handleInputAccountPW} />
-
+      <div>
+          <p className='text-xl'>2. 계좌 비밀번호를 0~9 사이 숫자 4글자로 설정해주세요.</p>
+          <input type="number" value={accountPW0} onChange={handleInputAccountPW} />
+      </div>
       <br />
       <br />
       <button
