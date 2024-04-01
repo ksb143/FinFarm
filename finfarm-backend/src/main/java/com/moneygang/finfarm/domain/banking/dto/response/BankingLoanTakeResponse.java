@@ -10,14 +10,14 @@ import java.time.LocalDate;
 @Builder
 public class BankingLoanTakeResponse {
 
-    private Long loanPk;
+    private Long loanHistoryPk;
     private LocalDate startDate;
     private LocalDate endDate;
     private Long accountBalance;
 
-    public static BankingLoanTakeResponse create(Long loanPk, LocalDate startDate, LocalDate endDate, Long accountBalance) {
+    public static BankingLoanTakeResponse create(Long loanHistoryPk, LocalDate startDate, LocalDate endDate, Long accountBalance) {
         return BankingLoanTakeResponse.builder()
-                .loanPk(loanPk)
+                .loanHistoryPk(loanHistoryPk)
                 .startDate(startDate)
                 .endDate(endDate)
                 .accountBalance(accountBalance)
