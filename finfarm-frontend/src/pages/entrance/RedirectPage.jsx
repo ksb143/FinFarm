@@ -51,7 +51,7 @@ const RedirectPage = () => {
 
     const dataToSend = {
       authCode: code, // 여기서 'code'를 'authCode' 키의 값으로 설정
-      privateStringUrl: VITE_REDIRECT_URI, // Redirect 주소
+      url: VITE_REDIRECT_URI, // Redirect 주소
     };
 
     try {
