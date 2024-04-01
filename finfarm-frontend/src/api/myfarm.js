@@ -6,7 +6,7 @@ const local = localAxios();
 // 파라미터 없음. 리퀘 바디 없음.
 async function CheckMyfarmInfo() {
   try {
-    const res = await local.post('/farm');
+    const res = await local.get('/farm');
     return res.data;
   } catch (error) {
     console.log('내농장 정보 조회.. 실패', error);
