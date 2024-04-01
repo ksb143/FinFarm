@@ -7,8 +7,8 @@ plugins {
 
 sonarqube {
 	properties {
-		property "sonar.host.url", "http://172.17.0.4:9000"
-		property "sonar.login", "squ_a3f24c53bfc9b7927db433d3319170ff312d0e7b"
+		property "sonar.host.url", "http://j10d203.p.ssafy.io:9000"
+		property "sonar.login", "sqp_1749ec42e64c831acdd2544c6f8da8e98db0f4fb"
 	}
 }
 
