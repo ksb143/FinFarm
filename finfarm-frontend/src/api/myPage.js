@@ -25,3 +25,5 @@ async function membershipWithdrawal() {
     throw error;
   }
 }
+
+export { changeProfileImage, membershipWithdrawal };
