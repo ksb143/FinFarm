@@ -1,4 +1,5 @@
 import './App.css';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import Navbar from '@/components/layout/Navbar';
@@ -14,10 +15,24 @@ import MainHome from '@/router/MainHome';
 
 import useUserStore from '@/store/userStore';
 
+// 배경음 파일을 import합니다.
+import backgroundSong from '@/assets/sounds/background_song.mp3';
+
 function App() {
   const { accessToken: accessToken } = useUserStore((state) => ({
     accessToken: state.accessToken,
   }));
+
+  useEffect(() => {
+    const audio = new Audio(backgroundSong);
+    audio.loop = true; // 배경음을 반복 재생합니다.
+    audio.play().catch((error) => console.log(error)); // 자동 재생 정책으로 인한 에러 처리
+
+    return () => {
+      audio.pause(); // 컴포넌트가 언마운트될 때 오디오를 일시 정지합니다.
+    };
+  }, []);
+
   return (
     <Router>
       <div className="min-h-screen bg-gray-50 px-32">
@@ -37,7 +52,7 @@ function App() {
           {/* 장터 관련 페이지들 */}
           <Route path="market/*" element={<Market />} />
           {/* 마이페이지 관련 페이지들 */}
-          <Route path="mypage/*" element={<MyPage/>}/>
+          <Route path="mypage/*" element={<MyPage />} />
         </Routes>
       </div>
     </Router>
