@@ -2,9 +2,9 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useUserStore from '@/store/userStore';
 import axios from 'axios';
-const { VITE_REACT_API_URL } = import.meta.env;
-import loading from '@/assets/images/loading.gif';
 
+import loading from '@/assets/images/loading.gif';
+const { VITE_REACT_API_URL } = import.meta.env;
 const { VITE_REDIRECT_URI } = import.meta.env;
 
 const RedirectPage = () => {
@@ -51,72 +51,72 @@ const RedirectPage = () => {
       'Content-Type': 'application/json',
     };
 
-    const dataToSend = {
-      authCode: code, // 여기서 'code'를 'authCode' 키의 값으로 설정
-      url: VITE_REDIRECT_URI, // Redirect 주소
-    };
+  const dataToSend = {
+    authCode: code, // 여기서 'code'를 'authCode' 키의 값으로 설정
+    url: `${VITE_REDIRECT_URI}`, // Redirect 주소
+  };
 
-    try {
-      const res = await axios.post(
-        `${VITE_REACT_API_URL}member/login`,
-        dataToSend,
-        { withCredentials: true, headers },
+  try {
+    const res = await axios.post(
+      `${VITE_REACT_API_URL}member/login`,
+      dataToSend,
+      { withCredentials: true, headers },
+    );
+
+    console.log(
+      '백엔드에서 인가코드를 잘 받았고, 응답을 줬습니다.',
+      res.data,
+    );
+
+    localStorage.setItem('accessToken', res.data.accessToken);
+    setAccessToken(res.data.accessToken);
+
+    if (res.data.member) {
+      // member: True 인 경우, 로그인 처리
+      console.log(`안녕하세요, ${res.data.memberNickname}님! 환영합니다.`);
+      // 받은 모든 정보를 zustand store에 저장하고, 메인홈으로 이동.
+      setPointsInthePocket(res.data.memberCurPoint);
+      setProfileImageUrl(res.data.memberImageUrl);
+      setNickname(res.data.memberNickname); // 진짜 닉네임
+      setIsQuizSolved(res.data.memberSolveQuiz); // 퀴즈를 풀어도 되는지 여부
+      setTimeQuizSolve(res.data.memberSolveQuizTime); // 퀴즈를 푼 날이 언제인지(날짜)
+      setDateOfSignup(res.data.memberCreateDate); // 가입한 날짜
+      setEmail(res.data.memberEmail); // 진짜 이메일
+      localStorage.setItem('email',res.data.memberEmail); // 로컬스토리지에 이메일 저장 
+
+      console.log('로그인완료. 메인화면으로 곧 이동합니다.');
+      navigate('/home');
+    } else {
+      // member: False 인 경우, 회원가입 진행
+      console.log(
+        '회원이 아닙니다. 회원가입 페이지로 이동하여 진행해주세요.',
       );
+      // 회원이 아닐 경우에도 백엔드로 이동하도록 수정할 수 있습니다.
+      localStorage.setItem('email', res.data.memberNickname); // 실제로 온 것은 이메일이므로, 로컬스토리지에 이메일 저장.
+      setEmail(res.data.memberNickname); // 실제로 온 것은 이메일이므로, store에 이메일 저장.
 
       console.log(
-        '백엔드에서 인가코드를 잘 받았고, 응답을 줬습니다.',
-        res.data,
+        '회원가입 준비 중. 이메일 저장완료. 회원가입 페이지로 곧 이동합니다.',
       );
-
-      localStorage.setItem('accessToken', res.data.accessToken);
-      setAccessToken(res.data.accessToken);
-
-      if (res.data.member) {
-        // member: True 인 경우, 로그인 처리
-        console.log(`안녕하세요, ${res.data.memberNickname}님! 환영합니다.`);
-        // 받은 모든 정보를 zustand store에 저장하고, 메인홈으로 이동.
-        setPointsInthePocket(res.data.memberCurPoint);
-        setProfileImageUrl(res.data.memberImageUrl);
-        setNickname(res.data.memberNickname); // 진짜 닉네임
-        setIsQuizSolved(res.data.memberSolveQuiz); // 퀴즈를 풀어도 되는지 여부
-        setTimeQuizSolve(res.data.memberSolveQuizTime); // 퀴즈를 푼 날이 언제인지(날짜)
-        setDateOfSignup(res.data.memberCreateDate); // 가입한 날짜
-        setEmail(res.data.memberEmail); // 진짜 이메일
-        localStorage.setItem('email',res.data.memberEmail); // 로컬스토리지에 이메일 저장 
-
-        console.log('로그인완료. 메인화면으로 곧 이동합니다.');
-        navigate('/home');
-      } else {
-        // member: False 인 경우, 회원가입 진행
-        console.log(
-          '회원이 아닙니다. 회원가입 페이지로 이동하여 진행해주세요.',
-        );
-        // 회원이 아닐 경우에도 백엔드로 이동하도록 수정할 수 있습니다.
-        localStorage.setItem('email', res.data.memberNickname); // 실제로 온 것은 이메일이므로, 로컬스토리지에 이메일 저장.
-        setEmail(res.data.memberNickname); // 실제로 온 것은 이메일이므로, store에 이메일 저장.
-
-        console.log(
-          '회원가입 준비 중. 이메일 저장완료. 회원가입 페이지로 곧 이동합니다.',
-        );
-        navigate('/entrance/signup');
-      }
-    } catch (error) {
-      // Todo.[에러핸들링] 어떤 에러인가에 따라서 사용자에게 더 명확한 피드백을 주는 것이 나아 보임.
-      // 특정 에러 별로 각각 다른 페이지로 리다이렉션 필요.
-      if (error.response) {
-        // 서버가 2xx 범위 외의 상태 코드로 응답한 경우
-        console.error('Error response', error.response.data);
-        console.error('Error status', error.response.status);
-        console.error('Error headers', error.response.headers);
-      } else if (error.request) {
-        // 요청이 이루어졌으나 응답을 받지 못한 경우
-        console.error('Error request', error.request);
-      } else {
-        // 요청을 설정하는 동안에 문제가 발생한 경우
-        console.error('Error message', error.message);
-      }
-      console.error('Error config', error.config);
+      navigate('/entrance/signup');
     }
+  } catch (error) {
+    // Todo.[에러핸들링] 어떤 에러인가에 따라서 사용자에게 더 명확한 피드백을 주는 것이 나아 보임.
+    // 특정 에러 별로 각각 다른 페이지로 리다이렉션 필요.
+    if (error.response) {
+      // 서버가 2xx 범위 외의 상태 코드로 응답한 경우
+      console.error('Error response', error.response.data);
+      console.error('Error status', error.response.status);
+      console.error('Error headers', error.response.headers);
+    } else if (error.request) {
+      // 요청이 이루어졌으나 응답을 받지 못한 경우
+      console.error('Error request', error.request);
+    } else {
+      // 요청을 설정하는 동안에 문제가 발생한 경우
+      console.error('Error message', error.message);
+    }
+    console.error('Error config', error.config);
+  }
   };
 
   return (
