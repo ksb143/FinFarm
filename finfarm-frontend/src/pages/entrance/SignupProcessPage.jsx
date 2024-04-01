@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, useActionData, Form, redirect } from 'react-router-dom';
+import { useNavigate, Form, redirect } from 'react-router-dom';
 import axios from 'axios';
 import useUserStore from '@/store/userStore';
 const { VITE_REACT_API_URL } = import.meta.env;
@@ -50,7 +50,6 @@ const SignupProcessPage = () => {
     timeQuizSolve: state.timeQuizSolve,
   }));
 
-  const actionData = useActionData();
   const navigate = useNavigate();
   const [nickname0, setNickname0] = useState('');
   const [accountPW0, setAccountPW0] = useState('');
@@ -117,22 +116,22 @@ const SignupProcessPage = () => {
 
       <div>
             <p className='text-xl'>1. 5자 이하로 닉네임을 설정해주세요.</p>
-            <input type="text" value={nickname0} />
-            <button type="submit" onClick={handleInputNickname}>
-              중복검사
-            </button>
+            <input type="text" value={nickname0} onChange={handleInputNickname}/>
+            {/* <button type="submit" onClick={handleInputNickname}>중복검사</button> */}
       </div>
 
       <div>
           <p className='text-xl'>2. 계좌 비밀번호를 0~9 사이 숫자 4글자로 설정해주세요.</p>
-          <input type="number" value={accountPW0} onChange={handleInputAccountPW} />
+          <input type="number" value={accountPW0} onChange={handleInputAccountPW}/>
+          {/* <button type="submit" onClick={handleInputAccountPW}>유효성검사</button> */}
       </div>
+
       <br />
       <br />
+      
       <button
         className="btn btn-sm min-w-16 rounded-full bg-lime-500 font-hopang text-white hover:bg-lime-800"
-        onClick={handleSubmit}
-      >
+        onClick={handleSubmit}>
         회원가입 완료
       </button>
     </div>
