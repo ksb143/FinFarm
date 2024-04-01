@@ -15,6 +15,7 @@ const RedirectPage = () => {
     setIsQuizSolved,
     setDateOfSignup,
     setEmail,
+    setTimeQuizSolve,
   } = useUserStore((state) => ({
     setAccessToken: state.setAccessToken,
     setPointsInthePocket: state.setPointsInthePocket,
@@ -23,6 +24,7 @@ const RedirectPage = () => {
     setIsQuizSolved: state.setIsQuizSolved,
     setDateOfSignup: state.setDateOfSignup,
     setEmail: state.setEmail,
+    setTimeQuizSolve: state.setTimeQuizSolve,
   }));
 
   const navigate = useNavigate();
@@ -72,10 +74,11 @@ const RedirectPage = () => {
         // 받은 모든 정보를 zustand store에 저장하고, 메인홈으로 이동.
         setPointsInthePocket(res.data.memberCurPoint);
         setProfileImageUrl(res.data.memberImageUrl);
-        setNickname(res.data.memberNickname); // 진짜 닉네임을 저장함.
-        setIsQuizSolved(res.data.memberSolveQuiz);
-        setDateOfSignup(res.data.memberCreateDate);
-        setEmail(res.data.memberEmail); // 진짜 이메일을 저장함.
+        setNickname(res.data.memberNickname); // 진짜 닉네임
+        setIsQuizSolved(res.data.memberSolveQuiz); // 퀴즈를 풀어도 되는지 여부
+        setTimeQuizSolve(res.data.memberSolveQuizTime); // 퀴즈를 푼 날이 언제인지(날짜)
+        setDateOfSignup(res.data.memberCreateDate); // 가입한 날짜
+        setEmail(res.data.memberEmail); // 진짜 이메일
         localStorage.setItem('email',res.data.memberEmail); // 로컬스토리지에 이메일 저장 
 
         console.log('로그인완료. 메인화면으로 곧 이동합니다.');
@@ -86,8 +89,8 @@ const RedirectPage = () => {
           '회원이 아닙니다. 회원가입 페이지로 이동하여 진행해주세요.',
         );
         // 회원이 아닐 경우에도 백엔드로 이동하도록 수정할 수 있습니다.
-        localStorage.setItem('email', res.data.memberNickname);
-        setEmail(res.data.memberNickname); // 실제로 온 것은 이메일임. store에 이메일 저장.
+        localStorage.setItem('email', res.data.memberNickname); // 실제로 온 것은 이메일이므로, 로컬스토리지에 이메일 저장.
+        setEmail(res.data.memberNickname); // 실제로 온 것은 이메일이므로, store에 이메일 저장.
 
         console.log(
           '회원가입 준비 중. 이메일 저장완료. 회원가입 페이지로 곧 이동합니다.',

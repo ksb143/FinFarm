@@ -7,6 +7,7 @@ const useUserStore = create((set) => ({
     pointsInthePocket: "?????",
     profileImageUrl:'',
     isQuizSolved:false,
+    timeQuizSolve:'',
     dateOfSignup:'',
     accountPassword:'',
 
@@ -16,6 +17,7 @@ const useUserStore = create((set) => ({
     setPointsInthePocket:(pointsInthePocket)=> set({pointsInthePocket}),
     setProfileImageUrl:(profileImageUrl)=> set({profileImageUrl}),
     setIsQuizSolved:(isQuizSolved)=> set({isQuizSolved}),
+    setTimeQuizSolve:(timeQuizSolve)=> set({timeQuizSolve}),
     setDateOfSignup:(dateOfSignup)=> set({dateOfSignup}),
     setAccountPassword: (accountPassword)=> set({accountPassword}),
 
@@ -25,6 +27,7 @@ const useUserStore = create((set) => ({
     resetPointsInthePocket: () => set({ pointsInthePocket: 0 }),
     resetProfileImageUrl: () => set({ profileImageUrl: '' }),
     resetIsQuizSolved: () => set({ isQuizSolved: false }),
+    resetTimeQuizSolve: ()=> set({timeQuizSolve: '' }),
     resetDateOfSignup: () => set({ dateOfSignup: '' }),
     resetAccountPassword: () => set({ accountPassword: '' }),
 }));
