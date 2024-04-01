@@ -38,7 +38,7 @@ async function HarvestPlants() {
 
 async function DumpTrashes() {
   try {
-    const res = await local.post('/farm/dump');
+    const res = await local.patch('/farm/dump');
     return res.data;
   } catch (error) {
     console.log('쓰레기버리기.. 실패', error);
@@ -48,7 +48,7 @@ async function DumpTrashes() {
 
 async function LevelUpFarm() {
   try {
-    const res = await local.post('/farm/farm-level');
+    const res = await local.get('/farm/farm-level');
     return res.data;
   } catch (error) {
     console.log('농장지력 강화.. 실패', error);
