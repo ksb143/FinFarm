@@ -2,7 +2,6 @@ package com.moneygang.finfarm.domain.member.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;
-import org.springframework.cglib.core.Local;
 
 import java.time.LocalDate;
 
@@ -10,6 +9,7 @@ import java.time.LocalDate;
 @Builder
 public class MemberLoginResponse {
     private String accessToken;
+    private String memberEmail;
     private String memberNickname;
     private boolean memberSolveQuiz;
     private LocalDate memberSolveQuizTime;
@@ -18,9 +18,10 @@ public class MemberLoginResponse {
     private LocalDate memberCreateDate;
     private boolean isMember;
 
-    public static MemberLoginResponse create(String accessToken, String memberNickname, boolean memberSolveQuiz, LocalDate memberSolveQuizTime,  Long memberCurPoint, String memberImageUrl, LocalDate memberCreateDate, boolean isMember) {
+    public static MemberLoginResponse create(String accessToken, String memberEmail, String memberNickname, boolean memberSolveQuiz, LocalDate memberSolveQuizTime,  Long memberCurPoint, String memberImageUrl, LocalDate memberCreateDate, boolean isMember) {
         return MemberLoginResponse.builder()
                 .accessToken(accessToken)
+                .memberEmail(memberEmail)
                 .memberNickname(memberNickname)
                 .memberSolveQuiz(memberSolveQuiz)
                 .memberSolveQuizTime(memberSolveQuizTime)

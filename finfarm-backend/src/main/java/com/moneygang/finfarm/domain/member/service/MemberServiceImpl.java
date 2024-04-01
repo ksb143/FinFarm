@@ -127,10 +127,10 @@ public class MemberServiceImpl implements MemberService{
             // 쿠키를 response header 에 담아서 저장
             return ResponseEntity.ok()
                     .header("Set-Cookie", refreshTokenCookie.toString())
-                    .body(MemberLoginResponse.create(accessToken, member.getMemberNickname(), member.isMemberSolveQuiz(), member.getMemberSolveQuizTime(),  member.getMemberCurPoint(), member.getMemberImageUrl(), member.getMemberCreateDate(),true));
+                    .body(MemberLoginResponse.create(accessToken, member.getMemberEmail(), member.getMemberNickname(), member.isMemberSolveQuiz(), member.getMemberSolveQuizTime(),  member.getMemberCurPoint(), member.getMemberImageUrl(), member.getMemberCreateDate(),true));
         }
         //회원이 아닌 경우
-        return ResponseEntity.ok(MemberLoginResponse.create(null, memberEmail, false, null, 0L, null, null, false));
+        return ResponseEntity.ok(MemberLoginResponse.create(null, memberEmail, null, false, null, 0L, null, null, false));
     }
 
     public String getKakaoAccessToken(String authorize_code) {
