@@ -5,13 +5,6 @@ plugins {
 	id 'org.sonarqube' version '4.0.0.2929'
 }
 
-sonarqube {
-	properties {
-		property "sonar.projectKey", "moneyGang"
-		property "sonar.host.url", "http://j10d203.p.ssafy.io:9000"
-		property "sonar.login", "sqp_c64ed593860eee22a921546aaf9fad0b01f56a48"
-	}
-}
 
 group = 'com.moneygang'
 version = '0.0.1-SNAPSHOT'
