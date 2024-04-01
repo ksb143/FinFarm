@@ -140,6 +140,13 @@ export default function Navbar() {
                   🍎 농장 가기
                 </Link>
               </li>
+              <li>
+                <Link to="/market" onClick={toggleDropdown}>
+                  {' '}
+                  {/* 클릭 이벤트 추가 */}
+                  🛍 장터 가기
+                </Link>
+              </li>
             </ul>
           )}
         </div>

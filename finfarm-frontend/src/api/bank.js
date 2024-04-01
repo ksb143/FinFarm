@@ -78,7 +78,7 @@ async function recentTransferDetails() {
 async function accountTransfer(transferContent) {
   try {
     const response = await local.post('/banking/account/remit', {
-      otherMemberPk: transferContent.recipient,
+      otherNickname: transferContent.recipient,
       amount: transferContent.amount,
       accountPassword: transferContent.password,
     });

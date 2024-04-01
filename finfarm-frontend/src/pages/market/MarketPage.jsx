@@ -11,7 +11,7 @@ export default function MarketPage() {
     <div className="w-full">
       <div className="w-1/2">
         <h2 className="mb-5 text-2xl">시세 높은 순</h2>
-        {cropInfo.map((crop, idx) => (
+        {/* {cropInfo.map((crop, idx) => (
           <CropPriceInfo
             key={idx}
             agricultureName={crop.agricultureName}
@@ -20,7 +20,7 @@ export default function MarketPage() {
             fluctuationPrice={crop.fluctuationPrice}
             fluctuationRate={crop.fluctuationRate}
           />
-        ))}
+        ))} */}
       </div>
     </div>
   );
