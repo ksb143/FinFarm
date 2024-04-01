@@ -31,6 +31,9 @@ export default function BankPasswordChangePage() {
 
   // 비밀번호 변경
   const confirmChangePassword = async () => {
+    console.log(typeof originPassword);
+    console.log(typeof changePassword);
+    console.log(typeof checkPassword);
     const passwordInfo = {
       originPassword,
       changePassword,

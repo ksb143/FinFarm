@@ -71,7 +71,7 @@ export default function CurrentLoan({
         </div>
       </div>
       <button
-        onClick={() => onRepay()}
+        onClick={() => onRepay(pk, repayAmount, name)}
         className="h-20 w-1/4  rounded-lg bg-lime-500 px-3 font-hopang text-xl text-white hover:border-4 hover:border-gray-300 hover:bg-lime-800"
       >
         상환하기

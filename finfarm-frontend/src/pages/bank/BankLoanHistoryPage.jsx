@@ -59,6 +59,7 @@ export default function BankLoanHistoryPage() {
 
   // 상환하기 버튼 클릭
   const handleRepay = (pk, repayAmount, name) => {
+    console.log(typeof repayAmount);
     setRepayInfo({
       pk: pk,
       name: name,
@@ -98,7 +99,7 @@ export default function BankLoanHistoryPage() {
     setRepayInfo({
       loanPk: '',
       loanName: '',
-      repayAmount: '',
+      repayAmount: 0,
       password: '',
     });
   };
