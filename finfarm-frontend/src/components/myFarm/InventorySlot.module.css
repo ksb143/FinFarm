@@ -1,0 +1,19 @@
+/* InventorySlot.module.css */
+.inventory-slot {
+  height: 5rem; /* 슬롯의 높이 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #bfa76f; /* 어두운 슬롯 색 */
+  color: white; /* 숫자 색 */
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.inventory-slot:nth-child(odd) {
+  background-color: #dac292; /* 밝은 슬롯 색 */
+}
+
+.occupied {
+  background-color: #8c6239; /* 차 있는 슬롯 색 */
+}
