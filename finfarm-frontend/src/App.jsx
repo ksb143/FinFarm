@@ -1,14 +1,16 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
 import Navbar from '@/components/layout/Navbar';
-import MainHomePage from '@/pages/home/MainHomePage';
 import EntrancePage from '@/pages/entrance/EntrancePage';
 import RedirectPage from '@/pages/entrance/RedirectPage';
+
 import Bank from '@/router/Bank';
 import Market from '@/router/Market';
 import Entrance from '@/router/Entrance';
 import MyFarm from '@/router/MyFarm';
-import Mypage from '@/pages/profile/MyPagePage';
+import MyPage from '@/router/MyPage';
+import MainHome from '@/router/MainHome';
 
 import useUserStore from '@/store/userStore';
 
@@ -27,15 +29,15 @@ function App() {
           {/* 입구. 카카오로그인 -> 웹 로그인 및 회원가입 진행함. */}
           <Route path="entrance/*" element={<Entrance />} />
           {/* 메인 홈 페이지. 퀴즈를 풀 수 있고, 다양한 갈림길을 확인할 수 있음. */}
-          <Route path="home" element={<MainHomePage />} />
+          <Route path="home/*" element={<MainHome />} />
           {/* 뱅크 관련 페이지들. */}
           <Route path="bank/*" element={<Bank />} />
           {/* 내농장 관련 페이지들. */}
           <Route path="myfarm/*" element={<MyFarm />} />
           {/* 장터 관련 페이지들 */}
           <Route path="market/*" element={<Market />} />
-          {/* 프로필 관련 페이지들 */}
-          <Route path="mypage" element={<Mypage />} />
+          {/* 마이페이지 관련 페이지들 */}
+          <Route path="mypage/*" element={<MyPage/>}/>
         </Routes>
       </div>
     </Router>
