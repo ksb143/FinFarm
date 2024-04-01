@@ -97,7 +97,7 @@ public class MemberServiceImpl implements MemberService{
         log.info("member login");
 
         //카카오 토큰 받기
-        String kakaoAccessToken = getKakaoAccessToken(request.getAuthCode());
+        String kakaoAccessToken = getKakaoAccessToken(request);
         log.info("accessToken: " + kakaoAccessToken);
 
         //카카오 유저 정보 가져오기
@@ -133,7 +133,7 @@ public class MemberServiceImpl implements MemberService{
         return ResponseEntity.ok(MemberLoginResponse.create(null, memberEmail, null, false, null, 0L, null, null, false));
     }
 
-    public String getKakaoAccessToken(String authorize_code) {
+    public String getKakaoAccessToken(MemberLoginRequest request) {
         String access_Token = "";
         String refresh_Token = "";
         String reqURL = "https://kauth.kakao.com/oauth/token";
@@ -149,8 +149,12 @@ public class MemberServiceImpl implements MemberService{
             Map<Object, Object> data = new HashMap<>();
             data.put("grant_type", "authorization_code");
             data.put("client_id", "434c09e04423ad80d97eb8f45f3bc229");
-            data.put("redirect_uri", "https://j10d203.p.ssafy.io/oauth/callback/kakao");
-            data.put("code", authorize_code);
+            if(request.getUrl().contains("j10d203")) {
+                data.put("redirect_uri", "https://j10d203.p.ssafy.io/oauth/callback/kakao");
+            } else {
+                data.put("redirect_uri", "http://localhost:5173/oauth/callback/kakao");
+            }
+            data.put("code", request.getAuthCode());
 
             // 요청 본문 생성
             String requestBody = data.entrySet().stream()
@@ -159,14 +163,14 @@ public class MemberServiceImpl implements MemberService{
                     .orElse("");
 
             // HTTP 요청 구성
-            HttpRequest request = HttpRequest.newBuilder()
+            HttpRequest newRequest = HttpRequest.newBuilder()
                     .uri(uri)
                     .header("Content-Type", "application/x-www-form-urlencoded")
                     .POST(HttpRequest.BodyPublishers.ofString(requestBody))
                     .build();
 
             // 요청 보내기
-            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> response = httpClient.send(newRequest, HttpResponse.BodyHandlers.ofString());
 
             // 응답 코드가 200이면 성공
             if (response.statusCode() == 200) {
