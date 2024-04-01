@@ -5,6 +5,13 @@ plugins {
 	id "org.sonarqube" version "3.3"
 }
 
+sonarqube {
+	properties {
+		property "sonar.host.url", "http://172.17.0.4:9000"
+		property "sonar.login", "sqp_1749ec42e64c831acdd2544c6f8da8e98db0f4fb"
+	}
+}
+
 group = 'com.moneygang'
 version = '0.0.1-SNAPSHOT'
 
