@@ -1,6 +1,4 @@
 import KakaoLoginButton from '@/components/entrance/KakaoLoginButton';
-import entrance1 from '@/assets/images/entrance1.png';
-import entrance2 from '@/assets/images/entrance2.png';
 import styles from './EntrancePage.module.css';
 import ic_chip from '@/assets/images/ic_chip.png';
 import crown from '@/assets/images/crown.gif';
