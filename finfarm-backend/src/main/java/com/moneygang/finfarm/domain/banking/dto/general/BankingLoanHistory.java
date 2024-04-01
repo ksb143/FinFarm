@@ -10,6 +10,7 @@ import java.time.LocalDate;
 public class BankingLoanHistory {
 
     private Long pk;
+    private Long historyPk;
     private String name;
     private Double interest;
     private Integer period;
@@ -20,11 +21,12 @@ public class BankingLoanHistory {
     private LocalDate endDate;
     private Boolean isRepay;
 
-    public static BankingLoanHistory create(Long pk, String name, Double interest, Integer period, Integer dDay,
+    public static BankingLoanHistory create(Long pk, Long historyPk, String name, Double interest, Integer period, Integer dDay,
                                             Long amount, Long repayAmount,
                                             LocalDate startDate, LocalDate endDate, Boolean isRepay) {
         return BankingLoanHistory.builder()
                 .pk(pk)
+                .historyPk(historyPk)
                 .name(name)
                 .interest(interest)
                 .period(period)

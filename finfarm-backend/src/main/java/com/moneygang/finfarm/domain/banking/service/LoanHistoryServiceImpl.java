@@ -58,6 +58,7 @@ public class LoanHistoryServiceImpl implements LoanHistoryService {
         for(LoanHistory history: loanHistoryList) {
             Loan loan = history.getLoan();
             Long pk = loan.getLoanPk();
+            Long historyPk = history.getLoanHistoryPk();
             String name = loan.getLoanName();
             Double interest = loan.getLoanInterest();
             Integer period = loan.getLoanPeriod();
@@ -77,7 +78,7 @@ public class LoanHistoryServiceImpl implements LoanHistoryService {
                 history.overDue(); // 연체된것이라면, 해당 유저의 연체 내역 갱신, +N일 형태로 dDay 구성
             }
 
-            BankingLoanHistory loanHistory = BankingLoanHistory.create(pk, name, interest, period, dDay,
+            BankingLoanHistory loanHistory = BankingLoanHistory.create(pk, historyPk, name, interest, period, dDay,
                     amount, repayAmount, startDate, endDate, isRepay);
 
             if(isRepay) totalRepayAmount += repayAmount; // 상환한 대출 내역 -> 총 상환 금액에 추가
