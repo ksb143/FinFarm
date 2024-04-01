@@ -191,7 +191,7 @@ export default function BankLoanHistoryPage() {
               <div className="mt-4" key={idx}>
                 <CurrentLoan
                   loanIndex={idx}
-                  pk={currentDatum.pk}
+                  pk={currentDatum.historyPk}
                   name={currentDatum.name}
                   interest={currentDatum.interest}
                   startDate={currentDatum.startDate}

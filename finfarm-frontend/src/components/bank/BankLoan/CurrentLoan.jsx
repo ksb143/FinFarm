@@ -65,8 +65,8 @@ export default function CurrentLoan({
             {dDay === 0
               ? 'D-day'
               : dDay > 0
-                ? `D-${dDay}`
-                : `D+${Math.abs(dDay)}`}
+                ? `D${dDay}`
+                : `D${Math.abs(dDay)}`}
           </span>
         </div>
       </div>

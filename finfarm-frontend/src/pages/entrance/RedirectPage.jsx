@@ -5,6 +5,8 @@ import axios from 'axios';
 const { VITE_REACT_API_URL } = import.meta.env;
 import loading from '@/assets/images/loading.gif';
 
+const { VITE_REDIRECT_URI } = import.meta.env;
+
 const RedirectPage = () => {
   // 전역상태관리 수정 로직
   const {
@@ -49,6 +51,7 @@ const RedirectPage = () => {
 
     const dataToSend = {
       authCode: code, // 여기서 'code'를 'authCode' 키의 값으로 설정
+      privateStringUrl: VITE_REDIRECT_URI, // Redirect 주소
     };
 
     try {
@@ -75,8 +78,6 @@ const RedirectPage = () => {
         setNickname(res.data.memberNickname); // 진짜 닉네임을 저장함.
         setIsQuizSolved(res.data.memberSolveQuiz);
         setDateOfSignup(res.data.memberCreateDate);
-        setEmail(res.data.memberEmail); // 진짜 이메일을 저장함.
-        localStorage.setItem('email',res.data.memberEmail); // 로컬스토리지에 이메일 저장 
 
         console.log('로그인완료. 메인화면으로 곧 이동합니다.');
         navigate('/home');
@@ -87,7 +88,7 @@ const RedirectPage = () => {
         );
         // 회원이 아닐 경우에도 백엔드로 이동하도록 수정할 수 있습니다.
         localStorage.setItem('email', res.data.memberNickname);
-        setEmail(res.data.memberNickname); // 실제로 온 것은 이메일임. store에 이메일 저장.
+        setEmail(res.data.memberNickname); // 실제로 온 것은 이메일임.
 
         console.log(
           '회원가입 준비 중. 이메일 저장완료. 회원가입 페이지로 곧 이동합니다.',
