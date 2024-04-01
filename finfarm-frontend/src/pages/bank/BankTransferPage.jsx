@@ -21,7 +21,7 @@ export default function BankTransferPage() {
   const [recentTransfers, setRecentTransfers] = useState([]); // 최근 이체 내역
   const [searchNick, setSearchNick] = useState(''); // 닉네임 검색
   const [password, setPassword] = useState(''); // 계좌 비밀번호
-  const [amount, setAmount] = useState(''); // 금액
+  const [amount, setAmount] = useState(0); // 금액
   const [recipient, setRecipient] = useState(''); // 받는 분
   const [isNickSearchSuccess, setIsNickSearchSuccess] = useState(true); // 닉네임 찾기 성공
   const [isNickModalVisible, setIsNickModalVisible] = useState(false); // 닉네임 모달 보이기 유무
@@ -268,7 +268,7 @@ export default function BankTransferPage() {
                       setAmount(numericValue);
                     }
                   } else {
-                    setAmount(''); // 값이 없으면 빈 문자열로 설정
+                    setAmount(0); // 값이 없으면 빈 문자열로 설정
                   }
                 }}
               />
