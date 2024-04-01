@@ -13,14 +13,13 @@ const Warehouse = () => {
     // CheckMyfarmInfo 함수를 사용하여 데이터를 가져옵니다.
     const fetchInventory = async () => {
       try {
-        console.log('1');
         const data = await CheckMyfarmInfo(); // API 호출
-        console.log('2');
+
         if (data.memberItems) {
-          console.log('3');
           setInventory(data.memberItems); // 응답 데이터로 상태 업데이트
-          console.log(data);
-          console.log('4');
+          // console.log(data);
+          console.log(data.memberItems.agriculture);
+          console.log(data.memberItems.seeds);
         }
       } catch (error) {
         // 에러 핸들링

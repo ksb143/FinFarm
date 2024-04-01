@@ -5,7 +5,7 @@ import Warehouse from '@/components/myFarm/Warehouse';
 export default function MyFarmPage() {
   return (
     <div>
-      <h1>MY farm page 나의 농장 준비중!</h1>
+      <h1 className="text-3xl">MY farm page 나의 농장 준비중!</h1>
 
       <Warehouse />
     </div>
