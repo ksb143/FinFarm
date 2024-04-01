@@ -1,18 +1,15 @@
-import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 import CropPriceChart from '@/components/market/CropPriceChart';
 import useCropInfoStore from '@/store/cropInfoStore';
 import useCropPriceHistoryStore from '@/store/cropPriceHistoryStore';
 import { useEffect, useState } from 'react';
 
-MarketDetailPage.propTypes = {
-  cropName: PropTypes.string.isRequired,
-};
-
-export default function MarketDetailPage({ cropName }) {
+export default function MarketDetailPage() {
+  const { cropName } = useParams();
   const [specificCropPriceHistory, setSpecificCropPriceHistory] =
     useState(null);
+
   const cropPriceHistoryList = useCropPriceHistoryStore(
     (state) => state.cropPriceHistoryList,
   );
@@ -29,7 +26,7 @@ export default function MarketDetailPage({ cropName }) {
   }, [cropName, cropPriceHistoryList]);
 
   return (
-    <div className="w-full">
+    <div className="h-full w-full">
       <div className="w-1/2">
         <div className="dropdown dropdown-hover">
           <div tabIndex={0} role="button" className="btn m-1">
@@ -48,9 +45,11 @@ export default function MarketDetailPage({ cropName }) {
             ))}
           </ul>
         </div>
-        {specificCropPriceHistory && (
-          <CropPriceChart data={specificCropPriceHistory}></CropPriceChart>
-        )}
+        <div className="h-96">
+          {specificCropPriceHistory && (
+            <CropPriceChart data={[specificCropPriceHistory]}></CropPriceChart>
+          )}
+        </div>
       </div>
     </div>
   );
