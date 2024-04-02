@@ -11,7 +11,7 @@ interface Item {
 interface ItemState {
   items: Item[];
   addItem: (newItem: Item) => void;
-  addItems: (newItems: Item[]) => void;
+  setItems: (newItems: Item[]) => void;
 }
 
 const useItemStore = create<ItemState>((set) => ({
@@ -40,7 +40,7 @@ const useItemStore = create<ItemState>((set) => ({
       }
     }),
   // 아이템 여러개 추가
-  addItems: (newItems) =>
+  setItems: (newItems) =>
     set((state) => {
       // 새로운 아이템들을 처리하기 위한 로직
       const updatedItems = newItems.reduce(

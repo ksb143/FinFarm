@@ -58,7 +58,7 @@ export default function MainHomePage() {
   };
 
   return (
-    <div class="flex ">
+    <div className="flex ">
       {showQuizModal && (
         <QuizModal
           question={quizData.question} // 퀴즈 질문
@@ -68,15 +68,15 @@ export default function MainHomePage() {
           correct={quizData.correct} // 정답 문자열 전달
         ></QuizModal>
       )}
-      <div class="flex items-stretch">
+      <div className="flex items-stretch">
         <img src={entrance4} width="500px" />
 
-        <div class="ml-20 flex h-96 flex-col items-center justify-between">
+        <div className="ml-20 flex h-96 flex-col items-center justify-between">
           <p className="text-center text-5xl">환영합니다, {nickname}님!</p>
 
           <img src={quiz} alt="quiz" className="mb-10 mt-20" width="200px" />
 
-          <div class="flex">
+          <div className="flex">
             <div class="flex flex-col items-center justify-between">
               <p className="text-center text-3xl">
                 데일리 농산물 퀴즈에 도전하고
