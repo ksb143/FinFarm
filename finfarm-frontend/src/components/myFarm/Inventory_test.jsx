@@ -1,9 +1,9 @@
 const InventoryItem = () => (
   <div className="static h-40 w-40 bg-amber-100">
     <div className="mx-auto mb-1 mt-1 h-32 w-36 bg-amber-200"></div>
-    <div className="flex flex-row justify-between">
-      <div className="w-7 border-2 border-emerald-400 bg-white">+</div>
-      <div className="flex-grow border-2 border-emerald-400 bg-white">0</div>
+    <div className="flex flex-row justify-between border-emerald-400 bg-white">
+      <div className="w-7 border-2">+</div>
+      <div className="flex-grow border-2 border-emerald-400 bg-white">0 개</div>
       <div className="w-7 border-2 border-emerald-400 bg-white">-</div>
     </div>
   </div>
