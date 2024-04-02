@@ -33,7 +33,7 @@ async function getQuizAward() {
 // 퀴즈 정보 가져오는 함수
 async function fetchQuiz() {
     try {
-      const response = await local.get('/quiz');
+      const response = await axios.get('https://j10d203.p.ssafy.io/quiz');
       console.log('퀴즈 정보:', response.data);
       
       // 퀴즈 데이터 구조분해 할당
