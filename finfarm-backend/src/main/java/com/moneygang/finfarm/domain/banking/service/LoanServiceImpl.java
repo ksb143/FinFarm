@@ -21,10 +21,6 @@ public class LoanServiceImpl implements LoanService {
     }
 
     @Override
-    public void updateLoan(Loan loan) {
-    }
-
-    @Override
     public void removeLoan(Long loanPk) {
         Optional<Loan> optionalLoan = loanRepository.findById(loanPk);
 

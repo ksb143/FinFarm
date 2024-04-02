@@ -92,7 +92,7 @@ public class MarketServiceImpl implements MarketService {
     }
 
     @Override
-    public ResponseEntity<?> seedDetailView(String seedName) {
+    public ResponseEntity<SeedInfoResponse> seedDetailView(String seedName) {
         Seed seed = seedRepository.findBySeedName(seedName)
                 .orElseThrow(() -> new GlobalException(HttpStatus.NOT_FOUND, "seed not found"));
         SeedInfoResponse response = SeedInfoResponse.create(seed);
@@ -100,7 +100,7 @@ public class MarketServiceImpl implements MarketService {
     }
 
     @Override
-    public ResponseEntity<?> agricultureDetailView(String agricultureName) {
+    public ResponseEntity<AgricultureInfoResponse> agricultureDetailView(String agricultureName) {
         Agriculture agriculture = agricultureRepository.findByAgricultureName(agricultureName)
                 .orElseThrow(() -> new GlobalException(HttpStatus.NOT_FOUND, "agriculture not found"));
         AgricultureInfoResponse response = AgricultureInfoResponse.create(agriculture);
@@ -109,7 +109,7 @@ public class MarketServiceImpl implements MarketService {
 
     @Transactional
     @Override
-    public ResponseEntity<?> seedPurchase(SeedPurchaseRequest request) {
+    public ResponseEntity<SeedPurchaseResponse> seedPurchase(SeedPurchaseRequest request) {
         Member member = commonUtil.getMember();
 
         Seed seed = seedRepository.findBySeedName(request.getSeedName())
@@ -165,7 +165,7 @@ public class MarketServiceImpl implements MarketService {
 
     @Transactional
     @Override
-    public ResponseEntity<?> agricultureSell(AgricultureSellRequest request) {
+    public ResponseEntity<AgricultureSellResponse> agricultureSell(AgricultureSellRequest request) {
         Member member = commonUtil.getMember();
 
         Agriculture agriculture = agricultureRepository.findByAgricultureName(request.getAgricultureName())
@@ -201,6 +201,7 @@ public class MarketServiceImpl implements MarketService {
         List<AgriculturePrice> agriculturePriceList =
         agriculturePriceRepository.findAllByAgriculture_AgriculturePkAndAgriculturePriceDateBetweenOrderByAgriculturePriceDateDesc(
                 agriculture.getAgriculturePk(), LocalDate.now().minusDays(7), LocalDate.now()
+
         );
 
         long salePrice = (long) agriculturePriceList.get(0).getAgriculturePriceValue() * request.getAgricultureAmount();

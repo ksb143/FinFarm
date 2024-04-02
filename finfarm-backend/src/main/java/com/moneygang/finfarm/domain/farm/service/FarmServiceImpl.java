@@ -55,7 +55,7 @@ public class FarmServiceImpl implements FarmService{
     private final CommonUtil commonUtil;
 
     @Override
-    public ResponseEntity<?> myFarmView() {
+    public ResponseEntity<MyFarmResponse> myFarmView() {
         MemberWarehouseDTO memberWarehouse = commonUtil.getMemberItem();
         Member member = memberWarehouse.getMember();
         List<Reinforce> reinforceList =
@@ -101,7 +101,7 @@ public class FarmServiceImpl implements FarmService{
 
     @Transactional
     @Override
-    public ResponseEntity<?> itemDump(DeleteItemRequest request) {
+    public ResponseEntity<DeleteItemResponse> itemDump(DeleteItemRequest request) {
         Member member = commonUtil.getMember();
 
         int category = 2;
@@ -167,7 +167,7 @@ public class FarmServiceImpl implements FarmService{
     }
 
     @Override
-    public ResponseEntity<?> upgradeFarmLevel() {
+    public ResponseEntity<FarmLevelPurchaseResponse> upgradeFarmLevel() {
         Member member = commonUtil.getMember();
         if(member.getFarmLevel() == 10)
             throw new GlobalException(HttpStatus.UNPROCESSABLE_ENTITY, "farm Level Max");
@@ -215,7 +215,7 @@ public class FarmServiceImpl implements FarmService{
 
     @Transactional
     @Override
-    public ResponseEntity<?> plantSeed(PlantRequest request) {
+    public ResponseEntity<PlantResponse> plantSeed(PlantRequest request) {
         Member member = commonUtil.getMember();
         //씨앗 이름 검사
         Seed seed = seedRepository.findBySeedName(request.getSeedName())
@@ -279,7 +279,7 @@ public class FarmServiceImpl implements FarmService{
     }
 
     @Override
-    public ResponseEntity<?> agricultureHarvest(HarvestRequest request) {
+    public ResponseEntity<HarvestResponse> agricultureHarvest(HarvestRequest request) {
         Member member = commonUtil.getMember();
 
         //farm_field_pk로 해당 밭이 존재하는지 확인합니다.

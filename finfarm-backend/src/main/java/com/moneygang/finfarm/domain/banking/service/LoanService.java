@@ -6,7 +6,5 @@ public interface LoanService {
 
     public void makeLoan(Loan loan);
 
-    public void updateLoan(Loan loan);
-
     public void removeLoan(Long loanPk);
 }

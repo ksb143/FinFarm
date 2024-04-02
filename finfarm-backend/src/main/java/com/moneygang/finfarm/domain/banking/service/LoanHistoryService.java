@@ -11,11 +11,11 @@ import org.springframework.http.ResponseEntity;
 
 public interface LoanHistoryService {
 
-    public ResponseEntity<BankingLoanResponse> getLoanHistory();
+    ResponseEntity<BankingLoanResponse> getLoanHistory();
 
-    public ResponseEntity<BankingLoanTakeResponse> loan(BankingLoanTakeRequest request);
+    ResponseEntity<BankingLoanTakeResponse> loan(BankingLoanTakeRequest request);
 
-    public ResponseEntity<BankingLoanAuditResponse> loanAudit(BankingLoanAuditRequest request);
+    ResponseEntity<BankingLoanAuditResponse> loanAudit(BankingLoanAuditRequest request);
 
-    public ResponseEntity<BankingLoanRepayResponse> loanRepay(BankingLoanRepayRequest request);
+    ResponseEntity<BankingLoanRepayResponse> loanRepay(BankingLoanRepayRequest request);
 }

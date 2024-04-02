@@ -35,7 +35,7 @@ public class FarmController {
                     """, content = @Content)
     })
     @GetMapping
-    public ResponseEntity<?> myFarmView(){
+    public ResponseEntity<MyFarmResponse> myFarmView(){
         return farmService.myFarmView();
     }
 
@@ -53,7 +53,7 @@ public class FarmController {
                     """, content = @Content)
     })
     @PatchMapping("/dump")
-    public ResponseEntity<?> itemDump(@RequestBody DeleteItemRequest request){
+    public ResponseEntity<DeleteItemResponse> itemDump(@RequestBody DeleteItemRequest request){
         return farmService.itemDump(request);
     }
 
@@ -72,7 +72,7 @@ public class FarmController {
                     """, content = @Content)
     })
     @GetMapping("/farm-level")
-    public ResponseEntity<?> upgradeFarmLevel(){
+    public ResponseEntity<FarmLevelPurchaseResponse> upgradeFarmLevel(){
         return farmService.upgradeFarmLevel();
     }
 
@@ -95,7 +95,7 @@ public class FarmController {
                     """, content = @Content)
     })
     @PostMapping("/harvest")
-    public ResponseEntity<?> harvestAgriculture(@RequestBody HarvestRequest request){return farmService.agricultureHarvest(request);}
+    public ResponseEntity<HarvestResponse> harvestAgriculture(@RequestBody HarvestRequest request){return farmService.agricultureHarvest(request);}
 
 
     @Operation(summary = "씨앗 심기", description = "사용자 밭에 씨앗을 심습니다.")
@@ -114,5 +114,5 @@ public class FarmController {
                     """, content = @Content)
     })
     @PostMapping("/plant")
-    public ResponseEntity<?> plantSeed(@RequestBody PlantRequest request) {return farmService.plantSeed(request);}
+    public ResponseEntity<PlantResponse> plantSeed(@RequestBody PlantRequest request) {return farmService.plantSeed(request);}
 }

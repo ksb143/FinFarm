@@ -44,7 +44,7 @@ public class MarketController {
                     """, content = @Content)
     })
     @GetMapping("seed")
-    public ResponseEntity<?> seedDetailView(@RequestParam("seedName") String seedName) {
+    public ResponseEntity<SeedInfoResponse> seedDetailView(@RequestParam("seedName") String seedName) {
         return marketService.seedDetailView(seedName);
     }
 
@@ -57,7 +57,7 @@ public class MarketController {
                     """, content = @Content)
     })
     @GetMapping("agriculture")
-    public ResponseEntity<?> agricultureDetailView(@RequestParam("agricultureName") String agricultureName) {
+    public ResponseEntity<AgricultureInfoResponse> agricultureDetailView(@RequestParam("agricultureName") String agricultureName) {
         return marketService.agricultureDetailView(agricultureName);
     }
 
@@ -75,7 +75,7 @@ public class MarketController {
                     """, content = @Content)
     })
     @PostMapping("seed")
-    public ResponseEntity<?> seedPurchase(@RequestBody SeedPurchaseRequest request){
+    public ResponseEntity<SeedPurchaseResponse> seedPurchase(@RequestBody SeedPurchaseRequest request){
         return marketService.seedPurchase(request);
     }
 
@@ -95,7 +95,7 @@ public class MarketController {
                     """, content = @Content)
     })
     @PostMapping("sell")
-    public ResponseEntity<?> agricultureSell(@RequestBody AgricultureSellRequest request){
+    public ResponseEntity<AgricultureSellResponse> agricultureSell(@RequestBody AgricultureSellRequest request){
         return marketService.agricultureSell(request);
     }
 }
