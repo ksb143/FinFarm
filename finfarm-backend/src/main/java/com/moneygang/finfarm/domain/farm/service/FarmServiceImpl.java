@@ -14,9 +14,6 @@ import com.moneygang.finfarm.domain.farm.entity.FarmField;
 import com.moneygang.finfarm.domain.farm.entity.Warehouse;
 import com.moneygang.finfarm.domain.farm.repository.FarmFieldRepository;
 import com.moneygang.finfarm.domain.farm.repository.WarehouseRepository;
-import com.moneygang.finfarm.domain.market.dto.detail.AgricultureInfo;
-import com.moneygang.finfarm.domain.market.dto.detail.MemberItemsDTO;
-import com.moneygang.finfarm.domain.market.dto.detail.SeedInfo;
 import com.moneygang.finfarm.domain.market.entity.Agriculture;
 import com.moneygang.finfarm.domain.market.entity.Seed;
 import com.moneygang.finfarm.domain.market.repository.AgricultureRepository;
@@ -36,10 +33,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.Optional;
 
 @Log4j2
@@ -56,7 +51,7 @@ public class FarmServiceImpl implements FarmService{
 
     @Override
     public ResponseEntity<MyFarmResponse> myFarmView() {
-        MemberWarehouseDTO memberWarehouse = commonUtil.getMemberItem();
+        MemberWarehouseDTO memberWarehouse = commonUtil.getMemberItem(commonUtil.getMember());
         Member member = memberWarehouse.getMember();
         List<Reinforce> reinforceList =
                 reinforceRepository.findAllByReinforceLevelBetweenOrderByReinforceLevelAsc(
@@ -82,15 +77,7 @@ public class FarmServiceImpl implements FarmService{
             nextReinforceProbability = reinforceList.get(1).getReinforceSuccessProbability() * 100;
         }
 
-        List<FarmField> farmFieldList =
-                farmFieldRepository.findAllByMember_MemberPk(member.getMemberPk());
-
-        List<FarmFieldInfo> farmFieldInfoList = new ArrayList<>();
-        for (FarmField farmField : farmFieldList){
-            farmFieldInfoList.add(
-                    FarmFieldInfo.create(farmField, farmField.getAgriculture())
-            );
-        }
+        List<FarmFieldInfo> farmFieldInfoList = getFarmFieldInfo(member.getMemberPk());
 
         MyFarmResponse response = MyFarmResponse.create(
                 member, farmFieldInfoList, memberWarehouse.getMemberItems(),
@@ -105,25 +92,25 @@ public class FarmServiceImpl implements FarmService{
         Member member = commonUtil.getMember();
 
         int category = 2;
-        Seed seed = null;
+
+        List<Warehouse> warehouseList = new ArrayList<>();
+        int sumItemCount = 0;
+        Seed seed;
         Optional<Agriculture> agriculture = agricultureRepository.findByAgricultureName(request.getName());
         if(agriculture.isEmpty()){
             seed = seedRepository.findBySeedName(request.getName())
                     .orElseThrow(() -> new GlobalException(HttpStatus.NOT_FOUND, "request item not found"));
             category = 1;
-        }
 
-        List<Warehouse> warehouseList;
-        int sumItemCount;
-        if(category == 1){
             warehouseList =
-            warehouseRepository.findAllByMember_MemberPkAndAgriculture_AgriculturePkAndWarehouseCategoryOrderByWarehouseAmountAsc(
-                    member.getMemberPk(), seed.getAgriculture().getAgriculturePk(), category
+                    warehouseRepository.findAllByMember_MemberPkAndAgriculture_AgriculturePkAndWarehouseCategoryOrderByWarehouseAmountAsc(
+                            member.getMemberPk(), seed.getAgriculture().getAgriculturePk(), category
                     );
             sumItemCount = warehouseRepository.sumOfWarehouseMyAgricultureCount(
                     member.getMemberPk(), seed.getAgriculture().getAgriculturePk(), category
             );
-        }else {
+        }
+        if(category == 2){
             warehouseList =
                     warehouseRepository.findAllByMember_MemberPkAndAgriculture_AgriculturePkAndWarehouseCategoryOrderByWarehouseAmountAsc(
                             member.getMemberPk(), agriculture.get().getAgriculturePk(), category
@@ -150,16 +137,9 @@ public class FarmServiceImpl implements FarmService{
             }
         }
 
-        List<FarmField> farmFieldList =
-                farmFieldRepository.findAllByMember_MemberPk(member.getMemberPk());
-        List<FarmFieldInfo> farmFieldInfoList = new ArrayList<>();
-        for (FarmField farmField : farmFieldList){
-            farmFieldInfoList.add(
-                    FarmFieldInfo.create(farmField, farmField.getAgriculture())
-            );
-        }
+        List<FarmFieldInfo> farmFieldInfoList = getFarmFieldInfo(member.getMemberPk());
 
-        MemberWarehouseDTO memberWarehouseDTO = commonUtil.getMemberItem();
+        MemberWarehouseDTO memberWarehouseDTO = commonUtil.getMemberItem(member);
         DeleteItemResponse response = DeleteItemResponse.create(
                 memberWarehouseDTO.getMember(), farmFieldInfoList, memberWarehouseDTO.getMemberItems()
         );
@@ -260,16 +240,9 @@ public class FarmServiceImpl implements FarmService{
 
         farmFieldRepository.save(newFarmField);
 
-        List<FarmField> farmFieldList =
-                farmFieldRepository.findAllByMember_MemberPk(member.getMemberPk());
+        List<FarmFieldInfo> farmFieldInfoList = getFarmFieldInfo(member.getMemberPk());
 
-        List<FarmFieldInfo> farmFieldInfoList = new ArrayList<>();
-        for (FarmField farmField : farmFieldList){
-            farmFieldInfoList.add(
-                    FarmFieldInfo.create(farmField, farmField.getAgriculture())
-            );
-        }
-        MemberWarehouseDTO memberWarehouseDTO = commonUtil.getMemberItem();
+        MemberWarehouseDTO memberWarehouseDTO = commonUtil.getMemberItem(member);
         PlantResponse response = PlantResponse.create(
                 memberWarehouseDTO.getMember(), farmFieldInfoList,
                 memberWarehouseDTO.getMemberItems()
@@ -309,7 +282,6 @@ public class FarmServiceImpl implements FarmService{
         if (warehouseList.isEmpty()){
             //슬롯이 꽉 차있다면?
             if (warehouseSize == 25){
-                //todo: HttpStatus 확인
                 throw new GlobalException(HttpStatus.CONFLICT, "warehouse is full");
             }else{
                 //새롭게 추가하기
@@ -333,7 +305,6 @@ public class FarmServiceImpl implements FarmService{
             //현재 수량이 999개라서 못넣었으면 새롭게 추가해야됨
             if (!added){
                 if (warehouseSize == 25){
-                    //todo: HttpStatus 확인
                     throw new GlobalException(HttpStatus.CONFLICT, "warehouse is full");
                 }else{
                     //새롭게 추가하기
@@ -347,21 +318,28 @@ public class FarmServiceImpl implements FarmService{
         farmFieldRepository.deleteById(farmField.getFarmFieldPk());
 
         //갱신된 밭 정보 담기
-        List<FarmField> farmFieldList =
-                farmFieldRepository.findAllByMember_MemberPk(member.getMemberPk());
-
-        List<FarmFieldInfo> farmFieldInfoList = new ArrayList<>();
-        for (FarmField farm : farmFieldList){
-            farmFieldInfoList.add(
-                    FarmFieldInfo.create(farmField, farm.getAgriculture())
-            );
-        }
+        List<FarmFieldInfo> farmFieldInfoList = getFarmFieldInfo(member.getMemberPk());
 
         // 갱신된 창고 정보
-        MemberWarehouseDTO memberWarehouseDTO = commonUtil.getMemberItem();
+        MemberWarehouseDTO memberWarehouseDTO = commonUtil.getMemberItem(member);
 
-        HarvestResponse response = HarvestResponse.create(member, farmFieldInfoList, memberWarehouseDTO.getMemberItems());
+        HarvestResponse response =
+                HarvestResponse.create(member, farmFieldInfoList, memberWarehouseDTO.getMemberItems());
 
         return ResponseEntity.ok(response);
+    }
+
+    // 밭 정보 조회 함수
+    public List<FarmFieldInfo> getFarmFieldInfo(long memberPk){
+        List<FarmField> farmFieldList =
+                farmFieldRepository.findAllByMember_MemberPk(memberPk);
+
+        List<FarmFieldInfo> farmFieldInfoList = new ArrayList<>();
+        for (FarmField farmField : farmFieldList){
+            farmFieldInfoList.add(
+                    FarmFieldInfo.create(farmField, farmField.getAgriculture())
+            );
+        }
+        return farmFieldInfoList;
     }
 }

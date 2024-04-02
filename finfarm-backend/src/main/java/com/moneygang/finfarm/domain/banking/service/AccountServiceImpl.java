@@ -22,8 +22,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -59,7 +57,7 @@ public class AccountServiceImpl implements AccountService {
             }
 
             // 필터링2: 적요 내용
-            if(!request.getAccountNickname().equals("")) {
+            if(!request.getAccountNickname().isEmpty()) {
                 if(!request.getAccountNickname().equals(account.getAccountNickname())) continue accountLoop;
             }
 
@@ -188,7 +186,7 @@ public class AccountServiceImpl implements AccountService {
                 .stream()
                 .filter(a -> a.getAccountType().equals("송금")) // 송금 내역 필터링
                 .sorted(Comparator.comparing(Account::getAccountDate).reversed()) // 최신순 정렬
-                .collect(Collectors.toList());
+                .toList();
 
         BankingAccountRemitRecentResponse response = BankingAccountRemitRecentResponse.create();
 
@@ -328,16 +326,6 @@ public class AccountServiceImpl implements AccountService {
         if(!String.valueOf(originPassword).equals(accountPassword)) {
             throw new GlobalException(HttpStatus.BAD_REQUEST, "Password Not Match");
         }
-
-//        String pattern = "\\d{4}"; // 4자리 숫자 형태의 정규 표현식
-//        Pattern regex = Pattern.compile(pattern);
-//        Matcher matcher1 = regex.matcher(changePassword);
-//        Matcher matcher2 = regex.matcher(checkPassword);
-//
-//        // 예외2: 변경할 비밀번호 형식이 안맞을 때 (400)
-//        if(!matcher1.matches()||!matcher2.matches()) {
-//            throw new GlobalException(HttpStatus.BAD_REQUEST, "Not Match Input Format");
-//        }
 
         // 예외3: 변경 비밀번호와 변경 확인 비밀번호가 다를 때 (400)
         if(!changePassword.equals(checkPassword)) {

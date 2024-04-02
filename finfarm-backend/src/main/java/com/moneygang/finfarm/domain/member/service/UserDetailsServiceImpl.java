@@ -13,7 +13,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -24,12 +23,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         // 사용자 정보 조회
-        Optional<Member> optionalMember = memberRepository.findByMemberEmail(username);
-        log.info(optionalMember.get().toString());
-        if (!optionalMember.isPresent()) {
-            throw new GlobalException(HttpStatus.NOT_FOUND, "Member not found : " + username);
-        }
-        Member member = optionalMember.get();
+        Member member = memberRepository.findByMemberEmail(username)
+                .orElseThrow(() -> new GlobalException(HttpStatus.NOT_FOUND, "Member not found : " + username));
+        log.info(member.toString());
         return new User(member.getMemberEmail(), member.getMemberAccountPassword(), new ArrayList<>());
     }
 }

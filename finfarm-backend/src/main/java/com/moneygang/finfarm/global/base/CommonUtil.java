@@ -13,12 +13,10 @@ import com.moneygang.finfarm.domain.member.entity.Member;
 import com.moneygang.finfarm.domain.member.repository.MemberRepository;
 import com.moneygang.finfarm.global.dto.MemberWarehouseDTO;
 import com.moneygang.finfarm.global.exception.GlobalException;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,12 +31,10 @@ import java.net.URLEncoder;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Component
 public class CommonUtil {
-
     private final MemberRepository memberRepository;
     private final WarehouseRepository warehouseRepository;
     private final AgricultureRepository agricultureRepository;
@@ -56,14 +52,11 @@ public class CommonUtil {
         // 현재 접속한 유저 정보를 가져오는 메서드
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = authentication.getName();
-        Member currentMember = memberRepository.findByMemberEmail(userEmail)
+        return memberRepository.findByMemberEmail(userEmail)
                 .orElseThrow(() -> new GlobalException(HttpStatus.NOT_FOUND, "user not found"));
-
-        return currentMember;
     }
 
-    public MemberWarehouseDTO getMemberItem(){
-        Member member = getMember();
+    public MemberWarehouseDTO getMemberItem(Member member){
         List<Warehouse> warehouseList = warehouseRepository.findAllByMember_MemberPk(member.getMemberPk());
         List<SeedInfo> seedInfoList = new ArrayList<>();
         List<AgricultureInfo> agricultureInfoList = new ArrayList<>();
@@ -84,7 +77,6 @@ public class CommonUtil {
                 );
             }
         }
-
         return MemberWarehouseDTO.create(
                 member,
                 MemberItemsDTO.create(seedInfoList, agricultureInfoList)
@@ -113,18 +105,19 @@ public class CommonUtil {
 
         // URL 생성
         StringBuilder urlBuilder = new StringBuilder(apiUrl);
-        urlBuilder.append("&" + URLEncoder.encode("p_cert_key", "UTF-8") + "=" + certKey);
-        urlBuilder.append("&" + URLEncoder.encode("p_cert_id", "UTF-8") + "=" + URLEncoder.encode(certId, "UTF-8"));
-        urlBuilder.append("&" + URLEncoder.encode("p_returntype", "UTF-8") + "=" + URLEncoder.encode(returnType, "UTF-8"));
-        urlBuilder.append("&" + URLEncoder.encode("p_startday", "UTF-8") + "=" + URLEncoder.encode(startDay, "UTF-8"));
-        urlBuilder.append("&" + URLEncoder.encode("p_endday", "UTF-8") + "=" + URLEncoder.encode(endDay, "UTF-8"));
-        urlBuilder.append("&" + URLEncoder.encode("p_convert_kg_yn", "UTF-8") + "=" + URLEncoder.encode(convertKgYn, "UTF-8"));
-        urlBuilder.append("&" + URLEncoder.encode("p_itemcategorycode", "UTF-8") + "=" + URLEncoder.encode(itemCategoryCode, "UTF-8"));
-        urlBuilder.append("&" + URLEncoder.encode("p_itemcode", "UTF-8") + "=" + URLEncoder.encode(itemCode, "UTF-8"));
-        urlBuilder.append("&" + URLEncoder.encode("p_kindcode", "UTF-8") + "=" + URLEncoder.encode(kindCode, "UTF-8"));
-        urlBuilder.append("&" + URLEncoder.encode("p_productrankcode", "UTF-8") + "=" + URLEncoder.encode(productRankCode, "UTF-8"));
-        urlBuilder.append("&" + URLEncoder.encode("p_countrycode", "UTF-8") + "=" + URLEncoder.encode(countryCode, "UTF-8"));
-        urlBuilder.append("&" + URLEncoder.encode("p_productclscode", "UTF-8") + "=" + URLEncoder.encode(productClsCode, "UTF-8"));
+        final String ENCODING = "UTF-8";
+        urlBuilder.append("&" + URLEncoder.encode("p_cert_key", ENCODING) + "=" + certKey);
+        urlBuilder.append("&" + URLEncoder.encode("p_cert_id", ENCODING) + "=" + URLEncoder.encode(certId, ENCODING));
+        urlBuilder.append("&" + URLEncoder.encode("p_returntype", ENCODING) + "=" + URLEncoder.encode(returnType, ENCODING));
+        urlBuilder.append("&" + URLEncoder.encode("p_startday", ENCODING) + "=" + URLEncoder.encode(startDay, ENCODING));
+        urlBuilder.append("&" + URLEncoder.encode("p_endday", ENCODING) + "=" + URLEncoder.encode(endDay, ENCODING));
+        urlBuilder.append("&" + URLEncoder.encode("p_convert_kg_yn", ENCODING) + "=" + URLEncoder.encode(convertKgYn, ENCODING));
+        urlBuilder.append("&" + URLEncoder.encode("p_itemcategorycode", ENCODING) + "=" + URLEncoder.encode(itemCategoryCode, ENCODING));
+        urlBuilder.append("&" + URLEncoder.encode("p_itemcode", ENCODING) + "=" + URLEncoder.encode(itemCode, ENCODING));
+        urlBuilder.append("&" + URLEncoder.encode("p_kindcode", ENCODING) + "=" + URLEncoder.encode(kindCode, ENCODING));
+        urlBuilder.append("&" + URLEncoder.encode("p_productrankcode", ENCODING) + "=" + URLEncoder.encode(productRankCode, ENCODING));
+        urlBuilder.append("&" + URLEncoder.encode("p_countrycode", ENCODING) + "=" + URLEncoder.encode(countryCode, ENCODING));
+        urlBuilder.append("&" + URLEncoder.encode("p_productclscode", ENCODING) + "=" + URLEncoder.encode(productClsCode, ENCODING));
 
         // URL 연결 설정
         URL url = new URL(urlBuilder.toString());
@@ -133,7 +126,7 @@ public class CommonUtil {
 
         // 응답 코드 확인
         int responseCode = conn.getResponseCode();
-        System.out.println("Response Code: " + responseCode);
+        log.info("Response Code: {}", responseCode);
 
         // 응답 내용 읽기
         BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -148,8 +141,7 @@ public class CommonUtil {
         JSONObject rootObject = new JSONObject(response.toString());
         Object dataField = rootObject.get("data");
         // 'data'가 JSONObject일 경우
-        if (dataField instanceof JSONObject) {
-            JSONObject dataObject = (JSONObject) dataField;
+        if (dataField instanceof JSONObject dataObject) {
             // "error_code" 확인
             String errorCode = dataObject.optString("error_code", "not_found");
             if (!"000".equals(errorCode)) {return 0;}
@@ -161,7 +153,7 @@ public class CommonUtil {
 
                 if ("평균".equals(countyname)) {
                     String price = itemObject.getString("price");
-                    price = price.replaceAll(",", "");
+                    price = price.replace(",", "");
 
                     priceInt = Integer.parseInt(price);
                     if (agriculturePk != 8 && priceInt > 0) {

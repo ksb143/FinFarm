@@ -21,10 +21,8 @@ public class BankingAccountController {
 
 
     @Operation(summary = "계좌 내역 조회", description = "필터링, 정렬 조건에 따라 계좌 내역을 조회합니다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
-                    content = @Content(schema = @Schema(implementation = BankingAccountResponse.class))),
-    })
+    @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
+            content = @Content(schema = @Schema(implementation = BankingAccountResponse.class)))
     @PostMapping
     public ResponseEntity<BankingAccountResponse> getAccountHistory(@RequestBody BankingAccountRequest request) {
         return accountService.getAccountHistory(request);

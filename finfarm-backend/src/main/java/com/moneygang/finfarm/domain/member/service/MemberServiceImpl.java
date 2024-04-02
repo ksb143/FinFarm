@@ -1,6 +1,5 @@
 package com.moneygang.finfarm.domain.member.service;
 
-import com.amazonaws.services.s3.AmazonS3Client;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -71,7 +70,7 @@ public class MemberServiceImpl implements MemberService{
                 .memberImageUrl(request.getMemberImageUrl())
                 .memberSolveQuiz(false)
                 .memberLoanOverdue(false)
-                .memberCurPoint((long) 0.0)
+                .memberCurPoint(0L)
                 .memberCreateDate(LocalDate.now())
                 .farmLevel(1)
                 .memberLoanOverdue(false)
@@ -101,7 +100,7 @@ public class MemberServiceImpl implements MemberService{
         log.info("accessToken: " + kakaoAccessToken);
 
         //카카오 유저 정보 가져오기
-        HashMap<String, Object> userInfo = getUserKakaoInfo(kakaoAccessToken);
+        Map<String, Object> userInfo = getUserKakaoInfo(kakaoAccessToken);
         String memberEmail = (String) userInfo.get("email");
         log.info("userEmail: " + memberEmail);
 
@@ -134,8 +133,8 @@ public class MemberServiceImpl implements MemberService{
     }
 
     public String getKakaoAccessToken(MemberLoginRequest request) {
-        String access_Token = "";
-        String refresh_Token = "";
+        String access_Token;
+        String refresh_Token;
         String reqURL = "https://kauth.kakao.com/oauth/token";
 
         try {
@@ -189,16 +188,16 @@ public class MemberServiceImpl implements MemberService{
                 throw new GlobalException(HttpStatus.BAD_REQUEST, "잘못된 인가 코드입니다.");
             }
         } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+            throw new GlobalException(HttpStatus.INTERNAL_SERVER_ERROR, "error");
         }
 
         return access_Token;
     }
 
-    public HashMap<String, Object> getUserKakaoInfo(String access_Token) {
+    public Map<String, Object> getUserKakaoInfo(String access_Token) {
 
         // 요청하는 클라이언트마다 가진 정보가 다를 수 있기에 HashMap타입으로 선언
-        HashMap<String, Object> userInfo = new HashMap<String, Object>();
+        HashMap<String, Object> userInfo = new HashMap<>();
         String reqURL = "https://kapi.kakao.com/v2/user/me";
         try {
             HttpClient client = HttpClient.newHttpClient();
@@ -230,7 +229,7 @@ public class MemberServiceImpl implements MemberService{
             }
 
         } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+            throw new GlobalException(HttpStatus.INTERNAL_SERVER_ERROR, "error");
         }
         return userInfo;
     }
@@ -240,7 +239,7 @@ public class MemberServiceImpl implements MemberService{
         log.info("member reissue");
 
         //refreshToken 유효성 검사
-        String savedToken = (String) redisTemplate.opsForValue().get("token_" + userEmail);
+        String savedToken = redisTemplate.opsForValue().get("token_" + userEmail);
         if (refreshToken.isEmpty() || !tokenProvider.validateToken(refreshToken) || !refreshToken.equals(savedToken)) {
             log.info("토큰 재발급 실패");
             throw new GlobalException(HttpStatus.BAD_REQUEST, "refresh token 이 일치하지 않거나 존재하지 않습니다.");
@@ -309,9 +308,10 @@ public class MemberServiceImpl implements MemberService{
         if(!request_url.isEmpty() && !member.getMemberImageUrl().equals(request_url)) {
 
             // 기존 이미지 URL이 비어 있지 않다면 S3에서 해당 이미지 삭제
-            if (member.getMemberImageUrl() != null && !member.getMemberImageUrl().isEmpty()) {
+            if (!member.getMemberImageUrl().isEmpty()) {
                 //S3 이미지 삭제
                 awsS3ObjectStorage.deleteFile(member.getMemberImageUrl());
+
             }
             //새로운 이미지 url 을 member 객체에 저장
             member.setMemberImageUrl(request_url);

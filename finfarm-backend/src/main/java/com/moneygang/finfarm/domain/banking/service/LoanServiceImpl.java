@@ -2,11 +2,12 @@ package com.moneygang.finfarm.domain.banking.service;
 
 import com.moneygang.finfarm.domain.banking.entity.Loan;
 import com.moneygang.finfarm.domain.banking.repository.LoanRepository;
+import com.moneygang.finfarm.global.exception.GlobalException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -22,9 +23,8 @@ public class LoanServiceImpl implements LoanService {
 
     @Override
     public void removeLoan(Long loanPk) {
-        Optional<Loan> optionalLoan = loanRepository.findById(loanPk);
-
-        Loan loan = optionalLoan.get();
+        Loan loan = loanRepository.findById(loanPk)
+                .orElseThrow(() -> new GlobalException(HttpStatus.NOT_FOUND, "load not found"));
         loanRepository.delete(loan);
     }
 }

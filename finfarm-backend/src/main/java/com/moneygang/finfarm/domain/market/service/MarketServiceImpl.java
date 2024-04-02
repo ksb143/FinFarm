@@ -21,20 +21,10 @@ import com.moneygang.finfarm.global.exception.GlobalException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
-
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,8 +44,10 @@ public class MarketServiceImpl implements MarketService {
     @Override
     public ResponseEntity<MarketViewAllResponse> storeView() {
         List<AgricultureDTO> agricultureDTOList = new ArrayList<>();
+
         for(long i=1;i<=10;i++) {
             Optional<Agriculture> agricultureOptional = agricultureRepository.findById(i);
+
             List<AgriculturePrice> agriculturePriceList =
                     agriculturePriceRepository.findAllByAgriculture_AgriculturePkAndAgriculturePriceDateBetweenOrderByAgriculturePriceDateAsc(
                             agricultureOptional.get().getAgriculturePk(),
@@ -86,7 +78,10 @@ public class MarketServiceImpl implements MarketService {
             );
         }
         MarketViewAllResponse marketViewAllResponse =
-                MarketViewAllResponse.create(agricultureDTOList, commonUtil.getMemberItem().getMemberItems());
+                MarketViewAllResponse.create(
+                        agricultureDTOList,
+                        commonUtil.getMemberItem(commonUtil.getMember()).getMemberItems()
+                );
 
         return ResponseEntity.ok(marketViewAllResponse);
     }
@@ -156,7 +151,7 @@ public class MarketServiceImpl implements MarketService {
                 seedsToStore -= storingAmount; // 저장 후 남은 씨앗 수량 업데이트
             }
         }
-        MemberWarehouseDTO userInfo = commonUtil.getMemberItem();
+        MemberWarehouseDTO userInfo = commonUtil.getMemberItem(member);
         return ResponseEntity.ok(SeedPurchaseResponse.create(
                 userInfo.getMember().getMemberCurPoint(),
                 userInfo.getMemberItems()
@@ -208,7 +203,7 @@ public class MarketServiceImpl implements MarketService {
         member.updateCurPoint(salePrice);
         memberRepository.save(member);
 
-        MemberWarehouseDTO userInfo = commonUtil.getMemberItem();
+        MemberWarehouseDTO userInfo = commonUtil.getMemberItem(member);
         return ResponseEntity.ok(AgricultureSellResponse.create(
                 userInfo.getMember().getMemberCurPoint(),
                 userInfo.getMemberItems()

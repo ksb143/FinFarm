@@ -15,7 +15,6 @@ import com.moneygang.finfarm.domain.banking.repository.AccountRepository;
 import com.moneygang.finfarm.domain.banking.repository.LoanHistoryRepository;
 import com.moneygang.finfarm.domain.banking.repository.LoanRepository;
 import com.moneygang.finfarm.domain.member.entity.Member;
-import com.moneygang.finfarm.domain.member.repository.MemberRepository;
 import com.moneygang.finfarm.global.base.CommonUtil;
 import com.moneygang.finfarm.global.exception.GlobalException;
 import lombok.RequiredArgsConstructor;
@@ -34,14 +33,10 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class LoanHistoryServiceImpl implements LoanHistoryService {
-
     private final LoanRepository loanRepository;
     private final LoanHistoryRepository loanHistoryRepository;
     private final AccountRepository accountRepository;
-    private final MemberRepository memberRepository;
-
     private final AccountService accountService;
-
     private final CommonUtil commonUtil;
 
     @Override
@@ -146,7 +141,7 @@ public class LoanHistoryServiceImpl implements LoanHistoryService {
     public ResponseEntity<BankingLoanAuditResponse> loanAudit(BankingLoanAuditRequest request) {
         Member member = commonUtil.getMember();
 
-        boolean haveOverDue = member.isMemberLoanOverdue();; // 연체 내역이 있는지
+        boolean haveOverDue = member.isMemberLoanOverdue(); // 연체 내역이 있는지
         boolean isCurrentlyLoan = false; // 현재 해당 대출 상품을 이용하고 있는지
         boolean canLoan = false;
 

@@ -1,11 +1,9 @@
 package com.moneygang.finfarm.domain.member.controller;
 
-import com.moneygang.finfarm.domain.banking.dto.response.BankingLoanTakeResponse;
 import com.moneygang.finfarm.domain.member.dto.request.*;
 import com.moneygang.finfarm.domain.member.dto.response.*;
 import com.moneygang.finfarm.domain.member.entity.Member;
 import com.moneygang.finfarm.domain.member.service.MemberService;
-import com.moneygang.finfarm.domain.member.service.MemberServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -16,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
 
 @Slf4j
@@ -55,9 +52,9 @@ public class MemberController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)", content = @Content(schema = @Schema(implementation = MemberAutoLoginResponse.class))),
             @ApiResponse(responseCode = "401", description = """
-                    (message : \"토큰이 만료되었습니다.\", code : 401)
+                    (message : "토큰이 만료되었습니다.", code : 401)
                     
-                    (message : \"유효하지 않은 토큰입니다.\", code : 401)""", content = @Content),
+                    (message : "유효하지 않은 토큰입니다.", code : 401)""", content = @Content),
     })
     @PostMapping("/auto-login")
     public ResponseEntity<MemberAutoLoginResponse> autoLogin() {

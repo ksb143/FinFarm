@@ -50,14 +50,6 @@ public class LoanHistory {
 
     protected LoanHistory() {}
 
-//    public LoanHistory loan(Long amount, Member member, Loan loan) {
-//        LoanHistory loanHistory = LoanHistory.builder()
-//                .amount(amount)
-//                .member(member)
-//                .loan(loan)
-//                .build();
-//    }
-
     public void setMember(Member member) {
         this.member = member;
         member.getLoanHistoryList().add(this);

@@ -9,7 +9,6 @@ import com.moneygang.finfarm.domain.farm.dto.response.HarvestResponse;
 import com.moneygang.finfarm.domain.farm.dto.response.MyFarmResponse;
 import com.moneygang.finfarm.domain.farm.dto.response.PlantResponse;
 import com.moneygang.finfarm.domain.farm.service.FarmService;
-import com.moneygang.finfarm.domain.market.dto.response.AgricultureInfoResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
