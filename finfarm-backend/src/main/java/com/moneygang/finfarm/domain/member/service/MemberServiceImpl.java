@@ -120,7 +120,7 @@ public class MemberServiceImpl implements MemberService{
                     .secure(true) // HTTPS를 통해서만 쿠키가 전송되도록 함
                     .path("/") // 쿠키의 경로 설정
                     // .domain("yourdomain.com") // 쿠키의 도메인 설정 (필요한 경우)
-                    .maxAge(7 * 24 * 60 * 60) // 쿠키의 만료 시간 설정 (7일)
+                    .maxAge((long) 7 * 24 * 60 * 60) // 쿠키의 만료 시간 설정 (7일)
                     .build();
 
             // 쿠키를 response header 에 담아서 저장
@@ -255,7 +255,7 @@ public class MemberServiceImpl implements MemberService{
                 .secure(true) // HTTPS를 통해서만 쿠키가 전송되도록 함
                 .path("/") // 쿠키의 경로 설정
                 // .domain("yourdomain.com") // 쿠키의 도메인 설정 (필요한 경우)
-                .maxAge(7 * 24 * 60 * 60) // 쿠키의 만료 시간 설정 (7일)
+                .maxAge((long) 7 * 24 * 60 * 60) // 쿠키의 만료 시간 설정 (7일)
                 .build();
 
         // 쿠키를 response header 에 담아서 저장

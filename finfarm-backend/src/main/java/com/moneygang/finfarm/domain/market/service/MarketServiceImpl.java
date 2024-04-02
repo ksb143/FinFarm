@@ -28,7 +28,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 
 @Service
@@ -46,11 +45,13 @@ public class MarketServiceImpl implements MarketService {
         List<AgricultureDTO> agricultureDTOList = new ArrayList<>();
 
         for(long i=1;i<=10;i++) {
-            Optional<Agriculture> agricultureOptional = agricultureRepository.findById(i);
+            Agriculture agriculture =
+                    agricultureRepository.findById(i)
+                            .orElseThrow(() -> new GlobalException(HttpStatus.NOT_FOUND, "not found"));
 
             List<AgriculturePrice> agriculturePriceList =
                     agriculturePriceRepository.findAllByAgriculture_AgriculturePkAndAgriculturePriceDateBetweenOrderByAgriculturePriceDateAsc(
-                            agricultureOptional.get().getAgriculturePk(),
+                            agriculture.getAgriculturePk(),
                             LocalDate.now().minusDays(364),
                             LocalDate.now()
                     );
@@ -70,7 +71,7 @@ public class MarketServiceImpl implements MarketService {
             }
             agricultureDTOList.add(
                 AgricultureDTO.create(
-                        agricultureOptional.get(),
+                        agriculture,
                         agriculturePriceList,
                         minPrice, maxPrice,
                         agriculturePriceHistoryDTOList
