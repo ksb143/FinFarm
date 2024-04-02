@@ -6,10 +6,14 @@ const InventoryItem = () => (
     <div className="h- mx-auto mb-1 mt-1 w-20 bg-amber-200">
       Lorem ipsum dolor sit amet Lorem ipsum dolor
     </div>
-    <div className="flex flex-row justify-between border-emerald-400 bg-white">
-      <div className="w-5 border-2">+</div>
+    <div className="flex justify-evenly border-emerald-400 bg-white">
+      <div className="w-6">
+        <p>🟢</p>
+      </div>
       <div className="flex-grow border-2 border-emerald-400 bg-white">0 개</div>
-      <div className="w-5 border-2">-</div>
+      <div className="">
+        <p>🗑</p>
+      </div>
     </div>
   </div>
 );
