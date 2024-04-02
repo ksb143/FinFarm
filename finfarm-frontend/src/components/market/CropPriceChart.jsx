@@ -1,29 +1,39 @@
 import PropTypes from 'prop-types';
 
 import { timeFormat } from 'd3-time-format';
-import { timeMonday } from 'd3-time';
 import { ResponsiveLine } from '@nivo/line';
+import { useEffect, useState } from 'react';
 
 CropPriceChart.propTypes = {
   data: PropTypes.array,
 };
 
-const formatDate = timeFormat('%Y-%m-%d');
+const formatDate = timeFormat('%Y-%m-%d'); // 날짜 포맷
+const currencyFormat = (value) => `${value.toLocaleString()}₩`; // 원화 포맷
 
 export default function CropPriceChart({ data }) {
-  const dataWithDate = data.map((series) => ({
-    ...series,
-    data: series.data.map((d) => ({
-      ...d,
-      x: new Date(d.x),
-    })),
-  }));
+  const [formatDateData, setFormatDateData] = useState([]);
+  useEffect(() => {
+    const dataWithDate = data.map((series) => ({
+      ...series,
+      data: series.data.map((d) => ({
+        ...d,
+        x: new Date(d.x),
+      })),
+    }));
+    setFormatDateData(dataWithDate);
+  }, [data]);
 
   return (
     <ResponsiveLine
-      data={dataWithDate}
-      margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
-      xScale={{ type: 'time', format: '%Y-%m-%d', precision: 'day' }}
+      data={formatDateData}
+      margin={{ top: 10, right: 30, bottom: 100, left: 70 }}
+      xScale={{
+        format: '%Y-%m-%d',
+        precision: 'day',
+        type: 'time',
+        useUTC: false,
+      }}
       yScale={{
         type: 'linear',
         min: 'auto',
@@ -32,8 +42,8 @@ export default function CropPriceChart({ data }) {
         reverse: false,
       }}
       xFormat="time:%Y-%m-%d"
-      yFormat=" >-.2f"
-      curve="monotoneX"
+      yFormat={(value) => currencyFormat(value)}
+      curve="natural"
       axisTop={null}
       axisRight={null}
       axisBottom={{
@@ -41,10 +51,9 @@ export default function CropPriceChart({ data }) {
         tickPadding: 5,
         tickRotation: 40,
         legend: '기간',
-        legendOffset: 50,
+        legendOffset: 70,
         legendPosition: 'middle',
         truncateTickAt: 0,
-        tickValues: 'every 100 days',
         format: formatDate,
       }}
       axisLeft={{
@@ -52,49 +61,24 @@ export default function CropPriceChart({ data }) {
         tickPadding: 5,
         tickRotation: 0,
         legend: '가격 (원)',
-        legendOffset: -50,
+        legendOffset: -60,
         legendPosition: 'middle',
         truncateTickAt: 0,
       }}
-      enableGridX={false}
-      enableGridY={false}
+      enableGridX
+      enableGridY
       colors="#84cc16"
+      lineWidth={3}
       enablePoints={false}
+      areaOpacity={0.5}
       pointSize={10}
       pointColor={{ theme: 'background' }}
       pointBorderWidth={2}
-      pointBorderColor={{ from: 'serieColor' }}
+      pointBorderColor={{ from: 'serieColor', modifiers: [] }}
+      enablePointLabel={true}
       pointLabelYOffset={-12}
-      enableArea={true}
-      areaOpacity={0.5}
-      enableTouchCrosshair={true}
       useMesh={true}
-      legends={[
-        {
-          anchor: 'bottom-right',
-          direction: 'column',
-          justify: false,
-          translateX: 100,
-          translateY: 0,
-          itemsSpacing: 0,
-          itemDirection: 'left-to-right',
-          itemWidth: 80,
-          itemHeight: 20,
-          itemOpacity: 0.75,
-          symbolSize: 12,
-          symbolShape: 'circle',
-          symbolBorderColor: 'rgba(0, 0, 0, .5)',
-          effects: [
-            {
-              on: 'hover',
-              style: {
-                itemBackground: 'rgba(0, 0, 0, .03)',
-                itemOpacity: 1,
-              },
-            },
-          ],
-        },
-      ]}
+      legends={[]}
     />
   );
 }
