@@ -73,6 +73,7 @@ export default function WareHouseItem({ item }) {
                   min="0"
                   value={count}
                   onChange={(e) => setCount(parseInt(e.target.value) || 0)} // 입력값으로 상태 업데이트
+                  disabled
                 />
               </div>
             </div>
