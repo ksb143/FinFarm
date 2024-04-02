@@ -1,9 +1,0 @@
-/* Warehouse.module.css */
-.inventory-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr); /* 4 columns */
-  gap: 0.5rem;
-  background-color: #f3e9dc; /* 배경색 */
-  padding: 1rem;
-  border: 1px solid #a88734; /* 테두리 색 */
-}
