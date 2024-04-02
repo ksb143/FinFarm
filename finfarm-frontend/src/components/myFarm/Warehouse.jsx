@@ -8,7 +8,7 @@ export default function WareHouse(memberItems) {
     nickname: state.nickname,
   }));
 
-  const wareHouseSpace = Array.from({ length: 25 }, (_, index) =>
+  const wareHouseSpace = Array.from({ length: 20 }, (_, index) =>
     memberItems[index] ? memberItems[index] : null,
   );
 

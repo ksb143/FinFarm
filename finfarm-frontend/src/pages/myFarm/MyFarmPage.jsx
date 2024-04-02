@@ -32,28 +32,37 @@ export default function MyFarmPage() {
       amount: agriculture.agricultureAmount,
     })),
   ];
+  const [fetchingInfo, setFetchingInfo] = useState(true);
 
   useEffect(() => {
     const fetchFarmerInfo = async () => {
       try {
+        if (!fetchingInfo) return;
         // 기본 코드
         const tempFarmInfo = await CheckMyfarmInfo();
+        console.log('Farmer Info:', tempFarmInfo); // 결과값 콘솔에 출력
         setFarmerInfo(tempFarmInfo);
+
         // 창고 저장 코드
         const tempMemberItems = formatMemberItems(tempFarmInfo.memberItems);
+        console.log('Farmer 아이템 Info:', tempMemberItems); // 결과값 콘솔에 출력
         setItems(tempMemberItems);
+
+        setFetchingInfo(false);
       } catch (error) {
         console.error(error);
       }
     };
     fetchFarmerInfo();
-  }, [items]);
+  }, [fetchingInfo]); // 의존성 배열을 fetchingInfo로 변경
 
   return (
     <div className="flex w-full">
       <div className="flex w-1/2 justify-between">
         <div>
-          <GardenField />
+          <GardenField farmerInfo={farmerInfo} />
+          <br />
+          <br />
           <ButtonFarmLevel />
         </div>
       </div>
