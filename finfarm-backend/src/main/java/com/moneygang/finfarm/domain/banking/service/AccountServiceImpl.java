@@ -46,28 +46,25 @@ public class AccountServiceImpl implements AccountService {
         LocalDate openDate = member.getMemberCreateDate();
         List<BankingAccountDetail> bankingAccountDetailList = new ArrayList<>();
 
-        accountLoop:
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate startDate = LocalDate.parse(request.getStartDate(), formatter);
+        LocalDate endDate = LocalDate.parse(request.getEndDate(), formatter);
         for(Account account: accountList) {
             // 필터링1: 거래 타입(입금, 출금 두 가지로 입력 형식 들어옴)
-            if(request.getAccountType().equals("deposit")
-                    && (account.getAccountAmount()<0) ) {continue accountLoop;}
-            else if(request.getAccountType().equals("withdraw")
-                    && (account.getAccountAmount()>0) ) {continue accountLoop;}
-
-            // 필터링2: 적요 내용
-            if( ( !request.getAccountNickname().isEmpty() )
-                    && ( !request.getAccountNickname().equals(account.getAccountNickname())) ) {
-                continue accountLoop;
+            if("deposit".equals(request.getAccountType()) && account.getAccountAmount() < 0) {
+                continue;
             }
-
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            LocalDate startDate = LocalDate.parse(request.getStartDate(), formatter);
-            LocalDate endDate = LocalDate.parse(request.getEndDate(), formatter);
-
+            if("withdraw".equals(request.getAccountType()) && account.getAccountAmount() > 0) {
+                continue;
+            }
+            if(!request.getAccountNickname().isEmpty() && !request.getAccountNickname().equals(account.getAccountNickname())) {
+                continue;
+            }
             // 필터링3: startDate ~ endDate
             LocalDateTime accountDate = account.getAccountDate();
-            if(accountDate.isBefore(startDate.atStartOfDay()) || accountDate.isAfter(endDate.plusDays(1).atStartOfDay())) continue accountLoop;
-
+            if(accountDate.isBefore(startDate.atStartOfDay()) || accountDate.isAfter(endDate.atTime(23, 59, 59))) {
+                continue;
+            }
             Long amount = account.getAccountAmount();
             Long accountBalanceAtThatTime = account.getAccountBalance();
             LocalDateTime date = account.getAccountDate();

@@ -31,11 +31,11 @@ public class SecurityConfig {
                 .cors(httpSecurityCordsConfigures ->
                         httpSecurityCordsConfigures.configurationSource(corsConfigurationSource())
                 )
-                .csrf((csrf) -> csrf.disable())
+                .csrf(csrf -> csrf.disable())
                 .exceptionHandling(authenticationManager -> authenticationManager
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint))
-                .headers((headers) -> headers.disable())
-                .authorizeHttpRequests((authorizeRequests) ->
+                .headers(headers -> headers.disable())
+                .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                                 .requestMatchers("/member", "/member/login", "/member/sign-up", "/member/reissue", "/member/email/is-exist/**", "/member/nickname/is-exist/**", "/member/profile", "/market/test").permitAll()

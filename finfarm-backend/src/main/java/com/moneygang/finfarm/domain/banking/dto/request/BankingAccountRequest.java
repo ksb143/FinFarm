@@ -2,8 +2,6 @@ package com.moneygang.finfarm.domain.banking.dto.request;
 
 import lombok.Getter;
 
-import java.time.LocalDate;
-
 @Getter
 public class BankingAccountRequest {
     private String startDate;

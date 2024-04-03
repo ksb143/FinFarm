@@ -1,10 +1,8 @@
 package com.moneygang.finfarm.global.exception;
 
 import com.google.gson.Gson;
-import com.moneygang.finfarm.global.exception.GlobalException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
