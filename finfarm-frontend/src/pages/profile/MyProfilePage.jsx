@@ -154,7 +154,7 @@ export default function UserProfilePage() {
       </div>
       <button
         onClick={sendProfile}
-        className="my-3 w-full rounded-lg bg-lime-300 py-1 hover:bg-lime-950 hover:text-white"
+        className="my-3 w-full rounded-lg bg-lime-500 py-1 hover:bg-lime-950 hover:text-white"
       >
         프로필 등록
       </button>

@@ -5,12 +5,19 @@ import ButtonFarmLevel from '@/components/myFarm/ButtonFarmLevel';
 import { CheckMyfarmInfo, DumpTrashes } from '@/api/myfarm';
 
 import useItemStore from '@/store/itemStore';
+import useFieldStore from '@/store/fieldStore';
 
 export default function MyFarmPage() {
   const [farmerInfo, setFarmerInfo] = useState(null);
+
   const { items, setItems } = useItemStore((state) => ({
     items: state.items,
     setItems: state.setItems,
+  }));
+
+  const { farmField, setFarmField } = useFieldStore((state) => ({
+    farmField: state.farmField,
+    setFarmField: state.setFarmField,
   }));
 
   const formatMemberItems = (tempMemberItems) => [
@@ -27,6 +34,7 @@ export default function MyFarmPage() {
       amount: agriculture.agricultureAmount,
     })),
   ];
+
   const [fetchingInfo, setFetchingInfo] = useState(true);
 
   useEffect(() => {
@@ -35,13 +43,14 @@ export default function MyFarmPage() {
         if (!fetchingInfo) return;
         // 기본 코드
         const tempFarmInfo = await CheckMyfarmInfo();
-        console.log('Farmer Info:', tempFarmInfo); // 결과값 콘솔에 출력
         setFarmerInfo(tempFarmInfo);
 
         // 창고 저장 코드
         const tempMemberItems = formatMemberItems(tempFarmInfo.memberItems);
-        console.log('Farmer 아이템 Info:', tempMemberItems); // 결과값 콘솔에 출력ch
         setItems(tempMemberItems);
+
+        // 농장 필드 저장 코드
+        setFarmField(tempFarmInfo.farmFieldInfo);
 
         setFetchingInfo(false);
       } catch (error) {
@@ -49,15 +58,16 @@ export default function MyFarmPage() {
       }
     };
     fetchFarmerInfo();
-  }, [items]); // 의존성 배열을 fetchingInfo로 변경
+  }, [items, farmField]); // 의존성 배열을 fetchingInfo로 변경
 
   return (
     <div className="flex w-full">
       <div className="flex w-1/2 justify-between">
         <div>
-          <GardenField farmerInfo={farmerInfo} />
-          <br />
-          <br />
+          {farmerInfo && (
+            <p className="mb-5 text-xl">{`${farmerInfo.nickname} 농장의 지력은 ${farmerInfo.farmLevel}레벨`}</p>
+          )}
+          <GardenField farmerInfo={farmerInfo} farmField={farmField} />
           <ButtonFarmLevel />
         </div>
       </div>
