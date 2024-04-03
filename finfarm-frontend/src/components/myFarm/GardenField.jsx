@@ -1,28 +1,34 @@
-import React from 'react';
 import 새싹 from '@/assets/images/sprout.png';
+import React from 'react';
 import useFarmStore from '@/store/farmStore';
-import useCropStore from '@/store/cropStore'; // useCropStore import 추가
+import useCropStore from '@/store/cropStore';
 
 const GardenField = ({ farmerInfo }) => {
-  // 전역상태관리 import 로직
   const { farmFieldInfo } = useFarmStore((state) => ({
     farmFieldInfo: state.farmFieldInfo,
   }));
 
-  const { crop } = useCropStore(); // useCropStore로부터 crop 상태를 가져옴
+  const { crop } = useCropStore();
 
   const getImageByAgricultureName = (agricultureName) => {
     const cropInfo = crop.find((cropItem) => cropItem.name === agricultureName);
-    return cropInfo ? cropInfo.image : null;
+    return cropInfo ? cropInfo.image : 새싹;
   };
 
-  const GardenItem = farmFieldInfo.map((field, index) => (
-    <div key={index} className="h-30 w-30 static rounded-3xl bg-orange-950">
+  let gardenItems = Array.from({ length: 25 }, () => 새싹); // 총 25개의 필드를 가정
+
+  farmerInfo?.farmFieldInfo.forEach((field) => {
+    if (field.index - 1 < gardenItems.length) {
+      gardenItems[field.index - 1] = getImageByAgricultureName(
+        field.agricultureName,
+      );
+    }
+  });
+
+  const GardenItem = gardenItems.map((imageSrc, index) => (
+    <div key={index} className="h-30 w-30 static rounded-3xl bg-orange-700">
       <div className="flex flex-row justify-center">
-        <img
-          src={getImageByAgricultureName(field.agricultureName)}
-          alt="작물"
-        />
+        <img src={imageSrc} alt="작물" />
       </div>
     </div>
   ));
@@ -39,7 +45,6 @@ const GardenField = ({ farmerInfo }) => {
               {farmerInfo.nickname} 님의 농장
             </h1>
           </div>
-
           <div className="overflow-auto border-2 bg-red-950 px-3 py-3 ">
             <div className="grid grid-cols-5 justify-items-center gap-2 rounded-2xl bg-amber-900 px-1 py-1 text-center">
               {GardenItem}
