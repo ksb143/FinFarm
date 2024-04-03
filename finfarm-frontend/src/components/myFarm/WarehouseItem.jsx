@@ -36,7 +36,7 @@ export default function WareHouseItem({ item }) {
     <div className="h-40 w-1/5 border-4 border-gray-600 bg-gradient-to-b from-gray-400 to-gray-500">
       {item ? (
         <div
-          className="relative h-full"
+          className="group relative h-full"
           onMouseEnter={() => setIsToolTip(true)}
           onMouseLeave={() => setIsToolTip(false)}
         >
@@ -82,16 +82,15 @@ export default function WareHouseItem({ item }) {
             >
               -
             </button>
-            <button className="bg-white text-center">🗑</button>
           </div>
-          {isTooltip && (
-            <div className="absolute -right-24 -top-12 z-10 max-w-40 transform rounded bg-lime-500 px-4 py-2 text-xs text-white">
+          <div className="chat chat-end">
+            <div className="chat-bubble absolute -left-32 -top-12 min-w-32 text-xs opacity-0 transition-opacity duration-300 group-hover:opacity-100">
               <p>이름: {item.name}</p>
               {item.unit && <p>단위: {item.unit}</p>}
               {item.period && <p>생육기간: {convertTime(item.period)}</p>}
               <p>{item.content}</p>
             </div>
-          )}
+          </div>
         </div>
       ) : (
         <div className="relative h-full">
@@ -119,7 +118,6 @@ export default function WareHouseItem({ item }) {
             >
               -
             </button>
-            <button className="bg-white text-center">🗑</button>
           </div>
         </div>
       )}
