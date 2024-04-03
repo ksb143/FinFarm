@@ -44,7 +44,7 @@ public class MarketServiceImpl implements MarketService {
     @Override
     public ResponseEntity<MarketViewAllResponse> storeView() {
         List<Long> ids = new ArrayList<>(Arrays.asList(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L));
-        List<Agriculture> agricultures = agricultureRepository.findAllById(ids);
+        List<Agriculture> agricultureList = agricultureRepository.findAllById(ids);
         LocalDate startDate = LocalDate.now().minusDays(364);
         LocalDate endDate = LocalDate.now();
         List<AgriculturePrice> prices =
@@ -57,7 +57,7 @@ public class MarketServiceImpl implements MarketService {
                 prices.stream()
                         .collect(Collectors.groupingBy(price -> price.getAgriculture().getAgriculturePk()));
 
-        List<AgricultureDTO> agricultureDTOList = agricultures.stream().map(agriculture -> {
+        List<AgricultureDTO> agricultureDTOList = agricultureList.stream().map(agriculture -> {
             List<AgriculturePrice> agriculturePriceList =
                     priceMap.getOrDefault(agriculture.getAgriculturePk(), Collections.emptyList());
 
