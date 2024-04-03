@@ -43,8 +43,29 @@ function GardenItem({ index, status, name }) {
     }
     setShowModal(false);
   };
+
+  const onDragOver = (e) => {
+    e.preventDefault(); // 드래그 오버 시 기본 동작을 방지 (드롭을 허용)
+  };
+
+  const onDrop = (e) => {
+    e.preventDefault();
+    const seedData = e.dataTransfer.getData('application/json');
+    const seed = JSON.parse(seedData);
+    if (seed.period) {
+      onSeedDropped(seed); // 씨앗 심기 로직 처리
+    }
+  };
+
+  const onSeedDropped = (seed) => {
+    console.log(seed);
+    console.log(index);
+  };
+
   return (
     <div
+      onDragOver={onDragOver}
+      onDrop={onDrop}
       onClick={handleItemClick}
       style={{
         width: '100%',

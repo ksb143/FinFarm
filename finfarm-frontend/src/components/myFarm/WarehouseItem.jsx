@@ -22,6 +22,16 @@ export default function WareHouseItem({ item }) {
     return `${hours}시간 ${remainingMinutes}분`;
   };
 
+  // 씨앗 드래그
+  const handleDragStart = (e) => {
+    if (!item.period) {
+      e.preventDefault();
+      return;
+    }
+    const itemData = JSON.stringify(item);
+    e.dataTransfer.setData('application/json', itemData);
+  };
+
   return (
     <div className="h-40 w-1/5 border-4 border-gray-600 bg-gradient-to-b from-gray-400 to-gray-500">
       {item ? (
@@ -33,7 +43,11 @@ export default function WareHouseItem({ item }) {
           <div className="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-full bg-white p-0 text-xs">
             {item.amount}개
           </div>
-          <div className="h-4/6 bg-gradient-to-b from-gray-300 to-gray-500">
+          <div
+            draggable={item.period}
+            onDragStart={(event) => handleDragStart(event, item)}
+            className="h-4/6 bg-gradient-to-b from-gray-300 to-gray-500"
+          >
             {cropImage && (
               <img
                 src={cropImage}
