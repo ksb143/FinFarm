@@ -38,7 +38,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authorizeRequests) ->
                         authorizeRequests
                                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                                .requestMatchers("/member", "/member/login", "/member/sign-up", "/member/reissue", "/member/email/is-exist/**", "/member/nickname/is-exist/**", "/member/profile").permitAll()
+                                .requestMatchers("/member", "/member/login", "/member/sign-up", "/member/reissue", "/member/email/is-exist/**", "/member/nickname/is-exist/**", "/member/profile", "/market/test").permitAll()
                                 .anyRequest().authenticated() // 나머지 모든 경로는 인증 필요
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class) //JWT 유효성 확인 및 ID/PW 검증.
