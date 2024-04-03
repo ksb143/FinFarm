@@ -51,6 +51,30 @@ export default function MarketDetailPage() {
   const [sellCount, setSellCount] = useState(); // 판매 개수
   const [buyCount, setBuyCount] = useState(); // 구매 개수
 
+  const growingPeriod = () => {
+    if (cropName === '고구마') {
+      return '9시간 20분';
+    } else if (cropName === '감자') {
+      return '7시간';
+    } else if (cropName === '마늘') {
+      return '7시간 40분';
+    } else if (cropName === '대파') {
+      return '5시간 50분';
+    } else if (cropName === '양파') {
+      return '7시간 10분';
+    } else if (cropName === '쌀') {
+      return '1일 21시간 20분';
+    } else if (cropName === '당근') {
+      return '6시간 40분';
+    } else if (cropName === '배추') {
+      return '7시간 20분';
+    } else if (cropName === '수박') {
+      return '1일 13시간 50분';
+    } else if (cropName === '애호박') {
+      return '3시간';
+    }
+  };
+
   // 데이터 필터링 로직
   const filterDataByTimeRange = (data) => {
     const now = new Date();
@@ -270,9 +294,12 @@ export default function MarketDetailPage() {
             </li>
           </ul>
         </div>
-        <Link to="/market">
-          <div className="my-5 ml-5">{`< 🛍장터로 돌아가기`}</div>
-        </Link>
+        <div className="flex items-center justify-between">
+          <Link to="/market">
+            <div className="my-5 ml-5">{`< 🛍장터로 돌아가기`}</div>
+          </Link>
+          <p className="mr-5">{`${cropName}의 생육 기간은 ${growingPeriod()}입니다`}</p>
+        </div>
         <div className="h-96">
           {filteredCropData && (
             <CropPriceChart
