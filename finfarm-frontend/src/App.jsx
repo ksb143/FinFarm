@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
 import EntrancePage from '@/pages/entrance/EntrancePage';
 import RedirectPage from '@/pages/entrance/RedirectPage';
 
@@ -55,6 +56,7 @@ function App() {
           <Route path="mypage/*" element={<MyPage />} />
         </Routes>
       </div>
+      <Footer></Footer>
     </Router>
   );
 }

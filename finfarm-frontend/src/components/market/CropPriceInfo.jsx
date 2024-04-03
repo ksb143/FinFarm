@@ -1,12 +1,27 @@
+import PropTypes from 'prop-types';
+
+CropPriceInfo.propTypes = {
+  agricultureName: PropTypes.string,
+  agricultureImg: PropTypes.string,
+  agricultureContent: PropTypes.string,
+  fluctuationPrice: PropTypes.number,
+  fluctuationRate: PropTypes.number,
+  onClickEvent: PropTypes.func,
+};
+
 export default function CropPriceInfo({
   agricultureName,
   agricultureImg,
   agricultureContent,
   fluctuationPrice,
   fluctuationRate,
+  onClickEvent,
 }) {
   return (
-    <div className="mb-6 grid w-full grid-cols-9 items-center">
+    <div
+      onClick={onClickEvent}
+      className="mb-6 grid w-full cursor-pointer grid-cols-9 items-center"
+    >
       <div className="avatar col-span-2">
         <div className="w-20 rounded-full ring ring-gray-300 ring-offset-2 ring-offset-base-100">
           <img src={agricultureImg} />
