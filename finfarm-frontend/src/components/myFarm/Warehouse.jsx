@@ -13,11 +13,11 @@ export default function WareHouse(memberItems) {
   );
 
   return (
-    <div>
-      <h1 className="border-8 border-amber-700 bg-amber-100 text-center text-2xl">
+    <div className="w-full">
+      <h1 className="rounded-t-xl border-8 border-gray-600 bg-gradient-to-r from-gray-300 via-gray-400 text-center text-2xl shadow-xl">
         {nickname} 님의 창고
       </h1>
-      <div className="flex flex-wrap border-8 border-amber-700">
+      <div className="flex flex-wrap rounded-b-xl border-8 border-gray-600 bg-gray-600">
         {wareHouseSpace.map((item, idx) => (
           <WareHouseItem key={idx} item={item} />
         ))}
