@@ -110,7 +110,7 @@ public class FarmServiceImpl implements FarmService{
                     member.getMemberPk(), seed.getAgriculture().getAgriculturePk(), category
             );
         }
-        if(category == 2){
+        if(agriculture.isPresent()){
             warehouseList =
                     warehouseRepository.findAllByMember_MemberPkAndAgriculture_AgriculturePkAndWarehouseCategoryOrderByWarehouseAmountAsc(
                             member.getMemberPk(), agriculture.get().getAgriculturePk(), category
