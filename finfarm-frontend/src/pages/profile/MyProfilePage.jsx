@@ -25,26 +25,36 @@ export default function UserProfilePage() {
     setMusicVolume,
   } = useSoundSettingsStore();
 
-  // 설정을 저장하는 함수
-  const saveSettings = () => {
-    console.log('설정 저장:', { soundEffects, backgroundMusic, musicVolume });
-    // 여기에 설정을 저장하는 로직을 구현합니다.
-  };
-
   const fileInputRef = useRef(null);
   const [previewImage, setPreviewImage] = useState('');
   const [newImage, setNewImage] = useState('');
   const [newImageUrl, setNewImageUrl] = useState('');
   const [showModal, setShowModal] = useState(false);
 
+  // 파일 고르는 폴더 열기
   const handleProfilePictureChange = () => {
     fileInputRef.current.click();
-    setShowModal(true);
   };
 
   // 프로필 파일 미리 세팅
   const handleProfilePictureUpload = (event) => {
-    setNewImage(event.target.files[0]);
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewImage(reader.result);
+        setShowModal(true);
+      };
+
+      reader.readAsDataURL(file);
+      setNewImage(file);
+    }
+  };
+
+  // 프로필 변경 취소
+  const handleModalClose = () => {
+    setShowModal(false);
+    setNewImage('');
   };
 
   // 회원 탈퇴
@@ -124,7 +134,7 @@ export default function UserProfilePage() {
       <ProfileImageModal
         show={showModal}
         onClose={() => {
-          setShowModal(false);
+          handleModalClose;
         }}
         onConfirm={() => {
           setShowModal(false);
