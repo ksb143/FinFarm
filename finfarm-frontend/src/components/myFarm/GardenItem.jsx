@@ -79,7 +79,7 @@ function GardenItem({ index, item }) {
       day: 'numeric',
       hour: 'numeric',
       minute: 'numeric',
-      timeZone: 'UTC', // Z는 UTC를 의미하므로, UTC 기준으로 변환합니다.
+      timeZone: 'Asia/Seoul', // Z는 UTC를 의미하므로, UTC 기준으로 변환합니다.
     };
     return new Intl.DateTimeFormat('ko-KR', options).format(date);
   };
