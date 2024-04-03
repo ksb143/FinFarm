@@ -40,6 +40,7 @@ async function membershipWithdrawal() {
 
 // 마이페이지 수정
 async function editMyInfo(changeInfo) {
+  console.log(changeInfo);
   try {
     const response = await local.put('/member/my-page', changeInfo);
     console.log(response);
