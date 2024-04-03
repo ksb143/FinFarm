@@ -149,6 +149,7 @@ const SignupProcessPage = () => {
     <div className="relative h-screen">
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-xl border-4 border-gray-200 p-8">
         <h1 className="mb-5 text-center text-4xl">회원가입을 진행합니다.</h1>
+        <p className="text-xl">1. 닉네임을 5글자 이내로 설정해주세요.</p>
         <div className="flex items-center gap-10">
           <label className="input input-bordered flex items-center gap-2">
             <svg
