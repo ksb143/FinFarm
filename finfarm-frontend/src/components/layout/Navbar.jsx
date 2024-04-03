@@ -58,7 +58,7 @@ export default function Navbar() {
     if (!localStorage.getItem('accessToken')) {
       return '?????';
     }
-    return pointsInthePocket;
+    return pointsInthePocket.toLocaleString();
   };
 
   const UserNickname = () => {

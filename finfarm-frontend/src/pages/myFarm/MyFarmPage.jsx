@@ -54,7 +54,7 @@ export default function MyFarmPage() {
       }
     };
     fetchFarmerInfo();
-  }, [fetchingInfo]); // 의존성 배열을 fetchingInfo로 변경
+  }, [items]); // 의존성 배열을 fetchingInfo로 변경
 
   return (
     <div className="flex w-full">

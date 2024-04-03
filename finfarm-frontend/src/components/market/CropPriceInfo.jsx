@@ -20,7 +20,7 @@ export default function CropPriceInfo({
   return (
     <div
       onClick={onClickEvent}
-      className="mb-6 grid w-full cursor-pointer grid-cols-9 items-center"
+      className="mb-6 grid w-full cursor-pointer grid-cols-9 items-center px-5 py-3"
     >
       <div className="avatar col-span-2">
         <div className="w-20 rounded-full ring ring-gray-300 ring-offset-2 ring-offset-base-100">

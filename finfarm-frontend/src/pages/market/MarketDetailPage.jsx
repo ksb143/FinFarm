@@ -1,20 +1,31 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
+import './MarketDetailPage.css';
+
+import { buySeed, sellCrop, getMarketInfo } from '@/api/market';
 import CropPriceChart from '@/components/market/CropPriceChart';
+import WareHouse from '@/components/myFarm/Warehouse';
 import useCropPriceHistoryStore from '@/store/cropPriceHistoryStore';
 import useCropInfoStore from '@/store/cropInfoStore';
 import useUserStore from '@/store/userStore';
+import useItemStore from '@/store/itemStore';
 
 export default function MarketDetailPage() {
   const { cropName } = useParams(); // 작물명
-  const { pointsInthePocket } = useUserStore((state) => ({
+  const { pointsInthePocket, setPointsInthePocket } = useUserStore((state) => ({
     pointsInthePocket: state.pointsInthePocket,
+    setPointsInthePocket: state.setPointsInthePocket,
   })); // 유저 돈
   const cropPriceHistoryList = useCropPriceHistoryStore(
     (state) => state.cropPriceHistoryList,
   ); // 작물 시세 기록
-  const cropInfoList = useCropInfoStore((state) => state.cropList);
+  const cropInfoList = useCropInfoStore((state) => state.cropList); // 작물 전체 리스트
+  const { items, setItems } = useItemStore((state) => ({
+    items: state.items,
+    setItems: state.setItems,
+  })); // 유저 창고
+
   const [isOpen, setIsOpen] = useState(false); // 드롭다운 열림상태 관리
   const [selectedTimeRange, setSelectedTimeRange] = useState(365); // 작물 조회 기간
   const [filteredCropData, setFilteredCropData] = useState({
@@ -42,9 +53,83 @@ export default function MarketDetailPage() {
   const [sellCount, setSellCount] = useState(); // 판매 개수
   const [buyCount, setBuyCount] = useState(); // 구매 개수
 
-  // dropdown 관리
-  const openDropdown = () => setIsOpen(true);
-  const closeDropdown = () => setIsOpen(false);
+  // 데이터 필터링 로직
+  const filterDataByTimeRange = (data) => {
+    const now = new Date();
+    return data.filter((item) => {
+      const itemDate = new Date(item.x);
+      const timeDiff = selectedTimeRange;
+      return (now - itemDate) / (1000 * 60 * 60 * 24) <= timeDiff;
+    });
+  };
+
+  // 아이템 포매팅
+  const formatMemberItems = (tempMemberItems) => [
+    ...tempMemberItems.seeds.map((seed) => ({
+      name: seed.seedName,
+      period: seed.seedPeriod,
+      content: seed.seedContent,
+      amount: seed.seedAmount,
+    })),
+    ...tempMemberItems.agricultures.map((agriculture) => ({
+      name: agriculture.agricultureName,
+      unit: agriculture.agricultureUnit,
+      content: agriculture.agricultureContent,
+      amount: agriculture.agricultureAmount,
+    })),
+  ];
+
+  // 씨앗 구매
+  const buyItem = async () => {
+    if (buyCount === undefined || buyCount <= 0) {
+      alert('씨앗 개수를 지정해주세요');
+      return;
+    }
+
+    let selectedSeedName;
+    if (cropName === '감자') {
+      selectedSeedName = '씨감자';
+    } else if (cropName === '쌀') {
+      selectedSeedName = '벼';
+    } else {
+      selectedSeedName = `${cropName} 씨앗`;
+    }
+
+    const purchaseInfo = {
+      seedName: selectedSeedName,
+      seedCount: buyCount,
+    };
+
+    try {
+      const response = await buySeed(purchaseInfo);
+      setPointsInthePocket(response.memberPoint);
+      const tempMemberItems = formatMemberItems(response.memberItemsDTO);
+      setItems(tempMemberItems);
+      setBuyCount('');
+      alert('구매가 완료되었습니다');
+    } catch {
+      console.error(error);
+    }
+  };
+
+  // 농작물 판매
+  const sellItem = async () => {
+    if ((sellCount === undefined, sellCount <= 0)) {
+      alert('팔 농작물 개수를 지정해주세요');
+      return;
+    }
+
+    const salesInfo = {
+      agricultureName: cropName,
+      agricultureAmount: sellCount,
+    };
+    const response = await sellCrop(salesInfo);
+    setPointsInthePocket(response.memberPoint);
+
+    const tempMemberItems = formatMemberItems(response.memberItemsDTO);
+    setItems(tempMemberItems);
+    console.log(items);
+  };
 
   // 특정 기간의 선택 농작물 데이터 추출
   useEffect(() => {
@@ -72,23 +157,29 @@ export default function MarketDetailPage() {
     }
   }, [cropName, selectedTimeRange]);
 
-  // 데이터 필터링 로직
-  function filterDataByTimeRange(data) {
-    const now = new Date();
-    return data.filter((item) => {
-      const itemDate = new Date(item.x);
-      const timeDiff = selectedTimeRange;
-      return (now - itemDate) / (1000 * 60 * 60 * 24) <= timeDiff;
-    });
-  }
+  // 창고 관리
+  useEffect(() => {
+    const fetchWarehouse = async () => {
+      const response = await getMarketInfo();
+      // 개인 창고
+      const tempMemberItems = formatMemberItems(response.memberItemsDTO);
+      setItems(tempMemberItems);
+    };
+
+    fetchWarehouse();
+  }, [items]);
 
   return (
-    <div className="h-full w-full">
+    <div className="flex h-full w-full justify-between gap-3">
       <div className="w-1/2">
         <div className="flex justify-between">
           <div
-            onMouseEnter={openDropdown}
-            onMouseLeave={closeDropdown}
+            onMouseEnter={() => {
+              setIsOpen(true);
+            }}
+            onMouseLeave={() => {
+              setIsOpen(false);
+            }}
             className="dropdown dropdown-hover"
           >
             <div tabIndex={0} role="button" className="btn m-1">
@@ -100,7 +191,12 @@ export default function MarketDetailPage() {
                 className="menu dropdown-content z-[1] w-52 rounded-box bg-base-100 p-2 shadow"
               >
                 {cropPriceHistoryList.map((crop, idx) => (
-                  <li onClick={closeDropdown} key={idx}>
+                  <li
+                    onClick={() => {
+                      setIsOpen(false);
+                    }}
+                    key={idx}
+                  >
                     <Link to={`/market/${crop.id}`}>{crop.id}</Link>
                   </li>
                 ))}
@@ -229,7 +325,10 @@ export default function MarketDetailPage() {
                   </span>
                 </p>
               </div>
-              <button className="btn btn-sm hover:bg-lime-500 hover:text-white">
+              <button
+                onClick={buyItem}
+                className="btn btn-sm hover:bg-lime-500 hover:text-white"
+              >
                 구매
               </button>
             </div>
@@ -256,12 +355,18 @@ export default function MarketDetailPage() {
                   </span>
                 </p>
               </div>
-              <button className="btn btn-sm hover:bg-lime-500 hover:text-white">
+              <button
+                onClick={sellItem}
+                className="btn btn-sm hover:bg-lime-500 hover:text-white"
+              >
                 판매
               </button>
             </div>
           </div>
         </div>
+      </div>
+      <div className="w-1/2">
+        <WareHouse memberItems={items} />
       </div>
     </div>
   );
