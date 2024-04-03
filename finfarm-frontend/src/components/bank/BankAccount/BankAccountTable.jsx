@@ -67,12 +67,14 @@ export default function BankAccountTable({ data, recordsView }) {
           ))}
         </tbody>
       </table>
-      <Pagination
-        recordsPerPage={recordsView}
-        totalRecords={dataList.length}
-        currentPage={currentPage}
-        onPageChange={(pageNumber) => setCurrentPage(pageNumber)}
-      />
+      <div className="text-center">
+        <Pagination
+          recordsPerPage={recordsView}
+          totalRecords={dataList.length}
+          currentPage={currentPage}
+          onPageChange={(pageNumber) => setCurrentPage(pageNumber)}
+        />
+      </div>
     </>
   );
 }

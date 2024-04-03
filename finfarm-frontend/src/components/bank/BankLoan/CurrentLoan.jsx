@@ -62,11 +62,7 @@ export default function CurrentLoan({
           <span
             className={`w-1/2 ${dDay > 0 ? 'text-red-600' : 'text-blue-600'}`}
           >
-            {dDay === 0
-              ? 'D-day'
-              : dDay > 0
-                ? `D${dDay}`
-                : `D${Math.abs(dDay)}`}
+            {dDay === 0 ? 'D-day' : dDay > 0 ? `D+${dDay}` : `D${dDay}`}
           </span>
         </div>
       </div>

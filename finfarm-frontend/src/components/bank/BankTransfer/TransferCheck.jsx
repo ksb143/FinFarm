@@ -1,7 +1,5 @@
 import PropTypes from 'prop-types';
 
-import { accountTransfer } from '@/api/bank';
-
 TransferCheck.propTypes = {
   password: PropTypes.number,
   recipient: PropTypes.string,
@@ -9,7 +7,7 @@ TransferCheck.propTypes = {
   briefs: PropTypes.string,
   amount: PropTypes.number,
   balance: PropTypes.number,
-  onTransferResult: PropTypes.func,
+  onTransferExecute: PropTypes.func,
   onTransferCancel: PropTypes.func,
 };
 
@@ -19,7 +17,7 @@ export default function TransferCheck({
   sender,
   amount,
   balance,
-  onTransferResult,
+  onTransferExecute,
   onTransferCancel,
 }) {
   const transferContent = {
@@ -27,16 +25,6 @@ export default function TransferCheck({
     sender,
     amount,
     password,
-  };
-
-  const handleTransfer = async () => {
-    try {
-      const response = await accountTransfer(transferContent);
-      onTransferResult(response);
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
   };
 
   return (
@@ -70,7 +58,7 @@ export default function TransferCheck({
         <div className="flex gap-3">
           <button
             className="btn btn-sm min-w-16 rounded-full bg-lime-500 font-hopang text-white hover:bg-lime-800"
-            onClick={handleTransfer}
+            onClick={onTransferExecute}
           >
             예
           </button>
