@@ -3,7 +3,6 @@ import { localAxios } from '@/utils/http-common';
 const local = localAxios();
 
 // 내농장 정보 조회
-// 파라미터 없음. 리퀘 바디 없음.
 async function CheckMyfarmInfo() {
   try {
     const res = await local.get('/farm');
@@ -15,7 +14,6 @@ async function CheckMyfarmInfo() {
 }
 
 // 씨앗심기
-// 파라미터 없음. 리퀘 바디에 "farmFieldIndex": 10, "seedName": "씨감자"
 async function PlantSeeds() {
   try {
     const res = await local.post('/farm/plant');
@@ -26,6 +24,7 @@ async function PlantSeeds() {
   }
 }
 
+// 수확하기
 async function HarvestPlants() {
   try {
     const res = await local.post('/farm/harvest');
@@ -36,6 +35,7 @@ async function HarvestPlants() {
   }
 }
 
+// 쓰레기 버리기
 async function DumpTrashes() {
   try {
     const res = await local.patch('/farm/dump');
@@ -46,6 +46,7 @@ async function DumpTrashes() {
   }
 }
 
+// 농장 지력 높이기
 async function LevelUpFarm() {
   try {
     const res = await local.get('/farm/farm-level');

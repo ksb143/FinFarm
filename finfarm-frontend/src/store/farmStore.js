@@ -1,0 +1,177 @@
+import { create } from 'zustand';
+
+const useFarmStore = create((set) => ({
+  farmerNickname: '',
+  farmLevel: 1,
+  farmEffect: 0,
+  nextReinforceCost: 0,
+  nextReinforceEffect: 0,
+  nextReinforceProbability: 0,
+  farmFieldInfo: [
+    {
+      index: 1,
+      agricultureName: '새싹',
+      unit: '1kg',
+      harvestTime: '',
+    },
+    {
+      index: 2,
+      agricultureName: '고구마',
+      unit: '1kg',
+      harvestTime: '',
+    },
+    {
+      index: 3,
+      agricultureName: '애호박',
+      unit: '1kg',
+      harvestTime: '',
+    },
+    {
+      index: 1,
+      agricultureName: '수박',
+      unit: '1kg',
+      harvestTime: '',
+    },
+    {
+      index: 2,
+      agricultureName: '새싹',
+      unit: '1kg',
+      harvestTime: '',
+    },
+    {
+      index: 3,
+      agricultureName: '애호박',
+      unit: '1kg',
+      harvestTime: '',
+    },
+    {
+      index: 1,
+      agricultureName: '수박',
+      unit: '1kg',
+      harvestTime: '',
+    },
+    {
+      index: 2,
+      agricultureName: '고구마',
+      unit: '1kg',
+      harvestTime: '',
+    },
+    {
+      index: 3,
+      agricultureName: '새싹',
+      unit: '1kg',
+      harvestTime: '',
+    },
+    {
+      index: 1,
+      agricultureName: '수박',
+      unit: '1kg',
+      harvestTime: '',
+    },
+    {
+      index: 2,
+      agricultureName: '고구마',
+      unit: '1kg',
+      harvestTime: '',
+    },
+    {
+      index: 3,
+      agricultureName: '애호박',
+      unit: '1kg',
+      harvestTime: '',
+    },
+    {
+      index: 1,
+      agricultureName: '새싹',
+      unit: '1kg',
+      harvestTime: '',
+    },
+    {
+      index: 2,
+      agricultureName: '고구마',
+      unit: '1kg',
+      harvestTime: '',
+    },
+    {
+      index: 3,
+      agricultureName: '애호박',
+      unit: '1kg',
+      harvestTime: '',
+    },
+    {
+      index: 1,
+      agricultureName: '수박',
+      unit: '1kg',
+      harvestTime: '',
+    },
+    {
+      index: 2,
+      agricultureName: '새싹',
+      unit: '1kg',
+      harvestTime: '',
+    },
+    {
+      index: 3,
+      agricultureName: '애호박',
+      unit: '1kg',
+      harvestTime: '',
+    },
+    {
+      index: 1,
+      agricultureName: '수박',
+      unit: '1kg',
+      harvestTime: '',
+    },
+    {
+      index: 2,
+      agricultureName: '고구마',
+      unit: '1kg',
+      harvestTime: '',
+    },
+    {
+      index: 3,
+      agricultureName: '애호박',
+      unit: '1kg',
+      harvestTime: '',
+    },
+    {
+      index: 1,
+      agricultureName: '새싹',
+      unit: '1kg',
+      harvestTime: '',
+    },
+    {
+      index: 2,
+      agricultureName: '고구마',
+      unit: '1kg',
+      harvestTime: '',
+    },
+    {
+      index: 3,
+      agricultureName: '애호박',
+      unit: '1kg',
+      harvestTime: '',
+    },
+    {
+      index: 1,
+      agricultureName: '수박',
+      unit: '1kg',
+      harvestTime: '',
+    },
+  ],
+  memberItems: {
+    seeds: [],
+    agricultures: [],
+  },
+  setFarmerNickname: (farmerNickname) => set({ farmerNickname }),
+  setFarmLevel: (farmLevel) => set({ farmLevel }),
+  setFarmEffect: (farmEffect) => set({ farmEffect }),
+  setNextReinforceCost: (nextReinforceCost) => set({ nextReinforceCost }),
+  setNextReinforceEffect: (nextReinforceEffect) => set({ nextReinforceEffect }),
+  setNextReinforceProbability: (nextReinforceProbability) =>
+    set({ nextReinforceProbability }),
+  setFarmFieldInfo: (farmFieldInfo) => set({ farmFieldInfo }),
+  setMemberItems: (memberItems) => set({ memberItems }),
+}));
+
+export default useFarmStore;
