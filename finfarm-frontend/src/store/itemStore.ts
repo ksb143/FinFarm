@@ -39,34 +39,8 @@ const useItemStore = create<ItemState>((set) => ({
         return { items: [...state.items, newItem] };
       }
     }),
-  // 아이템 여러개 추가
-  setItems: (newItems) =>
-    set((state) => {
-      // 새로운 아이템들을 처리하기 위한 로직
-      const updatedItems = newItems.reduce(
-        (acc, newItem) => {
-          const existingItemIndex = acc.findIndex(
-            (item) => item.name === newItem.name,
-          );
-
-          // 이미 존재하는 아이템인 경우 amount 업데이트
-          if (existingItemIndex >= 0) {
-            acc[existingItemIndex] = {
-              ...acc[existingItemIndex],
-              amount: acc[existingItemIndex].amount + newItem.amount,
-            };
-          } else {
-            // 새로운 아이템 추가
-            acc.push(newItem);
-          }
-
-          return acc;
-        },
-        [...state.items],
-      ); // 초기값으로 기존 아이템들을 복사
-
-      return { items: updatedItems };
-    }),
+  // 아이템 교체
+  setItems: (newItems) => set(() => ({ items: newItems })),
 }));
 
 export default useItemStore;

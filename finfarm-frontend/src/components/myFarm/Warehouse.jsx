@@ -1,16 +1,23 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import useUserStore from '@/store/userStore';
 import WareHouseItem from '@/components/myFarm/WarehouseItem';
 
-export default function WareHouse(memberItems) {
+export default function WareHouse({ memberItems }) {
+  const [wareHouseSpace, setWareHouseSpace] = useState(
+    Array.from({ length: 20 }, (_, index) => null),
+  );
+
   // 전역상태관리 import 로직
   const { nickname: nickname } = useUserStore((state) => ({
     nickname: state.nickname,
   }));
 
-  const wareHouseSpace = Array.from({ length: 20 }, (_, index) =>
-    memberItems[index] ? memberItems[index] : null,
-  );
+  useEffect(() => {
+    const wareHouseSpace = Array.from({ length: 20 }, (_, index) =>
+      memberItems[index] ? memberItems[index] : null,
+    );
+    setWareHouseSpace(wareHouseSpace);
+  }, [memberItems]);
 
   return (
     <div className="w-full">
