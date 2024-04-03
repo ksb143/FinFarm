@@ -14,9 +14,12 @@ async function CheckMyfarmInfo() {
 }
 
 // 씨앗심기
-async function PlantSeeds() {
+async function PlantSeeds(index, seedName) {
   try {
-    const res = await local.post('/farm/plant');
+    const res = await local.post('/farm/plant', {
+      farmFieldIndex: index,
+      seedName: seedName,
+    });
     return res.data;
   } catch (error) {
     console.log('씨앗심기.. 실패', error);
@@ -25,9 +28,11 @@ async function PlantSeeds() {
 }
 
 // 수확하기
-async function HarvestPlants() {
+async function HarvestPlants(index) {
   try {
-    const res = await local.post('/farm/harvest');
+    const res = await local.post('/farm/harvest', {
+      farmFieldIndex: index,
+    });
     return res.data;
   } catch (error) {
     console.log('농작물 수확.. 실패', error);

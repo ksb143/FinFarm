@@ -24,7 +24,7 @@ const ButtonFarmLevel = () => {
             <br/>
             다음 강화에 필요한 비용: ${res.nextReinforceCost}
             <br/>
-            다음 강화 성공 가능성: ${res.nextReinforceProbability * 100}%
+            다음 강화 성공 가능성: ${res.nextReinforceProbability}%
             `;
           failureModal.showModal();
         }

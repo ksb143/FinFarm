@@ -20,7 +20,7 @@ const useCropStore = create((set) => ({
     {
       name: '쌀',
       image:
-        'https://jaesbucket.s3.ap-northeast-2.amazonaws.com/20240403203441342',
+        'https://jaesbucket.s3.ap-northeast-2.amazonaws.com/20240404011531253',
     },
     {
       name: '감자',
@@ -57,7 +57,7 @@ const useCropStore = create((set) => ({
     {
       name: '고구마 씨앗',
       image:
-        'https://jaesbucket.s3.ap-northeast-2.amazonaws.com/20240403203441342',
+        'https://jaesbucket.s3.ap-northeast-2.amazonaws.com/20240404011531253',
     },
     {
       name: '씨감자',
@@ -67,17 +67,17 @@ const useCropStore = create((set) => ({
     {
       name: '마늘 씨앗',
       image:
-        'https://jaesbucket.s3.ap-northeast-2.amazonaws.com/20240403203441342',
+        'https://jaesbucket.s3.ap-northeast-2.amazonaws.com/20240404011531253',
     },
     {
       name: '대파 씨앗',
       image:
-        'https://jaesbucket.s3.ap-northeast-2.amazonaws.com/20240403203441342',
+        'https://jaesbucket.s3.ap-northeast-2.amazonaws.com/20240404011531253',
     },
     {
       name: '양파 씨앗',
       image:
-        'https://jaesbucket.s3.ap-northeast-2.amazonaws.com/20240403203441342',
+        'https://jaesbucket.s3.ap-northeast-2.amazonaws.com/20240404011531253',
     },
     {
       name: '벼',
@@ -87,22 +87,22 @@ const useCropStore = create((set) => ({
     {
       name: '당근 씨앗',
       image:
-        'https://jaesbucket.s3.ap-northeast-2.amazonaws.com/20240403203441342',
+        'https://jaesbucket.s3.ap-northeast-2.amazonaws.com/20240404011531253',
     },
     {
       name: '배추 씨앗',
       image:
-        'https://jaesbucket.s3.ap-northeast-2.amazonaws.com/20240403203441342',
+        'https://jaesbucket.s3.ap-northeast-2.amazonaws.com/20240404011531253',
     },
     {
       name: '수박 씨앗',
       image:
-        'https://jaesbucket.s3.ap-northeast-2.amazonaws.com/20240403203441342',
+        'https://jaesbucket.s3.ap-northeast-2.amazonaws.com/20240404011531253',
     },
     {
       name: '애호박 씨앗',
       image:
-        'https://jaesbucket.s3.ap-northeast-2.amazonaws.com/20240403203441342',
+        'https://jaesbucket.s3.ap-northeast-2.amazonaws.com/20240404011531253',
     },
   ],
 }));
