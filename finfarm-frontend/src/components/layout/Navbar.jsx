@@ -173,7 +173,7 @@ export default function Navbar() {
           </div>
 
           <div className="flex items-center gap-x-3">
-            <button className="text-xl">🌈 Weather :</button>
+            <span className="text-xl">🌈 Weather :</span>
             <span className="text-xl">맑음</span>
           </div>
         </div>

@@ -2,12 +2,7 @@ import React, { useState, useEffect } from 'react';
 import WareHouse from '@/components/myFarm/Warehouse';
 import GardenField from '@/components/myFarm/GardenField';
 import ButtonFarmLevel from '@/components/myFarm/ButtonFarmLevel';
-import {
-  CheckMyfarmInfo,
-  PlantSeeds,
-  HarvestPlants,
-  DumpTrashes,
-} from '@/api/myfarm';
+import { CheckMyfarmInfo, DumpTrashes } from '@/api/myfarm';
 
 import useItemStore from '@/store/itemStore';
 
@@ -45,7 +40,7 @@ export default function MyFarmPage() {
 
         // 창고 저장 코드
         const tempMemberItems = formatMemberItems(tempFarmInfo.memberItems);
-        console.log('Farmer 아이템 Info:', tempMemberItems); // 결과값 콘솔에 출력
+        console.log('Farmer 아이템 Info:', tempMemberItems); // 결과값 콘솔에 출력ch
         setItems(tempMemberItems);
 
         setFetchingInfo(false);

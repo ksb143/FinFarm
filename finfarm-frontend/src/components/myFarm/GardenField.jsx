@@ -1,59 +1,47 @@
-import 새싹 from '@/assets/images/sprout.png';
 import React from 'react';
-import useFarmStore from '@/store/farmStore';
-import useCropStore from '@/store/cropStore';
+import GardenItem from './GardenItem';
 
-const GardenField = ({ farmerInfo }) => {
-  const { farmFieldInfo } = useFarmStore((state) => ({
-    farmFieldInfo: state.farmFieldInfo,
-  }));
+function GardenField({ farmerInfo }) {
+  console.log('farmerInfo:', farmerInfo);
+  console.log('farmFieldInfo:', farmerInfo?.farmFieldInfo);
+  // 각 GardenItem에 대한 정보를 동적으로 생성
+  const items = Array.from({ length: 25 }, (_, index) => {
+    // farmFieldInfo에서 해당 인덱스와 일치하는 필드 정보 찾기
+    const fieldInfo = farmerInfo?.farmFieldInfo?.find(
+      (field) => field.index === index + 1,
+    );
 
-  const { crop } = useCropStore();
-
-  const getImageByAgricultureName = (agricultureName) => {
-    const cropInfo = crop.find((cropItem) => cropItem.name === agricultureName);
-    return cropInfo ? cropInfo.image : 새싹;
-  };
-
-  let gardenItems = Array.from({ length: 25 }, () => 새싹); // 총 25개의 필드를 가정
-
-  farmerInfo?.farmFieldInfo.forEach((field) => {
-    if (field.index - 1 < gardenItems.length) {
-      gardenItems[field.index - 1] = getImageByAgricultureName(
-        field.agricultureName,
-      );
-    }
+    // fieldInfo가 있으면 해당 정보 사용, 없으면 기본값 사용
+    return {
+      index,
+      status: fieldInfo ? 'planted' : 'empty',
+      name: fieldInfo?.agricultureName || '',
+      image: fieldInfo ? 'pathtoimage' : '',
+    };
   });
-
-  const GardenItem = gardenItems.map((imageSrc, index) => (
-    <div key={index} className="h-30 w-30 static rounded-3xl bg-orange-700">
-      <div className="flex flex-row justify-center">
-        <img src={imageSrc} alt="작물" />
-      </div>
-    </div>
-  ));
+  console.log('items:', items);
 
   return (
-    <>
-      {farmerInfo && (
-        <div
-          className="relative flex flex-col"
-          style={{ width: '400px', height: 'auto' }}
-        >
-          <div className="mb-3 text-center">
-            <h1 className="border-2 text-2xl ">
-              {farmerInfo.nickname} 님의 농장
-            </h1>
-          </div>
-          <div className="overflow-auto border-2 bg-red-950 px-3 py-3 ">
-            <div className="grid grid-cols-5 justify-items-center gap-2 rounded-2xl bg-amber-900 px-1 py-1 text-center">
-              {GardenItem}
-            </div>
-          </div>
-        </div>
-      )}
-    </>
+    <div
+      style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(5, 1fr)',
+        gap: '2px',
+        width: '500px',
+      }}
+      className="justify-items-center gap-1 rounded-2xl bg-amber-900 px-1 py-1 text-center"
+    >
+      {items.map((item) => (
+        <GardenItem
+          key={item.index}
+          index={item.index}
+          status={item.status}
+          name={item.name}
+          image={item.image}
+        />
+      ))}
+    </div>
   );
-};
+}
 
 export default GardenField;
