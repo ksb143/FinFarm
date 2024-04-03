@@ -98,4 +98,9 @@ public class MarketController {
     public ResponseEntity<AgricultureSellResponse> agricultureSell(@RequestBody AgricultureSellRequest request){
         return marketService.agricultureSell(request);
     }
+
+    @GetMapping("test")
+    public ResponseEntity<TestResponse> test(){
+        return marketService.test();
+    }
 }

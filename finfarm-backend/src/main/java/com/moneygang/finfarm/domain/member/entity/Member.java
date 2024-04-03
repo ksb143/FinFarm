@@ -89,4 +89,8 @@ public class Member {
     public void loanOverDue() {
         this.memberLoanOverdue = true;
     }
+
+    public Member member(){
+        return Member.builder().build();
+    }
 }

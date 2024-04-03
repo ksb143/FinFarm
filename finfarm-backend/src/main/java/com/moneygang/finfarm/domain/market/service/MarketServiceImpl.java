@@ -41,6 +41,48 @@ public class MarketServiceImpl implements MarketService {
     private final CommonUtil commonUtil;
 
     @Override
+    public ResponseEntity<TestResponse> test(){
+        List<AgricultureDTO> agricultureDTOList = new ArrayList<>();
+        for(long i=1;i<=10;i++) {
+            Agriculture agriculture =
+                    agricultureRepository.findById(i)
+                            .orElseThrow(() -> new GlobalException(HttpStatus.NOT_FOUND, "not found"));
+
+            List<AgriculturePrice> agriculturePriceList =
+                    agriculturePriceRepository.findAllByAgriculture_AgriculturePkAndAgriculturePriceDateBetweenOrderByAgriculturePriceDateAsc(
+                            agriculture.getAgriculturePk(),
+                            LocalDate.now().minusDays(364),
+                            LocalDate.now()
+                    );
+            int minPrice = Integer.MAX_VALUE, maxPrice = Integer.MIN_VALUE;
+            for (int idx = agriculturePriceList.size() - 1; idx >= agriculturePriceList.size() - 7; idx--) {
+                minPrice = Math.min(minPrice, agriculturePriceList.get(idx).getAgriculturePriceValue());
+                maxPrice = Math.max(maxPrice, agriculturePriceList.get(idx).getAgriculturePriceValue());
+            }
+            List<AgriculturePriceHistoryDTO> agriculturePriceHistoryDTOList = new ArrayList<>();
+            for (AgriculturePrice agriculturePrice : agriculturePriceList) {
+                agriculturePriceHistoryDTOList.add(
+                        AgriculturePriceHistoryDTO.create(
+                                agriculturePrice.getAgriculturePriceDate(),
+                                agriculturePrice.getAgriculturePriceValue()
+                        )
+                );
+            }
+            agricultureDTOList.add(
+                    AgricultureDTO.create(
+                            agriculture,
+                            agriculturePriceList,
+                            minPrice, maxPrice,
+                            agriculturePriceHistoryDTOList
+                    )
+            );
+        }
+        TestResponse testResponse = TestResponse.create(agricultureDTOList);
+
+        return ResponseEntity.ok(testResponse);
+    }
+
+    @Override
     public ResponseEntity<MarketViewAllResponse> storeView() {
         List<AgricultureDTO> agricultureDTOList = new ArrayList<>();
 

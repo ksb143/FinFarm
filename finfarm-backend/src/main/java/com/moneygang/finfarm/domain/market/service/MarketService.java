@@ -12,5 +12,7 @@ public interface MarketService {
     ResponseEntity<SeedPurchaseResponse> seedPurchase(SeedPurchaseRequest request);
     ResponseEntity<AgricultureSellResponse> agricultureSell(AgricultureSellRequest request);
 
+    ResponseEntity<TestResponse> test();
+
 
 }
