@@ -99,8 +99,8 @@ export default function BankTransferPage() {
     }
   };
 
-  // 이체 여부 확인 함수
-  const handleTransferResult = async () => {
+  // 이체 하기
+  const handleTransferExecute = async () => {
     const transferContent = {
       recipient: recipient,
       amount: amount,
@@ -114,9 +114,10 @@ export default function BankTransferPage() {
     } catch (error) {
       console.error(error);
       setIsTransferSuccess(false);
+    } finally {
+      setTransferInfo(false);
+      setIsTransferCheckModal(true);
     }
-    setTransferInfo(false);
-    setIsTransferCheckModal(true);
   };
 
   // 최근 이체 내역 설정
@@ -372,7 +373,7 @@ export default function BankTransferPage() {
             sender={nickname}
             amount={amount}
             balance={balance}
-            onTransferResult={handleTransferResult}
+            onTransferExecute={handleTransferExecute}
             onTransferCancel={() => {
               setTransferInfo(false);
             }}

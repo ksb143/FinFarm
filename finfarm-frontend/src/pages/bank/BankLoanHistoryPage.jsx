@@ -72,10 +72,10 @@ export default function BankLoanHistoryPage() {
   const handleLoanConfirm = async (password) => {
     if (!password) {
       alert('계좌 비밀번호를 입력해주세요');
-    } else if (password.length < 4) {
+    } else if (!password.length === 4) {
       alert('계좌 비밀번호 4자리를 입력해주세요');
     } else {
-      const updatedRepayInfo = { ...repayInfo, password: Number(password) };
+      const updatedRepayInfo = { ...repayInfo, password: password };
       try {
         await loanRepay(updatedRepayInfo);
         const historyResponse = await loanHistory();
@@ -114,6 +114,7 @@ export default function BankLoanHistoryPage() {
     const fetchLoanData = async () => {
       try {
         const response = await loanHistory();
+        console.log(response);
         setCurrentLoanData(response.currentLoans);
         setLoanHistories(response.loanHistories);
         setLoanAmount(response.totalTakeAmount);
@@ -167,11 +168,11 @@ export default function BankLoanHistoryPage() {
           <div>
             <h1 className="mb-5 text-2xl">대출 현황</h1>
             <div>
-              <span className="mr-16">총 상환 금액</span>
+              <span className="mr-16">총 상환한 금액</span>
               <span>총 {loanRepayAmount.toLocaleString('ko-KR')}원</span>
             </div>
             <div>
-              <span className="mr-16">총 대출 금액</span>
+              <span className="mr-16">총 대출한 금액</span>
               <span>총 {loanAmount.toLocaleString('ko-KR')}원</span>
             </div>
           </div>
