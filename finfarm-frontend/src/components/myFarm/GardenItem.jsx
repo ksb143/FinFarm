@@ -58,19 +58,21 @@ function GardenItem({ index, status, name }) {
         cursor: status === 'ready' ? 'pointer' : 'default',
       }}
     >
-      <img
-        src={imageSrc}
-        alt={name}
-        style={{
-          maxWidth: '60%',
-          maxHeight: '60%',
-          borderRadius: '50px',
-        }}
-      />
-      <p className="flex text-xl text-lime-100">{name}</p>
-      {showModal && (
-        <HarvestModal onClose={handleCloseModal} onConfirm={handleConfirm} />
-      )}
+      <div className="">
+        <img
+          src={imageSrc}
+          alt={name}
+          style={{
+            maxWidth: '95%',
+            maxHeight: '95%',
+            borderRadius: '40px',
+          }}
+        />
+        <p className="flex text-xl text-lime-100">{name}</p>
+        {showModal && (
+          <HarvestModal onClose={handleCloseModal} onConfirm={handleConfirm} />
+        )}
+      </div>
     </div>
   );
 }

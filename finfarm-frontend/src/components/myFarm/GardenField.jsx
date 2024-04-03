@@ -33,7 +33,7 @@ function GardenField({ farmerInfo }) {
         gap: '2px',
         width: '500px',
       }}
-      className="justify-items-center gap-1 rounded-2xl bg-amber-900 px-1 py-1 text-center"
+      className="justify-items-center gap-1 rounded-xl bg-amber-900 px-1 py-1 text-center"
     >
       {items.map((item) => (
         <GardenItem
