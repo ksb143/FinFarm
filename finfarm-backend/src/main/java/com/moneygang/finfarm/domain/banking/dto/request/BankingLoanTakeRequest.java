@@ -7,5 +7,5 @@ public class BankingLoanTakeRequest {
 
     private Long loanPk;
     private Long amount;
-    private Integer accountPassword;
+    private String accountPassword;
 }

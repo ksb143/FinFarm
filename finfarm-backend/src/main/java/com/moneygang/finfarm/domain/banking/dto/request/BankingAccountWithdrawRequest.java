@@ -6,5 +6,5 @@ import lombok.Getter;
 public class BankingAccountWithdrawRequest {
 
     private Long amount;
-    private Integer accountPassword;
+    private String accountPassword;
 }

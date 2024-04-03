@@ -7,5 +7,5 @@ public class BankingLoanRepayRequest {
 
     private Long loanHistoryPk;
     private Long repayAmount;
-    private Integer accountPassword;
+    private String accountPassword;
 }

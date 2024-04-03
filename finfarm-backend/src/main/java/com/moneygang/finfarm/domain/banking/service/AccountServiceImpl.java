@@ -139,7 +139,7 @@ public class AccountServiceImpl implements AccountService {
         Member member = commonUtil.getMember();
 
         long amount = request.getAmount();
-        int accountPassword = request.getAccountPassword();
+        String accountPassword = request.getAccountPassword();
         long accountBalance = getAccountBalance(member.getMemberPk());
 
         // 예외1: 출금 요청 금액보다 보유 계좌 잔고가 적은 경우 (400)
@@ -148,7 +148,7 @@ public class AccountServiceImpl implements AccountService {
         }
 
         // 예외2: 입력 비밀번호가 유저의 비밀번호와 다른 경우 (400)
-        if(!String.valueOf(accountPassword).equals(member.getMemberAccountPassword())) {
+        if(!accountPassword.equals(member.getMemberAccountPassword())) {
             throw new GlobalException(HttpStatus.BAD_REQUEST, "Password Not Match");
         }
 
@@ -264,7 +264,7 @@ public class AccountServiceImpl implements AccountService {
         Member receiveMember = optionalReceiveMember.get();
 
         long amount = request.getAmount();
-        long accountPassword = request.getAccountPassword();
+        String accountPassword = request.getAccountPassword();
         long sendAccountBalance = getAccountBalance(sendMember.getMemberPk());
         long receiveAccountBalance = getAccountBalance(receiveMember.getMemberPk());
 
@@ -274,7 +274,7 @@ public class AccountServiceImpl implements AccountService {
         }
 
         // 예외3: 입력 비밀번호가 유저의 비밀번호와 다른 경우 (400)
-        if(!String.valueOf(accountPassword).equals(sendMember.getMemberAccountPassword())) {
+        if(!accountPassword.equals(sendMember.getMemberAccountPassword())) {
             throw new GlobalException(HttpStatus.BAD_REQUEST, "Password Not Match");
         }
 

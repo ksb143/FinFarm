@@ -100,7 +100,7 @@ public class LoanHistoryServiceImpl implements LoanHistoryService {
         }
 
         // 예외2: 입력 비밀번호가 계좌 비밀번호랑 다를 때 (400)
-        if(!member.getMemberAccountPassword().equals(String.valueOf(request.getAccountPassword()))) {
+        if(!member.getMemberAccountPassword().equals(request.getAccountPassword())) {
             throw new GlobalException(HttpStatus.UNAUTHORIZED, "Password Not Match");
         }
 
@@ -174,7 +174,7 @@ public class LoanHistoryServiceImpl implements LoanHistoryService {
         }
 
         // 예외2: 입력 비밀번호가 계좌 비밀번호랑 다를 때 (400)
-        if(!member.getMemberAccountPassword().equals(String.valueOf(request.getAccountPassword()))) {
+        if(!member.getMemberAccountPassword().equals(request.getAccountPassword())) {
             throw new GlobalException(HttpStatus.BAD_REQUEST, "Password Not Match");
         }
 

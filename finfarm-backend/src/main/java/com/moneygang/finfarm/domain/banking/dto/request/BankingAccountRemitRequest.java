@@ -7,5 +7,5 @@ public class BankingAccountRemitRequest {
 
     private String otherNickname;
     private Long amount;
-    private Integer accountPassword;
+    private String accountPassword;
 }
