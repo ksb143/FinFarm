@@ -35,7 +35,7 @@ const ButtonFarmLevel = () => {
   };
 
   return (
-    <>
+    <div className="mt-10">
       <button
         className="btn-xl btn rounded-xl hover:bg-lime-500"
         onClick={handleUpgrade}
@@ -83,7 +83,7 @@ const ButtonFarmLevel = () => {
           </div>
         </div>
       </dialog>
-    </>
+    </div>
   );
 };
 

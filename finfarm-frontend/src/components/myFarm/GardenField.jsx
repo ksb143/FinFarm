@@ -1,30 +1,7 @@
 import React from 'react';
 import GardenItem from './GardenItem';
 
-function GardenField({ farmerInfo }) {
-  const now = new Date();
-  console.log('farmFieldInfo:', farmerInfo?.farmFieldInfo);
-  // 각 GardenItem에 대한 정보를 동적으로 생성
-  const items = Array.from({ length: 25 }, (_, index) => {
-    // farmFieldInfo에서 해당 인덱스와 일치하는 필드 정보 찾기
-    const fieldInfo = farmerInfo?.farmFieldInfo?.find(
-      (field) => field.index === index + 1,
-    );
-    let status = 'empty';
-    if (fieldInfo) {
-      const harvestTime = new Date(fieldInfo.harvestTime);
-      status = harvestTime > now ? 'planted' : 'ready';
-    }
-    // fieldInfo가 있으면 해당 정보 사용, 없으면 기본값 사용
-    return {
-      index,
-      status,
-      name: fieldInfo?.agricultureName || '',
-      // 실제 이미지 경로 사용
-      image: fieldInfo ? 'path/to/image' : '',
-    };
-  });
-
+function GardenField({ farmerInfo, farmField }) {
   return (
     <div
       style={{
@@ -35,14 +12,8 @@ function GardenField({ farmerInfo }) {
       }}
       className="justify-items-center gap-1 rounded-xl bg-amber-900 px-1 py-1 text-center"
     >
-      {items.map((item) => (
-        <GardenItem
-          key={item.index}
-          index={item.index}
-          status={item.status}
-          name={item.name}
-          image={item.image}
-        />
+      {farmField.map((item, index) => (
+        <GardenItem key={index} index={index} item={item} />
       ))}
     </div>
   );
