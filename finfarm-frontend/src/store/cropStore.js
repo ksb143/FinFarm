@@ -13,6 +13,16 @@ const useCropStore = create((set) => ({
     { name: '당근', image: '/src/assets/images/carrot.png' },
     { name: '양배추', image: '/src/assets/images/cabbage.png' },
     { name: '새싹', image: '/src/assets/images/sprout.png' },
+    { name: '고구마 씨앗', image: '/src/assets/images/seed.png' },
+    { name: '씨감자', image: '/src/assets/images/seed.png' },
+    { name: '마늘 씨앗', image: '/src/assets/images/seed.png' },
+    { name: '대파 씨앗', image: '/src/assets/images/seed.png' },
+    { name: '양파 씨앗', image: '/src/assets/images/seed.png' },
+    { name: '벼', image: '/src/assets/images/seed.png' },
+    { name: '당근 씨앗', image: '/src/assets/images/seed.png' },
+    { name: '배추 씨앗', image: '/src/assets/images/seed.png' },
+    { name: '수박 씨앗', image: '/src/assets/images/seed.png' },
+    { name: '애호박 씨앗', image: '/src/assets/images/seed.png' },
   ],
 }));
 

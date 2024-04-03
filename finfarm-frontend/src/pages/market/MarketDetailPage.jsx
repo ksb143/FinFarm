@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
-import './MarketDetailPage.css';
-
 import { buySeed, sellCrop, getMarketInfo } from '@/api/market';
 import CropPriceChart from '@/components/market/CropPriceChart';
 import WareHouse from '@/components/myFarm/Warehouse';
@@ -86,6 +84,11 @@ export default function MarketDetailPage() {
       return;
     }
 
+    if (buyCount * selectedCropInfo.seedPrice > pointsInthePocket) {
+      alert('현금 포인트보다 구매 금액이 많아 구매가 불가능 합니다');
+      return;
+    }
+
     let selectedSeedName;
     if (cropName === '감자') {
       selectedSeedName = '씨감자';
@@ -114,8 +117,20 @@ export default function MarketDetailPage() {
 
   // 농작물 판매
   const sellItem = async () => {
-    if ((sellCount === undefined, sellCount <= 0)) {
-      alert('팔 농작물 개수를 지정해주세요');
+    if (sellCount === undefined || sellCount <= 0) {
+      alert('판매할 농작물 개수를 지정해주세요');
+      return;
+    }
+
+    const ownedCrop = items.find((item) => item.name === cropName);
+    if (!ownedCrop) {
+      alert('해당 농작물을 보유하고 있지 않습니다');
+      return;
+    }
+
+    const ownedCropCount = ownedCrop.amount;
+    if (ownedCropCount < sellCount) {
+      alert('판매할 농작물 개수가 보유 농작물보다 많아 판매가 불가능합니다.');
       return;
     }
 
@@ -128,7 +143,6 @@ export default function MarketDetailPage() {
 
     const tempMemberItems = formatMemberItems(response.memberItemsDTO);
     setItems(tempMemberItems);
-    console.log(items);
   };
 
   // 특정 기간의 선택 농작물 데이터 추출
