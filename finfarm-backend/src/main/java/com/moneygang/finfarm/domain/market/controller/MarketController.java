@@ -26,9 +26,7 @@ public class MarketController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
                     content = @Content(schema = @Schema(implementation = MarketViewAllResponse.class))),
-            @ApiResponse(responseCode = "404", description = """
-                    (message : "user not found", code : 404)
-                    """, content = @Content)
+            @ApiResponse(responseCode = "404", description = "(message : \"user not found\", code : 404)", content = @Content)
     })
     @GetMapping
     public ResponseEntity<MarketViewAllResponse> marketView() {
@@ -39,9 +37,7 @@ public class MarketController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
                     content = @Content(schema = @Schema(implementation = SeedInfoResponse.class))),
-            @ApiResponse(responseCode = "404", description = """
-                    (message : "seed not found", code : 404)
-                    """, content = @Content)
+            @ApiResponse(responseCode = "404", description = "(message : \"seed not found\", code : 404)", content = @Content)
     })
     @GetMapping("seed")
     public ResponseEntity<SeedInfoResponse> seedDetailView(@RequestParam("seedName") String seedName) {
@@ -52,9 +48,7 @@ public class MarketController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
                     content = @Content(schema = @Schema(implementation = AgricultureInfoResponse.class))),
-            @ApiResponse(responseCode = "404", description = """
-                    (message : "agriculture not found", code : 404)
-                    """, content = @Content)
+            @ApiResponse(responseCode = "404", description = "(message : \"agriculture not found\", code : 404)", content = @Content)
     })
     @GetMapping("agriculture")
     public ResponseEntity<AgricultureInfoResponse> agricultureDetailView(@RequestParam("agricultureName") String agricultureName) {
@@ -70,9 +64,7 @@ public class MarketController {
                     
                     (message : "seed not found", code : 404)
                     """, content = @Content),
-            @ApiResponse(responseCode = "402", description = """
-                    (message : "Payment Required", code : 402)
-                    """, content = @Content)
+            @ApiResponse(responseCode = "402", description = "(message : \"Payment Required\", code : 402)", content = @Content)
     })
     @PostMapping("seed")
     public ResponseEntity<SeedPurchaseResponse> seedPurchase(@RequestBody SeedPurchaseRequest request){
@@ -90,9 +82,7 @@ public class MarketController {
                     
                     (message : "No items owned", code : 404)
                     """, content = @Content),
-            @ApiResponse(responseCode = "422", description = """
-                    (message : "Insufficient stock for sale", code : 422)
-                    """, content = @Content)
+            @ApiResponse(responseCode = "422", description = "(message : \"Insufficient stock for sale\", code : 422)", content = @Content)
     })
     @PostMapping("sell")
     public ResponseEntity<AgricultureSellResponse> agricultureSell(@RequestBody AgricultureSellRequest request){
