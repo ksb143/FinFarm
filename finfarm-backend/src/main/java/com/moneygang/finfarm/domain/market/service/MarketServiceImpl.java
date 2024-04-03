@@ -42,7 +42,7 @@ public class MarketServiceImpl implements MarketService {
     private final CommonUtil commonUtil;
 
     @Override
-    public ResponseEntity<TestResponse> test(){
+    public ResponseEntity<MarketViewAllResponse> storeView() {
         List<Long> ids = new ArrayList<>(Arrays.asList(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L));
         List<Agriculture> agricultures = agricultureRepository.findAllById(ids);
         LocalDate startDate = LocalDate.now().minusDays(364);
@@ -55,7 +55,7 @@ public class MarketServiceImpl implements MarketService {
                 );
         Map<Long, List<AgriculturePrice>> priceMap =
                 prices.stream()
-                .collect(Collectors.groupingBy(price -> price.getAgriculture().getAgriculturePk()));
+                        .collect(Collectors.groupingBy(price -> price.getAgriculture().getAgriculturePk()));
 
         List<AgricultureDTO> agricultureDTOList = agricultures.stream().map(agriculture -> {
             List<AgriculturePrice> agriculturePriceList =
@@ -94,86 +94,6 @@ public class MarketServiceImpl implements MarketService {
             );
         }).toList();
 
-
-//
-//        List<AgricultureDTO> agricultureDTOList = new ArrayList<>();
-//        for(long i=1;i<=10;i++) {
-//            Agriculture agriculture =
-//                    agricultureRepository.findById(i)
-//                            .orElseThrow(() -> new GlobalException(HttpStatus.NOT_FOUND, "not found"));
-//
-//            List<AgriculturePrice> agriculturePriceList =
-//                    agriculturePriceRepository.findAllByAgriculture_AgriculturePkAndAgriculturePriceDateBetweenOrderByAgriculturePriceDateAsc(
-//                            agriculture.getAgriculturePk(),
-//                            LocalDate.now().minusDays(364),
-//                            LocalDate.now()
-//                    );
-//            int minPrice = Integer.MAX_VALUE, maxPrice = Integer.MIN_VALUE;
-//            for (int idx = agriculturePriceList.size() - 1; idx >= agriculturePriceList.size() - 7; idx--) {
-//                minPrice = Math.min(minPrice, agriculturePriceList.get(idx).getAgriculturePriceValue());
-//                maxPrice = Math.max(maxPrice, agriculturePriceList.get(idx).getAgriculturePriceValue());
-//            }
-//            List<AgriculturePriceHistoryDTO> agriculturePriceHistoryDTOList = new ArrayList<>();
-//            for (AgriculturePrice agriculturePrice : agriculturePriceList) {
-//                agriculturePriceHistoryDTOList.add(
-//                        AgriculturePriceHistoryDTO.create(
-//                                agriculturePrice.getAgriculturePriceDate(),
-//                                agriculturePrice.getAgriculturePriceValue()
-//                        )
-//                );
-//            }
-//            agricultureDTOList.add(
-//                    AgricultureDTO.create(
-//                            agriculture,
-//                            agriculturePriceList,
-//                            minPrice, maxPrice,
-//                            agriculturePriceHistoryDTOList
-//                    )
-//            );
-//        }
-        TestResponse testResponse = TestResponse.create(agricultureDTOList);
-
-        return ResponseEntity.ok(testResponse);
-    }
-
-    @Override
-    public ResponseEntity<MarketViewAllResponse> storeView() {
-        List<AgricultureDTO> agricultureDTOList = new ArrayList<>();
-
-        for(long i=1;i<=10;i++) {
-            Agriculture agriculture =
-                    agricultureRepository.findById(i)
-                            .orElseThrow(() -> new GlobalException(HttpStatus.NOT_FOUND, "not found"));
-
-            List<AgriculturePrice> agriculturePriceList =
-                    agriculturePriceRepository.findAllByAgriculture_AgriculturePkAndAgriculturePriceDateBetweenOrderByAgriculturePriceDateAsc(
-                            agriculture.getAgriculturePk(),
-                            LocalDate.now().minusDays(364),
-                            LocalDate.now()
-                    );
-            int minPrice = Integer.MAX_VALUE, maxPrice = Integer.MIN_VALUE;
-            for (int idx = agriculturePriceList.size() - 1; idx >= agriculturePriceList.size() - 7; idx--) {
-                minPrice = Math.min(minPrice, agriculturePriceList.get(idx).getAgriculturePriceValue());
-                maxPrice = Math.max(maxPrice, agriculturePriceList.get(idx).getAgriculturePriceValue());
-            }
-            List<AgriculturePriceHistoryDTO> agriculturePriceHistoryDTOList = new ArrayList<>();
-            for (AgriculturePrice agriculturePrice : agriculturePriceList) {
-                agriculturePriceHistoryDTOList.add(
-                        AgriculturePriceHistoryDTO.create(
-                                agriculturePrice.getAgriculturePriceDate(),
-                                agriculturePrice.getAgriculturePriceValue()
-                        )
-                );
-            }
-            agricultureDTOList.add(
-                AgricultureDTO.create(
-                        agriculture,
-                        agriculturePriceList,
-                        minPrice, maxPrice,
-                        agriculturePriceHistoryDTOList
-                )
-            );
-        }
         MarketViewAllResponse marketViewAllResponse =
                 MarketViewAllResponse.create(
                         agricultureDTOList,

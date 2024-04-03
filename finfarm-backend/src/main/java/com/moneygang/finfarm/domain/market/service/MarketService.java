@@ -11,8 +11,4 @@ public interface MarketService {
     ResponseEntity<AgricultureInfoResponse> agricultureDetailView(String seedName);
     ResponseEntity<SeedPurchaseResponse> seedPurchase(SeedPurchaseRequest request);
     ResponseEntity<AgricultureSellResponse> agricultureSell(AgricultureSellRequest request);
-
-    ResponseEntity<TestResponse> test();
-
-
 }

@@ -22,7 +22,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -50,15 +49,15 @@ public class AccountServiceImpl implements AccountService {
         accountLoop:
         for(Account account: accountList) {
             // 필터링1: 거래 타입(입금, 출금 두 가지로 입력 형식 들어옴)
-            if(request.getAccountType().equals("deposit")) {
-                if(account.getAccountAmount()<0) continue accountLoop;
-            } else if(request.getAccountType().equals("withdraw")) {
-                if(account.getAccountAmount()>0) continue accountLoop;
-            }
+            if(request.getAccountType().equals("deposit")
+                    && (account.getAccountAmount()<0) ) {continue accountLoop;}
+            else if(request.getAccountType().equals("withdraw")
+                    && (account.getAccountAmount()>0) ) {continue accountLoop;}
 
             // 필터링2: 적요 내용
-            if(!request.getAccountNickname().isEmpty()) {
-                if(!request.getAccountNickname().equals(account.getAccountNickname())) continue accountLoop;
+            if( ( !request.getAccountNickname().isEmpty() )
+                    && ( !request.getAccountNickname().equals(account.getAccountNickname())) ) {
+                continue accountLoop;
             }
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
