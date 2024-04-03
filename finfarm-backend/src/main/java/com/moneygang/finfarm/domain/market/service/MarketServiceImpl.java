@@ -18,16 +18,16 @@ import com.moneygang.finfarm.domain.member.repository.MemberRepository;
 import com.moneygang.finfarm.global.base.CommonUtil;
 import com.moneygang.finfarm.global.dto.MemberWarehouseDTO;
 import com.moneygang.finfarm.global.exception.GlobalException;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -42,41 +42,94 @@ public class MarketServiceImpl implements MarketService {
 
     @Override
     public ResponseEntity<TestResponse> test(){
-        List<AgricultureDTO> agricultureDTOList = new ArrayList<>();
-        for(long i=1;i<=10;i++) {
-            Agriculture agriculture =
-                    agricultureRepository.findById(i)
-                            .orElseThrow(() -> new GlobalException(HttpStatus.NOT_FOUND, "not found"));
-
-            List<AgriculturePrice> agriculturePriceList =
-                    agriculturePriceRepository.findAllByAgriculture_AgriculturePkAndAgriculturePriceDateBetweenOrderByAgriculturePriceDateAsc(
-                            agriculture.getAgriculturePk(),
-                            LocalDate.now().minusDays(364),
-                            LocalDate.now()
-                    );
-            int minPrice = Integer.MAX_VALUE, maxPrice = Integer.MIN_VALUE;
-            for (int idx = agriculturePriceList.size() - 1; idx >= agriculturePriceList.size() - 7; idx--) {
-                minPrice = Math.min(minPrice, agriculturePriceList.get(idx).getAgriculturePriceValue());
-                maxPrice = Math.max(maxPrice, agriculturePriceList.get(idx).getAgriculturePriceValue());
-            }
-            List<AgriculturePriceHistoryDTO> agriculturePriceHistoryDTOList = new ArrayList<>();
-            for (AgriculturePrice agriculturePrice : agriculturePriceList) {
-                agriculturePriceHistoryDTOList.add(
-                        AgriculturePriceHistoryDTO.create(
-                                agriculturePrice.getAgriculturePriceDate(),
-                                agriculturePrice.getAgriculturePriceValue()
-                        )
+        List<Long> ids = new ArrayList<>(Arrays.asList(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L));
+        List<Agriculture> agricultures = agricultureRepository.findAllById(ids);
+        LocalDate startDate = LocalDate.now().minusDays(364);
+        LocalDate endDate = LocalDate.now();
+        List<AgriculturePrice> prices =
+                agriculturePriceRepository.findAllWithJoin(
+                        ids,
+                        startDate,
+                        endDate
                 );
-            }
-            agricultureDTOList.add(
-                    AgricultureDTO.create(
-                            agriculture,
-                            agriculturePriceList,
-                            minPrice, maxPrice,
-                            agriculturePriceHistoryDTOList
-                    )
+        Map<Long, List<AgriculturePrice>> priceMap =
+                prices.stream()
+                .collect(Collectors.groupingBy(price -> price.getAgriculture().getAgriculturePk()));
+
+        List<AgricultureDTO> agricultureDTOList = agricultures.stream().map(agriculture -> {
+            List<AgriculturePrice> agriculturePriceList =
+                    priceMap.getOrDefault(agriculture.getAgriculturePk(), Collections.emptyList());
+
+            // 마지막 7개 데이터에서 최소값과 최대값 계산을 위한 준비
+            List<AgriculturePrice> last7DaysPrices = agriculturePriceList.stream()
+                    .sorted(Comparator.comparing(AgriculturePrice::getAgriculturePriceDate).reversed())
+                    .limit(7)
+                    .toList();
+
+            int minPriceLast7Days = last7DaysPrices.stream()
+                    .mapToInt(AgriculturePrice::getAgriculturePriceValue)
+                    .min().orElse(Integer.MAX_VALUE);
+
+            int maxPriceLast7Days = last7DaysPrices.stream()
+                    .mapToInt(AgriculturePrice::getAgriculturePriceValue)
+                    .max().orElse(Integer.MIN_VALUE);
+
+            // AgriculturePriceHistoryDTO 리스트 생성 (전체 리스트 사용)
+            List<AgriculturePriceHistoryDTO> agriculturePriceHistoryDTOList = agriculturePriceList.stream()
+                    .map(price ->
+                            AgriculturePriceHistoryDTO.create(
+                                    price.getAgriculturePriceDate(),
+                                    price.getAgriculturePriceValue()
+                            ))
+                    .toList();
+
+            // AgricultureDTO 생성 (전체 리스트와 최근 7일의 최소/최대 가격 정보 포함)
+            return AgricultureDTO.create(
+                    agriculture,
+                    agriculturePriceList, // 전체 리스트 사용
+                    minPriceLast7Days,
+                    maxPriceLast7Days,
+                    agriculturePriceHistoryDTOList
             );
-        }
+        }).toList();
+
+
+//
+//        List<AgricultureDTO> agricultureDTOList = new ArrayList<>();
+//        for(long i=1;i<=10;i++) {
+//            Agriculture agriculture =
+//                    agricultureRepository.findById(i)
+//                            .orElseThrow(() -> new GlobalException(HttpStatus.NOT_FOUND, "not found"));
+//
+//            List<AgriculturePrice> agriculturePriceList =
+//                    agriculturePriceRepository.findAllByAgriculture_AgriculturePkAndAgriculturePriceDateBetweenOrderByAgriculturePriceDateAsc(
+//                            agriculture.getAgriculturePk(),
+//                            LocalDate.now().minusDays(364),
+//                            LocalDate.now()
+//                    );
+//            int minPrice = Integer.MAX_VALUE, maxPrice = Integer.MIN_VALUE;
+//            for (int idx = agriculturePriceList.size() - 1; idx >= agriculturePriceList.size() - 7; idx--) {
+//                minPrice = Math.min(minPrice, agriculturePriceList.get(idx).getAgriculturePriceValue());
+//                maxPrice = Math.max(maxPrice, agriculturePriceList.get(idx).getAgriculturePriceValue());
+//            }
+//            List<AgriculturePriceHistoryDTO> agriculturePriceHistoryDTOList = new ArrayList<>();
+//            for (AgriculturePrice agriculturePrice : agriculturePriceList) {
+//                agriculturePriceHistoryDTOList.add(
+//                        AgriculturePriceHistoryDTO.create(
+//                                agriculturePrice.getAgriculturePriceDate(),
+//                                agriculturePrice.getAgriculturePriceValue()
+//                        )
+//                );
+//            }
+//            agricultureDTOList.add(
+//                    AgricultureDTO.create(
+//                            agriculture,
+//                            agriculturePriceList,
+//                            minPrice, maxPrice,
+//                            agriculturePriceHistoryDTOList
+//                    )
+//            );
+//        }
         TestResponse testResponse = TestResponse.create(agricultureDTOList);
 
         return ResponseEntity.ok(testResponse);
