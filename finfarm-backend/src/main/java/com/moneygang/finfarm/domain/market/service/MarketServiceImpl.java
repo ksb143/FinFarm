@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class MarketServiceImpl implements MarketService {
     private final AgricultureRepository agricultureRepository;
     private final AgriculturePriceRepository agriculturePriceRepository;
