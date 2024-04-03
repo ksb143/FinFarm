@@ -17,7 +17,9 @@ async function getMyInfo() {
 // 마이페이지 프로필 사진 변경
 async function changeProfileImage(profileData) {
   try {
-    const response = await file.post('/member/profile', profileData);
+    const response = await local.post('/member/profile', profileData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
     return response.data.memberImageUrl;
   } catch (error) {
     console.log('프로필 사진 저장 error', error);
@@ -37,13 +39,10 @@ async function membershipWithdrawal() {
 }
 
 // 마이페이지 수정
-async function editMyInfo(nick, imgUrl) {
+async function editMyInfo(changeInfo) {
   try {
-    const changeInfo = {
-      memberNickname: nick,
-      memberImageUrl: imgUrl,
-    };
     const response = await local.put('/member/my-page', changeInfo);
+    console.log(response);
     return response.data;
   } catch (error) {
     console.log('회원 수정 실패', error);

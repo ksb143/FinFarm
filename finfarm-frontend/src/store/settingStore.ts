@@ -14,7 +14,7 @@ interface SoundSettingsState {
 export const useSoundSettingsStore = create<SoundSettingsState>((set) => ({
   backgroundMusic: true,
   soundEffects: true,
-  musicVolume: 0.3,
+  musicVolume: 0.05,
 
   // backgroundMusic 상태를 토글하는 함수
   toggleBackgroundMusic: () =>

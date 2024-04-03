@@ -9,7 +9,7 @@ export default function ProfileImageModal({
   }
 
   return (
-    <div className="fixed left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 transform flex-col items-center rounded-xl border-2 border-gray-300 bg-white px-24 py-10">
+    <div className="fixed left-1/2 top-1/2 z-10 flex -translate-x-1/2 -translate-y-1/2 transform flex-col items-center rounded-xl border-2 border-gray-300 bg-white px-24 py-10">
       <img
         src={imageSrc}
         alt="Profile Preview"

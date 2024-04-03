@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import profilePlaceholder from '@/assets/images/profile_icon.png';
 import {
   changeProfileImage,
@@ -10,11 +11,13 @@ import { useSoundSettingsStore } from '@/store/settingStore';
 import ProfileImageModal from '@/components/profile/ProfileImageModal';
 
 export default function UserProfilePage() {
-  const { nickname, dateOfSignup, profileImageUrl } = useUserStore((state) => ({
-    nickname: state.nickname,
-    dateOfSignup: state.dateOfSignup,
-    profileImageUrl: state.profileImageUrl,
-  }));
+  const { nickname, dateOfSignup, profileImageUrl, setProfileImageUrl } =
+    useUserStore((state) => ({
+      nickname: state.nickname,
+      dateOfSignup: state.dateOfSignup,
+      profileImageUrl: state.profileImageUrl,
+      setProfileImageUrl: state.setProfileImageUrl,
+    }));
 
   const {
     backgroundMusic,
@@ -30,6 +33,8 @@ export default function UserProfilePage() {
   const [newImage, setNewImage] = useState('');
   const [newImageUrl, setNewImageUrl] = useState('');
   const [showModal, setShowModal] = useState(false);
+
+  const navigator = useNavigate();
 
   // 파일 고르는 폴더 열기
   const handleProfilePictureChange = () => {
@@ -63,6 +68,7 @@ export default function UserProfilePage() {
       try {
         await membershipWithdrawal();
         alert('회원 탈퇴되었습니다');
+        navigator('/');
       } catch (error) {
         console.error(error);
         alert('회원 탈퇴에 에러가 발생했습니다');
@@ -70,27 +76,41 @@ export default function UserProfilePage() {
     }
   };
 
-  // 프로필 사진 및 닉네임 수정
-  const saveMyInfo = async () => {
+  // 프로필 사진 서버에 등록
+  const saveProfile = async () => {
     const formData = new FormData();
     formData.append('file', newImage);
     try {
       const response = await changeProfileImage(formData);
       setNewImageUrl(response);
-    } catch {
+      setShowModal(false);
+      alert('사진이 서버 등록에 성공했습니다');
+    } catch (error) {
       console.error(error);
+      alert('사진이 서버 등록에 실패했습니다');
+      setNewImage('');
+      setShowModal(false);
+    }
+  };
+
+  // 프로필 사진 저장
+  const sendProfile = async () => {
+    let sendImgUrl = profileImageUrl; // 기존 이미지 미리 저장
+    if (newImageUrl) {
+      sendImgUrl = newImageUrl;
     }
 
     try {
-      const editData = {
+      const sendInfo = {
         memberNickname: nickname,
-        memberImageUrl: newImageUrl,
+        memberImageUrl: sendImgUrl,
       };
-      const response = await editMyInfo(editData);
-      alert('프로필 수정에 성공했습니다');
+      const response = await editMyInfo(sendInfo);
+      setProfileImageUrl(sendImgUrl);
+      alert('유저의 프로필 사진이 등록되었습니다');
     } catch (error) {
       console.error(error);
-      alert('프로필 수정에 실패했습니다');
+      alert('유저의 프로필 사진 등록되지 않았습니다');
     }
   };
 
@@ -124,6 +144,7 @@ export default function UserProfilePage() {
             <p className="text-gray-600">가입 날짜: {dateOfSignup}</p>
           </div>
         </div>
+
         <button
           onClick={handleAccountDeletion}
           className="absolute bottom-3 right-3 mt-2 rounded-full px-3 py-1 text-sm text-red-600 hover:text-red-700"
@@ -131,17 +152,19 @@ export default function UserProfilePage() {
           회원 탈퇴
         </button>
       </div>
+      <button
+        onClick={sendProfile}
+        className="my-3 w-full rounded-lg bg-lime-300 py-1 hover:bg-lime-950 hover:text-white"
+      >
+        프로필 등록
+      </button>
       <ProfileImageModal
         show={showModal}
-        onClose={() => {
-          handleModalClose;
-        }}
-        onConfirm={() => {
-          setShowModal(false);
-        }}
+        onClose={handleModalClose}
+        onConfirm={saveProfile}
         imageSrc={previewImage}
       />
-      <div className="mt-6 rounded-lg bg-white p-6 shadow-md">
+      <div className="rounded-lg bg-white p-6 shadow-md">
         <h3 className="mb-4 text-xl font-bold">환경 설정</h3>
         <table className="w-full">
           <tbody>

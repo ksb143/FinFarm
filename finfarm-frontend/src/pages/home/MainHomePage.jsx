@@ -81,7 +81,7 @@ export default function MainHomePage() {
               <p className="text-center text-3xl">
                 데일리 농산물 퀴즈에 도전하고
               </p>
-              <p className="text-center text-3xl">5000 Point를 받아보세요!</p>
+              <p className="text-center text-3xl">5,000 Point를 받아보세요!</p>
             </div>
 
             <button

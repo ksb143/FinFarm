@@ -15,24 +15,48 @@ import MyPage from '@/router/MyPage';
 import MainHome from '@/router/MainHome';
 
 import useUserStore from '@/store/userStore';
+import { useSoundSettingsStore } from '@/store/settingStore';
 
 // 배경음 파일을 import합니다.
 import backgroundSong from '@/assets/sounds/background_song.mp3';
+import clickSound from '@/assets/sounds/frog-effect.mp3';
 
 function App() {
   const { accessToken: accessToken } = useUserStore((state) => ({
     accessToken: state.accessToken,
   }));
 
+  const { backgroundMusic, soundEffects, musicVolume } =
+    useSoundSettingsStore();
+
   useEffect(() => {
-    const audio = new Audio(backgroundSong);
-    audio.loop = true; // 배경음을 반복 재생합니다.
-    audio.play().catch((error) => console.log(error)); // 자동 재생 정책으로 인한 에러 처리
+    // 배경음악
+    const backgroundAudio = new Audio(backgroundSong);
+    backgroundAudio.loop = true;
+    backgroundAudio.volume = musicVolume;
+
+    if (backgroundMusic) {
+      backgroundAudio
+        .play()
+        .catch((error) => console.log('배경음악 재생 에러', error));
+    }
+
+    // 효과음
+    const playClickSound = (event) => {
+      if (event.target.tagName === 'BUTTON' && soundEffects) {
+        const soundEffect = new Audio(clickSound);
+        soundEffect
+          .play()
+          .catch((error) => console.error('Error playing sound:', error));
+      }
+    };
+    window.addEventListener('click', playClickSound);
 
     return () => {
-      audio.pause(); // 컴포넌트가 언마운트될 때 오디오를 일시 정지합니다.
+      backgroundAudio.pause(); // 컴포넌트가 언마운트될 때 오디오를 일시 정지합니다.
+      window.removeEventListener('click', playClickSound);
     };
-  }, []);
+  }, [backgroundMusic, soundEffects, musicVolume]);
 
   return (
     <Router>

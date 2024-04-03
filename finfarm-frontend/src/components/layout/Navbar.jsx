@@ -9,43 +9,17 @@ import profile_icon from '@/assets/images/profile_icon2.png';
 export default function Navbar() {
   // 전역상태관리 import 로직
   const {
-    accessToken: accessToken,
     nickname: nickname,
-    email: email,
     pointsInthePocket: pointsInthePocket,
     profileImageUrl: profileImageUrl,
-    isQuizSolved: isQuizSolved,
-    dateOfSignup: dateOfSignup,
-    accountPassword: accountPassword,
   } = useUserStore((state) => ({
-    accessToken: state.accessToken,
     nickname: state.nickname,
-    email: state.email,
     pointsInthePocket: state.pointsInthePocket,
     profileImageUrl: state.profileImageUrl,
-    isQuizSolved: state.isQuizSolved,
-    dateOfSignup: state.dateOfSignup,
-    accountPassword: state.accountPassword,
   }));
   // 전역상태관리 초기화 로직
-  const {
-    resetAccountPassword,
-    resetAccessToken,
-    resetPointsInthePocket,
-    resetProfileImageUrl,
-    resetNickname,
-    resetIsQuizSolved,
-    resetDateOfSignup,
-    resetEmail,
-  } = useUserStore((state) => ({
-    resetAccountPassword: state.resetAccountPassword,
+  const { resetAccessToken } = useUserStore((state) => ({
     resetAccessToken: state.resetAccessToken,
-    resetPointsInthePocket: state.resetPointsInthePocket,
-    resetProfileImageUrl: state.resetProfileImageUrl,
-    resetNickname: state.resetNickname,
-    resetIsQuizSolved: state.resetIsQuizSolved,
-    resetDateOfSignup: state.resetDateOfSignup,
-    resetEmail: state.resetEmail,
   }));
 
   const navigate = useNavigate();
@@ -53,20 +27,6 @@ export default function Navbar() {
   const today = new Date();
 
   const formattedDate = `${today.getFullYear()}년 ${today.getMonth() + 1}월 ${today.getDate()}일`;
-
-  const CurrentPoint = () => {
-    if (!localStorage.getItem('accessToken')) {
-      return '?????';
-    }
-    return pointsInthePocket.toLocaleString();
-  };
-
-  const UserNickname = () => {
-    if (!localStorage.getItem('accessToken')) {
-      return '익명의 농부 님';
-    }
-    return `${nickname} 님`;
-  };
 
   const GoToMainHome = () => {
     if (localStorage.getItem('accessToken')) {
@@ -97,7 +57,7 @@ export default function Navbar() {
         <img
           src={navLogo}
           alt="navLogo"
-          className="h-auto w-48"
+          className="h-auto w-48 cursor-pointer"
           onClick={GoToMainHome}
         />
       </div>
@@ -109,7 +69,10 @@ export default function Navbar() {
             onClick={toggleDropdown} // 클릭 이벤트 추가
           >
             <div className="w-20 rounded-full">
-              <img alt="profile_icon" src={profile_icon} />
+              <img
+                alt="profile_icon"
+                src={profileImageUrl ? profileImageUrl : profile_icon}
+              />
             </div>
           </button>
           {/* Dropdown이 열려있을 때만 보이도록 설정 */}
@@ -151,7 +114,7 @@ export default function Navbar() {
           )}
         </div>
         <div className="flex flex-col items-center">
-          <span className="text-2xl">{UserNickname()}</span>
+          <span className="text-2xl">{nickname}</span>
 
           <button
             onClick={handleLogout}
@@ -164,7 +127,9 @@ export default function Navbar() {
         <div className="flex flex-col">
           <div className="flex items-center gap-x-11">
             <span className="text-xl">💰 Point :</span>
-            <span className="text-xl">{CurrentPoint()}원</span>
+            <span className="text-xl">
+              {pointsInthePocket.toLocaleString()}원
+            </span>
           </div>
 
           <div className="flex items-center gap-x-8">
