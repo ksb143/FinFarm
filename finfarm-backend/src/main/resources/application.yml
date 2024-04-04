@@ -1,0 +1,69 @@
+---
+spring:
+  profiles:
+    group:
+      development:
+        - common
+        - mysql_database
+        - redis_database
+---
+spring:
+  config:
+    activate:
+      on-profile: common
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+---
+spring:
+  config:
+    activate:
+      on-profile: mysql_database
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ENC(YVSWokup/PAra7C+VbN4kHZCHjRT/KSHXWM2qL4W8H5k+BLJ14P9HEO2NnJcMYhhV0T+xC3WjbnN3I9eW28JUZZ3OzBq/CobPcad1tcQ7crPSRoQgRLfaSbQz7MAZuIa8s9JPdIbSzy7RF7zi09alqeDI4t1cMPK)
+    username: ENC(nhKNRKH6+PxjtjqMsUlN7A==)
+    password: ENC(Sj14K+Fx8YAQuyK+bD1g5BJJBlhMIKhT)
+---
+spring:
+  config:
+    activate:
+      on-profile: redis_database
+  data:
+    redis:
+      host: ENC(Ac1Q04N6KzuqAU3pBGRWAx56aiBauYTP)
+      port: 6379
+      password: ENC(8cO535LUjobHmvHXOVs4UvKBS2JN/JVQ)
+---
+spring:
+  config:
+    activate:
+      on-profile: port_8080
+server:
+  port: 8080
+---
+logging:
+  level:
+    com.moneygang.finfarm : info
+---
+server:
+  servlet:
+    context-path: /api
+---
+jwt:
+  token:
+    secret: ENC(zAx8irlZGQz2zIac8x/2TgbtI4TJt8fEStvz3SR7MVh6bbpVdzSznRXe8BcYuJUp)
+---
+cloud:
+  aws:
+    s3:
+      bucket: ENC(/u9Bjg/tRVX4Du9kBILv9Bf/3lIzVrRA)
+    credentials:
+      access-key: ENC(NgtzngflwYiSSEieT1fhzTWtGXuN13+8aHIUrKfAlOI=)
+      secret-key: ENC(0T5lYNP+bkl84aCnR+9CPVMYXb/5ecib4U6MKelPle2z1R91Gf+tDnqqenrCRveEZ/mUgX9a4i4=)
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false

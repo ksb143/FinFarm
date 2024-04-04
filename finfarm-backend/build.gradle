@@ -1,0 +1,70 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.2.3'
+	id 'io.spring.dependency-management' version '1.1.4'
+	id 'org.sonarqube' version '4.0.0.2929'
+}
+
+sonarqube {
+	properties {
+		property "sonar.projectKey", "moneyGang"
+		property "sonar.host.url", "http://j10d203.p.ssafy.io:9000"
+		property "sonar.login", "sqp_c64ed593860eee22a921546aaf9fad0b01f56a48"
+	}
+}
+
+group = 'com.moneygang'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	sourceCompatibility = '17'
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	//swagger
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
+	//mysql
+	runtimeOnly 'com.mysql:mysql-connector-j'
+	//jpa
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	// jasypt
+	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.4'
+
+    // Google Gson
+	implementation 'com.google.code.gson:gson:2.8.5'
+	implementation group: 'com.google.code.gson', name: 'gson', version: '2.10.1'
+	// jjwt
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+	implementation 'io.jsonwebtoken:jjwt-impl:0.11.2'
+	implementation 'io.jsonwebtoken:jjwt-jackson:0.11.2'
+	//redis
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	// Json
+	implementation 'org.json:json:20210307'
+	// aws
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+
+
+	testImplementation 'com.h2database:h2'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+	systemProperty 'JASYPT_KEY', findProperty("JASYPT_KEY")
+}
