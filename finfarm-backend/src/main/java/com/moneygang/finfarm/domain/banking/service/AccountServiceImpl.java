@@ -156,7 +156,7 @@ public class AccountServiceImpl implements AccountService {
         Long afterAccountBalance = accountBalance + withdrawAmount;
 
         Account withdraw = Account.builder()
-                .amount((-1)*amount)
+                .amount((-1)*withdrawAmount)
                 .type("출금")
                 .nickname(member.getMemberNickname())
                 .accountBalance(afterAccountBalance)
