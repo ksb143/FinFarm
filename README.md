@@ -86,17 +86,18 @@ CSS 프레임워크: Tailwindcss 3.4.1
 ![Static Badge](https://img.shields.io/badge/Redis-%23DC382D?style=flat&logo=redis&logoColor=white)
 ![Static Badge](https://img.shields.io/badge/AmazonS3-%23569A31?style=flat&logo=amazons3&logoColor=white)
 ![Static Badge](https://img.shields.io/badge/AmazonEC2-%23FF9900?style=flat&logo=amazonec2&logoColor=white)
-![Static Badge](https://img.shields.io/badge/AmazonRDS-%23527FFF?style=flat&logo=amazonrds&logoColor=white)
 ![Static Badge](https://img.shields.io/badge/Gradle-%2302303A?style=flat&logo=gradle&logoColor=white)
 ![Static Badge](https://img.shields.io/badge/nGrinder-%23fc8e01?style=flat&logo=nGrinder&logoColor=white)
 ![Static Badge](https://img.shields.io/badge/sonarqube-%234E9BCD?style=flat&logo=sonarqube&logoColor=white)
 ![Static Badge](https://img.shields.io/badge/Python-%233776AB?style=flat&logo=Python&logoColor=white)
 
+
+개발언어: Java, Jbr 17 
+
+프레임워크: Spring Boot: 3.2.3
+
 IDE: IntelliJ IDEA 2023.2.5
 
-JDK: Jbr 17 
-
-Spring Boot: 3.2.1
 
 ### 📖 BackEnd 라이브러리 및 외부 API 사용
 
@@ -105,8 +106,7 @@ Spring Boot: 3.2.1
 | Jasypt          | 3.0.4 ver   | Apache License 2.0 |
 | Json Web Token  | 0.11.5 ver  | CDDL License 1.0   |
 | AWS Cloud       | 2.2.6 ver   | Apache License 2.0 |
-| Firebase Admin  | 9.2.0 ver   | Apache License 2.0 |
-| Nurigo API      | 4.3.0 ver   | Apache License 2.0 |
+| Google gson     | 2.10.1 ver  | Apache License 2.0 |
 | Spring Doc      | 2.0.2 ver   | Apache License 2.0 |
 | Spring Security | 6.2.2 ver   | Apache License 2.0 |
 | Redis           | 3.2.3 ver   | Apache License 2.0 |
