@@ -1,0 +1,14 @@
+.custom-scrollbar::-webkit-scrollbar {
+  width: 12px; /* 스크롤바의 너비 */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f3f4f6; /* 스크롤바 트랙의 배경색 */
+  border-radius: 20px; /* 스크롤바 트랙의 라운드 효과 */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #d1d5db; /* 스크롤바 썸(움직이는 부분)의 배경색 */
+  border-radius: 20px; /* 스크롤바 썸의 라운드 효과 */
+  border: 3px solid #f3f4f6; /* 스크롤바 썸의 테두리 (선택적) */
+}
